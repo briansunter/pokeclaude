@@ -1,0 +1,92 @@
+=== DEEP DIVE DATA QUALITY ANALYSIS ===
+
+1. HP VALUE ANALYSIS:
+   Min HP: 30
+   Max HP: 190
+   Avg HP: 98
+   ✅ All HP values in normal range (30-200)
+
+2. URL VALIDATION:
+   ✅ All image URLs properly formatted
+   ✅ All card URLs properly formatted
+
+3. NAME LENGTH ANALYSIS:
+   Longest card names:
+     - Pokémon Communication (21 chars)
+     - Pokémon Communication (21 chars)
+     - Pokémon Communication (21 chars)
+   Very short Pokemon names (might be truncated):
+     - "Mew" (3 chars)
+     - "Muk" (3 chars)
+     - "Mew" (3 chars)
+
+4. CARD NUMBER SEQUENCE CHECK:
+   A1: ✅ Sequential (1-286)
+   A1a: ✅ Sequential (1-86)
+   A2: ✅ Sequential (1-207)
+   A2a: ✅ Sequential (1-96)
+   A2b: ✅ Sequential (1-111)
+   A3: ✅ Sequential (1-239)
+   A3a: ✅ Sequential (1-103)
+   A3b: ✅ Sequential (1-107)
+   A4: ✅ Sequential (1-241)
+   A4a: ✅ Sequential (1-105)
+   A4b: ✅ Sequential (1-379)
+   P-A: ✅ Sequential (1-117)
+
+5. WEAKNESS COVERAGE:
+   ✅ All Pokemon have weakness data
+
+6. RETREAT COST BY TYPE:
+   Metal       : 1.88 avg retreat cost
+   Fighting    : 1.80 avg retreat cost
+   Dragon      : 1.66 avg retreat cost
+   Colorless   : 1.65 avg retreat cost
+   Fire        : 1.64 avg retreat cost
+   Darkness    : 1.61 avg retreat cost
+   Water       : 1.54 avg retreat cost
+   Grass       : 1.44 avg retreat cost
+   Psychic     : 1.36 avg retreat cost
+   Lightning   : 1.19 avg retreat cost
+
+7. CARD REPRINTS (same name, multiple sets):
+   Cards appearing in 4+ sets:
+     - Eevee: 8 sets
+     - Pikachu: 6 sets
+     - Lickitung: 6 sets
+     - Magnemite: 6 sets
+     - Farfetch'd: 5 sets
+     - Exeggcute: 5 sets
+     - Magneton: 5 sets
+     - Jynx: 5 sets
+     - Gible: 5 sets
+     - Jigglypuff: 5 sets
+
+8. ATTACK NAME ANALYSIS:
+   Most common attack names (20+ occurrences):
+
+9. SPECIAL CHARACTER CHECK:
+   ⚠️ Cards with unusual characters:
+     - Type: Null (Colorless)
+     - Type: Null (Colorless)
+     - Nidoran♀ (Darkness)
+     - Nidoran♂ (Darkness)
+     - Type: Null (Colorless)
+     - Nidoran♀ (Darkness)
+     - Nidoran♂ (Darkness)
+
+10. TRAINER/ITEM CARD VALIDATION:
+   Total Trainer/Item cards: 187
+   Without HP: 181/187 (97%)
+   Without attacks: 187/187 (100%)
+   Without weakness: 187/187 (100%)
+
+11. FINAL INTEGRITY CHECK:
+   Total cards: 2077
+   Unique IDs: 2077 ✅
+   Missing name: 0 ✅
+   Missing set_code: 0 ✅
+   Missing image_url: 0 ✅
+   Missing card_url: 0 ✅
+
+=== DEEP ANALYSIS COMPLETE ===
