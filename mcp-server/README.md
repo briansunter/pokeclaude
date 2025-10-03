@@ -7,9 +7,12 @@ MCP server that enables AI agents (like Claude Code) to query and analyze Pokemo
 ### 🔧 Tools (7 total)
 
 1. **search_cards** - Search with flexible filters (name, type, HP, set, retreat cost, etc.)
+   - Supports `uniqueOnly` parameter to filter out duplicate art variants
 2. **get_card** - Get detailed info for a specific card
 3. **find_synergies** - Find cards that work well together (same type + trainers)
+   - Automatically filters out duplicates
 4. **find_counters** - Find cards that counter a specific type (exploit weakness)
+   - Automatically filters out duplicates
 5. **get_type_stats** - Get statistics by type (count, avg HP, avg retreat cost)
 6. **query_cards** - Run custom SQL queries against the card database
 7. **analyze_deck** - Analyze deck composition (energy needs, type distribution)
@@ -25,6 +28,40 @@ MCP server that enables AI agents (like Claude Code) to query and analyze Pokemo
 1. **build-deck** - Build a deck around a specific card
 2. **counter-deck** - Build a deck to counter a type/strategy
 3. **optimize-deck** - Analyze and improve an existing deck
+
+## Duplicate Filtering
+
+The card database contains **2,077 total cards**, but many are duplicates with different art:
+- **1,890 cards** with attacks (total)
+- **1,068 unique cards** with attacks
+- **822 duplicate cards** (43.5% duplicates)
+
+### What Makes a Card Unique?
+
+Cards are considered unique based on: `name`, `type`, `hp`, `attacks`, `weakness`, `retreat_cost`
+
+**Example:**
+- Pikachu ex (Circle Circuit) appears **7 times** across sets A1, A4b (different art, same stats) = **1 unique card**
+- Pikachu has **7 different versions** with different attacks (Gnaw, Spark, Circle Circuit, etc.) = **7 unique cards**
+
+### How to Use
+
+**search_cards (defaults to unique cards):**
+```javascript
+// Returns 7 unique Pikachu cards (default behavior)
+search_cards({ name: "Pikachu" })
+
+// Returns all 21 Pikachu cards (including art variants)
+search_cards({ name: "Pikachu", uniqueOnly: false })
+```
+
+**All tools filter duplicates by default:**
+- `search_cards` - Returns unique cards by default (set `uniqueOnly: false` to see all variants)
+- `find_synergies` - Always returns unique cards
+- `find_counters` - Always returns unique cards
+- Resource `pokemon://cards/unique` - Only unique cards
+
+See [DUPLICATE_FILTERING.md](./DUPLICATE_FILTERING.md) for detailed documentation.
 
 ## Installation
 

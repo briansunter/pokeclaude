@@ -74,6 +74,7 @@ class DuckDBClient {
     retreatCost?: number;
     weakness?: string;
     limit?: number;
+    uniqueOnly?: boolean;
   }): Promise<Card[]> {
     const conditions: string[] = [];
 
@@ -105,10 +106,22 @@ class DuckDBClient {
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
     const limit = filters.limit || 50;
 
+    // Default to filtering out duplicates (uniqueOnly defaults to true)
+    const uniqueOnly = filters.uniqueOnly !== false;  // true unless explicitly set to false
+
+    const selectClause = uniqueOnly
+      ? 'SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost) *'
+      : 'SELECT *';
+
+    const orderBy = uniqueOnly
+      ? 'ORDER BY name, type, hp, attacks, weakness, retreat_cost, set_code, card_number'
+      : 'ORDER BY name';
+
     const sql = `
-      SELECT * FROM cards
+      ${selectClause}
+      FROM cards
       ${whereClause}
-      ORDER BY name
+      ${orderBy}
       LIMIT ${limit}
     `;
 
@@ -144,23 +157,26 @@ class DuckDBClient {
       return { error: 'Card not found or has no type' };
     }
 
-    // Find cards of same type with complementary roles
+    // Find cards of same type with complementary roles (unique cards only)
     const sameType = await this.query(`
-      SELECT name, hp, attacks, retreat_cost
+      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
+        name, hp, attacks, retreat_cost
       FROM cards
       WHERE type = '${card.type}'
         AND name != '${cardName}'
         AND attacks != ''
-      ORDER BY CAST(hp AS INTEGER) DESC
+      ORDER BY name, type, hp, attacks, weakness, retreat_cost, CAST(hp AS INTEGER) DESC
       LIMIT 10
     `);
 
-    // Find supporting trainers/items
+    // Find supporting trainers/items (unique only)
     const trainers = await this.query(`
-      SELECT name, attacks as description
+      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
+        name, attacks as description
       FROM cards
       WHERE type = ''
         AND name NOT LIKE '%Energy%'
+      ORDER BY name, type, hp, attacks, weakness, retreat_cost
       LIMIT 15
     `);
 
@@ -172,9 +188,10 @@ class DuckDBClient {
   }
 
   async findCounters(targetType: string): Promise<Card[]> {
-    // Find cards that target type is weak to
+    // Find cards that target type is weak to (unique cards only)
     return this.query(`
-      SELECT DISTINCT name, type, hp, attacks, weakness
+      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
+        name, type, hp, attacks, weakness
       FROM cards
       WHERE type = (
         SELECT DISTINCT weakness
@@ -183,7 +200,7 @@ class DuckDBClient {
         LIMIT 1
       )
       AND attacks != ''
-      ORDER BY CAST(hp AS INTEGER) DESC
+      ORDER BY name, type, hp, attacks, weakness, retreat_cost, CAST(hp AS INTEGER) DESC
       LIMIT 20
     `);
   }
@@ -234,7 +251,7 @@ server.registerTool(
   'search_cards',
   {
     title: 'Search Pokemon Cards',
-    description: 'Search for Pokemon cards using filters like name, type, HP range, set, etc.',
+    description: 'Search for Pokemon cards using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants.',
     inputSchema: {
       name: z.string().optional().describe('Card name to search for (partial match)'),
       type: z.string().optional().describe('Pokemon type (Fire, Water, Grass, etc.)'),
@@ -244,7 +261,8 @@ server.registerTool(
       hasAttacks: z.boolean().optional().describe('Filter by whether card has attacks'),
       retreatCost: z.number().optional().describe('Retreat cost (0-4)'),
       weakness: z.string().optional().describe('Weakness type'),
-      limit: z.number().optional().describe('Maximum results to return (default 50)')
+      limit: z.number().optional().describe('Maximum results to return (default 50)'),
+      uniqueOnly: z.boolean().optional().describe('If true, returns only unique cards (filters out duplicates with same stats but different art). If false, returns all card variants. Default: true')
     }
   },
   async (filters) => {
