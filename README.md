@@ -4,7 +4,8 @@ Scrapes all Pokemon TCG Pocket cards from limitlesstcg.com and exports to CSV.
 
 ## Features
 
-- Scrapes all available sets (A1, A1a, A2, A2a, A2b, A3, A3a, A3b, A4, A4a, A4b, P-A)
+- **Auto-discovers new sets** - No manual updates needed when new sets are released!
+- Scrapes all available sets (currently 12 sets: A1, A1a, A2, A2a, A2b, A3, A3a, A3b, A4, A4a, A4b, P-A)
 - Extracts detailed card information:
   - Card name, set, and number
   - Type and HP
@@ -13,6 +14,7 @@ Scrapes all Pokemon TCG Pocket cards from limitlesstcg.com and exports to CSV.
   - Image URLs and card detail URLs
 - Exports to CSV with UUID primary keys
 - Automatic rate limiting to avoid overwhelming the server
+- Fallback to known sets if auto-discovery fails
 
 ## Installation
 
@@ -22,17 +24,36 @@ npm install
 
 ## Usage
 
-Run the scraper:
+### Incremental Update (Default - Recommended)
+
+Only scrapes new cards that haven't been added yet:
 
 ```bash
 npm run scrape
 ```
 
 This will:
-1. Scrape all cards from all sets (~2000+ cards)
-2. Extract detailed information for each card
-3. Export to `pokemon_pocket_cards.csv`
-4. Takes approximately 6-7 minutes to complete
+1. Load existing cards from `pokemon_pocket_cards.csv`
+2. Auto-discover all available sets
+3. Only scrape cards that don't exist in the CSV
+4. Merge new cards with existing data
+5. Export combined result
+6. **Much faster** - skips already-scraped cards!
+
+### Full Scrape
+
+Scrape all cards from scratch (ignores existing data):
+
+```bash
+npm run scrape:full
+```
+
+This will:
+1. Ignore existing CSV data
+2. Scrape all cards from all sets (~2000+ cards)
+3. Extract detailed information for each card
+4. Overwrite `pokemon_pocket_cards.csv`
+5. Takes approximately 6-7 minutes to complete
 
 ## Output Format
 
@@ -53,20 +74,36 @@ The CSV includes these columns:
 - `image_url` - CDN URL for card image
 - `card_url` - Link to card detail page
 
-## Customization
+## Auto-Discovery
 
-To scrape specific sets, edit `scraper.ts` and modify:
+The scraper **automatically discovers new sets** from limitlesstcg.com:
 
-```typescript
-// Change this line:
-const SETS: SetInfo[] = ALL_SETS;
+1. Scrapes the main cards page
+2. Finds all set links (e.g., `/cards/A5`, `/cards/A6`)
+3. Automatically scrapes newly discovered sets
+4. Falls back to known sets if discovery fails
 
-// To this (example for A1 only):
-const SETS: SetInfo[] = ALL_SETS.filter(s => s.code === 'A1');
+See [AUTO_DISCOVERY.md](./AUTO_DISCOVERY.md) for details.
+
+### Test Auto-Discovery
+
+```bash
+npx tsx test-auto-discover.ts
+```
+
+Expected output:
+```
+🔍 Auto-discovering sets from limitlesstcg.com...
+
+✅ Found 12 sets:
+   - A4b: Deluxe Pack: ex A4b
+   - A4a: Secluded Springs A4a
+   ...
 ```
 
 ## Notes
 
 - The scraper includes a 100ms delay between requests to be respectful to the server
-- Future sets (A4b, A4a, A4) may have limited data until they are released
+- New sets are automatically discovered when they appear on limitlesstcg.com
 - The scraper will continue even if individual cards fail to load
+- If auto-discovery fails, uses fallback list of known sets

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "scrape": "tsx scraper.ts",
+    "scrape:full": "tsx scraper.ts --full",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
