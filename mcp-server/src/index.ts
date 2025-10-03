@@ -13,6 +13,48 @@ const __dirname = path.dirname(__filename);
 // CSV path - adjust relative to the built dist folder
 const CSV_PATH = path.join(__dirname, '../../pokemon_pocket_cards.csv');
 
+// Field selection presets to reduce context usage
+// - minimal: Just id and name (smallest response)
+// - basic: Common fields without images/URLs (default for all tools)
+// - full: All 15 fields including set info, images, and URLs
+const FIELD_PRESETS = {
+  minimal: ['id', 'name'] as const,
+  basic: ['id', 'name', 'type', 'hp', 'attacks', 'weakness', 'retreat_cost', 'rarity'] as const,
+  full: ['id', 'set_code', 'set_name', 'card_number', 'name', 'type', 'hp', 'rarity', 'abilities', 'attacks', 'weakness', 'resistance', 'retreat_cost', 'image_url', 'card_url'] as const
+};
+
+type FieldPreset = keyof typeof FIELD_PRESETS;
+type FieldArray = string[];
+type FieldSelection = FieldPreset | FieldArray;
+
+// Helper to filter fields from objects
+function filterFields<T extends Record<string, any>>(
+  data: T | T[],
+  fields?: FieldSelection
+): any {
+  if (!fields) {
+    return data; // full fields if not specified
+  }
+
+  const fieldList = typeof fields === 'string'
+    ? FIELD_PRESETS[fields as FieldPreset] || []
+    : fields;
+
+  const filterObject = (obj: T) => {
+    const filtered: Record<string, any> = {};
+    for (const field of fieldList) {
+      if (field in obj) {
+        filtered[field] = obj[field];
+      }
+    }
+    return filtered;
+  };
+
+  return Array.isArray(data)
+    ? data.map(filterObject)
+    : filterObject(data);
+}
+
 // Helper to serialize data with BigInt support
 function safeJsonStringify(data: any): string {
   return JSON.stringify(data, (key, value) =>
@@ -241,17 +283,24 @@ const dbClient = new DuckDBClient(CSV_PATH);
 // Create MCP server
 const server = new McpServer({
   name: 'pokemon-pocket-deck-builder',
-  version: '1.0.0'
+  version: '1.0.0',
+  description: 'Pokemon Pocket TCG deck builder with DuckDB. All tools support field filtering to reduce context usage: use "minimal" (id, name), "basic" (common fields, default), "full" (all fields), or custom arrays like ["name", "type", "hp"].'
 });
 
 // TOOLS
+// All tools support field filtering via the 'fields' parameter:
+// - "basic" (default): Returns id, name, type, hp, attacks, weakness, retreat_cost, rarity
+// - "minimal": Returns only id, name
+// - "full": Returns all 15 fields including images and URLs
+// - Custom array: e.g., ["name", "type", "hp"] for specific fields
+// This helps reduce token usage in MCP responses.
 
 // 1. Search cards with flexible filters
 server.registerTool(
   'search_cards',
   {
     title: 'Search Pokemon Cards',
-    description: 'Search for Pokemon cards using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants.',
+    description: 'Search for Pokemon cards using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants. Use fields parameter to control response size: "minimal" (id, name), "basic" (common fields, default), or "full" (all fields), or custom array.',
     inputSchema: {
       name: z.string().optional().describe('Card name to search for (partial match)'),
       type: z.string().optional().describe('Pokemon type (Fire, Water, Grass, etc.)'),
@@ -262,16 +311,22 @@ server.registerTool(
       retreatCost: z.number().optional().describe('Retreat cost (0-4)'),
       weakness: z.string().optional().describe('Weakness type'),
       limit: z.number().optional().describe('Maximum results to return (default 50)'),
-      uniqueOnly: z.boolean().optional().describe('If true, returns only unique cards (filters out duplicates with same stats but different art). If false, returns all card variants. Default: true')
+      uniqueOnly: z.boolean().optional().describe('If true, returns only unique cards (filters out duplicates with same stats but different art). If false, returns all card variants. Default: true'),
+      fields: z.union([
+        z.enum(['minimal', 'basic', 'full']),
+        z.array(z.string())
+      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
     }
   },
-  async (filters) => {
+  async (params) => {
+    const { fields, ...filters } = params;
     const results = await dbClient.searchCards(filters);
+    const filtered = filterFields(results, fields || 'basic');
     return {
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(results)
+          text: safeJsonStringify(filtered)
         }
       ]
     };
@@ -283,12 +338,16 @@ server.registerTool(
   'get_card',
   {
     title: 'Get Card Details',
-    description: 'Get detailed information about a specific card by exact name',
+    description: 'Get detailed information about a specific card by exact name. Use fields parameter to control response size.',
     inputSchema: {
-      name: z.string().describe('Exact card name')
+      name: z.string().describe('Exact card name'),
+      fields: z.union([
+        z.enum(['minimal', 'basic', 'full']),
+        z.array(z.string())
+      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
     }
   },
-  async ({ name }) => {
+  async ({ name, fields }) => {
     const card = await dbClient.getCardByName(name);
     if (!card) {
       return {
@@ -296,11 +355,12 @@ server.registerTool(
         isError: true
       };
     }
+    const filtered = filterFields(card, fields || 'basic');
     return {
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(card)
+          text: safeJsonStringify(filtered)
         }
       ]
     };
@@ -312,18 +372,28 @@ server.registerTool(
   'find_synergies',
   {
     title: 'Find Card Synergies',
-    description: 'Find cards that synergize well with a given card (same type, supporting trainers)',
+    description: 'Find cards that synergize well with a given card (same type, supporting trainers). Use fields parameter to control response size.',
     inputSchema: {
-      cardName: z.string().describe('Name of the main card to build around')
+      cardName: z.string().describe('Name of the main card to build around'),
+      fields: z.union([
+        z.enum(['minimal', 'basic', 'full']),
+        z.array(z.string())
+      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
     }
   },
-  async ({ cardName }) => {
+  async ({ cardName, fields }) => {
     const synergies = await dbClient.findSynergies(cardName);
+    const fieldSelection = fields || 'basic';
+    const filtered = {
+      card: synergies.card ? filterFields(synergies.card, fieldSelection) : synergies.card,
+      sameTypeCards: filterFields(synergies.sameTypeCards || [], fieldSelection),
+      trainers: filterFields(synergies.trainers || [], fieldSelection)
+    };
     return {
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(synergies)
+          text: safeJsonStringify(filtered)
         }
       ]
     };
@@ -335,18 +405,23 @@ server.registerTool(
   'find_counters',
   {
     title: 'Find Counter Cards',
-    description: 'Find cards that counter a specific type (exploit weakness)',
+    description: 'Find cards that counter a specific type (exploit weakness). Use fields parameter to control response size.',
     inputSchema: {
-      targetType: z.string().describe('Pokemon type to counter (Fire, Water, Grass, etc.)')
+      targetType: z.string().describe('Pokemon type to counter (Fire, Water, Grass, etc.)'),
+      fields: z.union([
+        z.enum(['minimal', 'basic', 'full']),
+        z.array(z.string())
+      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
     }
   },
-  async ({ targetType }) => {
+  async ({ targetType, fields }) => {
     const counters = await dbClient.findCounters(targetType);
+    const filtered = filterFields(counters, fields || 'basic');
     return {
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(counters)
+          text: safeJsonStringify(filtered)
         }
       ]
     };
@@ -379,12 +454,16 @@ server.registerTool(
   'query_cards',
   {
     title: 'Custom SQL Query',
-    description: 'Run a custom SQL query against the cards table',
+    description: 'Run a custom SQL query against the cards table. Use fields parameter to control response size.',
     inputSchema: {
-      sql: z.string().describe('SQL query to execute (SELECT only)')
+      sql: z.string().describe('SQL query to execute (SELECT only)'),
+      fields: z.union([
+        z.enum(['minimal', 'basic', 'full']),
+        z.array(z.string())
+      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
     }
   },
-  async ({ sql }) => {
+  async ({ sql, fields }) => {
     try {
       // Basic SQL injection protection
       if (!sql.trim().toUpperCase().startsWith('SELECT')) {
@@ -394,11 +473,12 @@ server.registerTool(
         };
       }
       const results = await dbClient.query(sql);
+      const filtered = filterFields(results, fields || 'basic');
       return {
         content: [
           {
             type: 'text',
-            text: safeJsonStringify(results)
+            text: safeJsonStringify(filtered)
           }
         ]
       };

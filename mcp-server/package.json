@@ -10,7 +10,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:manual": "bun run test-server.ts"
   },
   "dependencies": {
     "@duckdb/node-api": "^1.4.0-r.1",
