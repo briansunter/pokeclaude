@@ -8,6 +8,8 @@
   Query 2000+ Pokemon cards through Claude Desktop with AI-powered deck building, synergy finding, and strategic analysis.
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![npm version](https://img.shields.io/npm/v/pokemon-pocket-mcp-server.svg)](https://www.npmjs.com/package/pokemon-pocket-mcp-server)
+  [![npm downloads](https://img.shields.io/npm/dm/pokemon-pocket-mcp-server.svg)](https://www.npmjs.com/package/pokemon-pocket-mcp-server)
 </div>
 
 ---
@@ -69,6 +71,38 @@ Build decks, find synergies, and counter strategies with AI assistance:
 3. Start querying Pokemon cards through Claude!
 
 > **Note:** Using npx/bunx means you don't need to install or build anything manually. The package is fetched automatically and always stays up-to-date!
+
+### ✅ Verification
+
+The published package has been tested and verified to work correctly:
+
+**Test Results:**
+```bash
+# Both bunx and npx tested successfully
+✓ Server starts and initializes DuckDB
+✓ MCP protocol responds correctly
+✓ All 8 tools available (search_cards, get_card, find_synergies, etc.)
+✓ Database queries return card data
+✓ CSV data properly bundled (2077 cards)
+```
+
+**Example Test:**
+```bash
+# Test with bunx
+bunx pokemon-pocket-mcp-server
+# Output: Pokemon Pocket MCP Server running on stdio
+# Output: DuckDB initialized with Pokemon cards
+
+# Test with npx
+npx pokemon-pocket-mcp-server
+# Output: Pokemon Pocket MCP Server running on stdio
+# Output: DuckDB initialized with Pokemon cards
+```
+
+**Troubleshooting:**
+- If the server doesn't appear in Claude Desktop, check the config file path
+- Ensure you've restarted Claude Desktop after adding the configuration
+- Check Claude Desktop logs: `~/Library/Logs/Claude/` (macOS)
 
 ## 🛠️ Development Setup (For Contributors)
 
