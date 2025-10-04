@@ -21,6 +21,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     steps:
@@ -29,23 +30,29 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+        timeout-minutes: 2
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+        timeout-minutes: 3
 
       - name: Install dependencies
         run: bun install
+        timeout-minutes: 5
 
       - name: Run type checking
         run: bun run typecheck
+        timeout-minutes: 3
 
       - name: Build package
         run: bun run build
+        timeout-minutes: 3
 
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bunx semantic-release
+        timeout-minutes: 10
