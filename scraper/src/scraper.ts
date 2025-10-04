@@ -468,7 +468,7 @@ async function main() {
 
   // Check if --full flag is passed
   const isFullScrape = process.argv.includes('--full');
-  const csvFile = 'pokemon_pocket_cards.csv';
+  const csvFile = '../data/pokemon_pocket_cards.csv';
 
   if (isFullScrape) {
     console.log('🔄 Running FULL scrape (ignoring existing data)\n');

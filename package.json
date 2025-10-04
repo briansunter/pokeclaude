@@ -1,25 +1,17 @@
 {
-  "name": "pokemon-pocket-scraper",
+  "name": "pokeclaude",
   "version": "1.0.0",
-  "description": "Scraper for Pokemon Pocket TCG cards from limitlesstcg.com",
-  "type": "module",
+  "description": "Pokemon Pocket TCG MCP Server and Data Scraper",
+  "private": true,
+  "workspaces": [
+    "mcp-server",
+    "scraper"
+  ],
   "scripts": {
-    "scrape": "tsx scraper.ts",
-    "scrape:full": "tsx scraper.ts --full",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.19.1",
-    "axios": "^1.6.5",
-    "cheerio": "^1.0.0-rc.12",
-    "csv-parse": "^6.1.0",
-    "duckdb": "^1.4.0",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.5",
-    "@types/uuid": "^9.0.7",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "scrape": "npm run scrape -w scraper",
+    "scrape:full": "npm run scrape:full -w scraper",
+    "build": "npm run build -w mcp-server",
+    "typecheck": "npm run typecheck -w mcp-server && npm run typecheck -w scraper",
+    "dev": "npm run dev -w mcp-server"
   }
 }
