@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/briansunter/pokeclaude/compare/v1.0.0...v1.1.0) (2025-10-04)
+
+### Features
+
+* integrate Pokemon TCG Pocket game rules into MCP server ([ee05331](https://github.com/briansunter/pokeclaude/commit/ee053311f6dda3520f6668dd8908496d4ea41f32))
+
 ## 1.0.0 (2025-10-04)
 
 ### Bug Fixes
