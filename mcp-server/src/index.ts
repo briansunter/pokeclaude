@@ -284,7 +284,7 @@ const dbClient = new DuckDBClient(CSV_PATH);
 const server = new McpServer({
   name: 'pokemon-pocket-deck-builder',
   version: '1.0.0',
-  description: 'Pokemon Pocket TCG deck builder with DuckDB. Includes 2000+ cards: Pokemon, Trainers (Supporters like Giovanni, Erika), and Items (Rare Candy, Pokémon Communication, etc.). 💡 **IMPORTANT: Don\'t specify fields parameter - tools auto-default to "basic" which includes ALL game data (type, HP, attacks, abilities, weakness, retreat) WITHOUT heavy image URLs. This saves 3-4x tokens.** Only specify fields="full" if user explicitly asks "show me the image" or "give me the URL". "basic" is comprehensive for all gameplay queries. To search Trainers/Items: use hasAttacks=false or query_cards with type IS NULL.'
+  description: 'Pokemon TCG Pocket deck builder (20-card format, Energy Zone system, 3-point win). Includes 2000+ cards: Pokemon, Trainers, and Items. Key rules: Max 3 bench slots, auto-generate 1 Energy/turn (not from deck), 1-2 Energy types recommended for consistency, Pokemon ex worth 2 points. 💡 **IMPORTANT: Don\'t specify fields parameter - tools auto-default to "basic" which includes ALL game data (type, HP, attacks, abilities, weakness, retreat) WITHOUT heavy image URLs. This saves 3-4x tokens.** Only specify fields="full" if user explicitly asks "show me the image" or "give me the URL".'
 });
 
 // TOOLS
@@ -545,9 +545,9 @@ server.registerTool(
   'analyze_deck',
   {
     title: 'Analyze Deck Composition',
-    description: 'Analyze a deck list for energy requirements, type distribution, etc.',
+    description: 'Analyze deck for Pokemon TCG Pocket rules compliance and strategic balance. Checks: 20-card limit, max 2 copies per card, Energy type count (1-2 recommended due to Energy Zone variance), evolution lines, basic Pokemon count (5-6 minimum), Pokemon/Trainer ratio (12/8 recommended), and win condition balance (ex Pokemon vs regular).',
     inputSchema: {
-      cardNames: z.array(z.string()).describe('Array of card names in the deck')
+      cardNames: z.array(z.string()).describe('Array of card names in the deck (20 cards max)')
     }
   },
   async ({ cardNames }) => {
@@ -559,18 +559,57 @@ server.registerTool(
     const typeCount: Record<string, number> = {};
     let totalEnergy = 0;
     const energyTypes: Record<string, number> = {};
+    const uniqueEnergyTypes = new Set<string>();
+    let pokemonCount = 0;
+    let trainerCount = 0;
+    let exCount = 0;
+    let basicCount = 0;
 
     for (const card of validCards) {
+      // Count Pokemon vs Trainers
       if (card.type) {
+        pokemonCount++;
         typeCount[card.type] = (typeCount[card.type] || 0) + 1;
+
+        // Count ex Pokemon
+        if (card.name.includes(' ex')) {
+          exCount++;
+        }
+
+        // Count basics (cards without evolution indicator in name)
+        // This is a simple heuristic - cards without parentheses are typically basics
+        if (!card.name.includes('(')) {
+          basicCount++;
+        }
+      } else {
+        trainerCount++;
       }
+
       if (card.attacks) {
         const energyCost = await dbClient.analyzeEnergyCost(card.attacks);
         totalEnergy += energyCost.total;
         for (const [type, count] of Object.entries(energyCost.types)) {
           energyTypes[type] = (energyTypes[type] || 0) + count;
+          uniqueEnergyTypes.add(type);
         }
       }
+    }
+
+    const energyTypeCount = uniqueEnergyTypes.size;
+    const warnings = [];
+
+    // Rule compliance checks
+    if (cardNames.length !== 20) {
+      warnings.push(`Deck must be exactly 20 cards (current: ${cardNames.length})`);
+    }
+    if (energyTypeCount > 2) {
+      warnings.push(`3+ Energy types detected (${energyTypeCount}). Recommend 1-2 types for Energy Zone consistency`);
+    }
+    if (basicCount < 5) {
+      warnings.push(`Only ${basicCount} Basic Pokemon detected. Recommend 5-6 minimum for consistent starts`);
+    }
+    if (pokemonCount < 12 || pokemonCount > 15) {
+      warnings.push(`Pokemon count (${pokemonCount}) outside recommended range. Suggest 12-15 Pokemon, 5-8 Trainers`);
     }
 
     return {
@@ -580,9 +619,17 @@ server.registerTool(
           text: safeJsonStringify({
             deckSize: cardNames.length,
             validCards: validCards.length,
+            pokemonCount,
+            trainerCount,
+            basicPokemonCount: basicCount,
+            exPokemonCount: exCount,
+            energyTypeCount,
+            energyTypes: Array.from(uniqueEnergyTypes),
             typeDistribution: typeCount,
             estimatedEnergyNeeds: energyTypes,
-            averageHp: validCards.reduce((sum, c) => sum + (parseInt(c.hp) || 0), 0) / validCards.length
+            averageHp: validCards.reduce((sum, c) => sum + (parseInt(c.hp) || 0), 0) / validCards.length,
+            warnings,
+            rulesCompliant: warnings.length === 0
           })
         }
       ]
@@ -668,7 +715,7 @@ server.registerPrompt(
   'build-deck',
   {
     title: 'Build Deck Around Card',
-    description: 'Generate a deck strategy centered around a specific card',
+    description: 'Generate a Pokemon TCG Pocket deck strategy centered around a specific card (20-card format)',
     argsSchema: {
       mainCard: z.string().describe('Main card to build deck around'),
       strategy: z.enum(['aggro', 'control', 'midrange']).optional().describe('Deck strategy type')
@@ -680,14 +727,23 @@ server.registerPrompt(
         role: 'user',
         content: {
           type: 'text',
-          text: `Build a ${strategy || 'competitive'} Pokemon Pocket deck centered around ${mainCard}.
+          text: `Build a ${strategy || 'competitive'} Pokemon TCG Pocket deck centered around ${mainCard}.
+
+Pokemon TCG Pocket Rules:
+- 20 cards exactly, max 2 copies per card
+- 1-2 Energy types recommended (Energy Zone auto-generates 1/turn)
+- Max 3 bench slots
+- Win by getting 3 points (regular Pokemon = 1 pt, ex = 2 pts)
+- 5-6 Basic Pokemon minimum for consistent starts
+- Stage 2 decks: Consider Rare Candy for faster evolution
 
 Please:
 1. Use find_synergies tool to find supporting cards
-2. Include 15-20 Pokemon and 0-5 Trainer/Item cards (20 card total limit)
-3. Suggest energy ratio based on attack costs
-4. Explain win conditions and key combos
-5. List potential counters and how to play around them`
+2. Build exactly 20 cards (12-15 Pokemon, 5-8 Trainers recommended)
+3. Consider important Trainers: Professor's Research (draw 2), Giovanni (+10 damage), Sabrina (switch), Rare Candy (Stage 2 evolution)
+4. Account for Energy Zone variance (1-2 types only)
+5. Explain win conditions (e.g., two ex KOs = instant win)
+6. List potential counters and how to play around them`
         }
       }
     ]
@@ -699,7 +755,7 @@ server.registerPrompt(
   'counter-deck',
   {
     title: 'Build Counter Deck',
-    description: 'Build a deck to counter a specific type or strategy',
+    description: 'Build a Pokemon TCG Pocket deck to counter a specific type or strategy',
     argsSchema: {
       targetType: z.string().describe('Type or archetype to counter'),
       sets: z.string().optional().describe('Available sets (comma-separated)')
@@ -711,14 +767,20 @@ server.registerPrompt(
         role: 'user',
         content: {
           type: 'text',
-          text: `Build a deck that counters ${targetType} decks${sets ? ` using cards from sets: ${sets}` : ''}.
+          text: `Build a Pokemon TCG Pocket deck that counters ${targetType} decks${sets ? ` using cards from sets: ${sets}` : ''}.
+
+Pokemon TCG Pocket Rules:
+- 20 cards exactly, max 2 copies per card
+- Weakness = 2x damage (exploit this!)
+- No Resistance in Pocket format
+- 1-2 Energy types recommended
 
 Please:
 1. Use find_counters to find Pokemon that exploit weaknesses
-2. Find disruption trainers if available
-3. Suggest Pokemon with resistance or high HP
+2. Consider disruption: Sabrina/Cyrus (force switches), Red Card/Mars (hand disruption)
+3. Suggest high HP Pokemon or tech cards (Giant Cape +20 HP, Rocky Helmet for chip damage)
 4. Explain the game plan against ${targetType}
-5. Build a 20-card deck list`
+5. Build exactly 20 cards with 5-6 Basics minimum`
         }
       }
     ]
@@ -730,7 +792,7 @@ server.registerPrompt(
   'optimize-deck',
   {
     title: 'Optimize Deck',
-    description: 'Analyze and suggest improvements for an existing deck',
+    description: 'Analyze and suggest improvements for an existing Pokemon TCG Pocket deck',
     argsSchema: {
       deckList: z.string().describe('Current deck list (comma-separated card names)')
     }
@@ -741,14 +803,20 @@ server.registerPrompt(
         role: 'user',
         content: {
           type: 'text',
-          text: `Analyze and optimize this Pokemon Pocket deck: ${deckList}
+          text: `Analyze and optimize this Pokemon TCG Pocket deck: ${deckList}
+
+Pokemon TCG Pocket Rules to Check:
+- Exactly 20 cards, max 2 copies per card
+- 5-6 Basic Pokemon minimum
+- 1-2 Energy types only (Energy Zone consistency)
+- 12-15 Pokemon, 5-8 Trainers recommended
 
 Please:
-1. Use analyze_deck to check current composition
-2. Identify weaknesses (energy curve, type imbalance, missing roles)
-3. Suggest card swaps with reasoning
-4. Check if deck exploits synergies effectively
-5. Verify it meets 20-card limit with proper Pokemon/Trainer ratio`
+1. Use analyze_deck to check rules compliance
+2. Identify issues: Energy type count (>2 types = inconsistent), Basic count, Pokemon/Trainer ratio
+3. Check for key Trainers: Professor's Research (draw), Giovanni (+10 dmg), Sabrina (switch), Rare Candy (Stage 2)
+4. Suggest card swaps with reasoning (consider Giant Cape for HP breakpoints, ex Pokemon for faster wins)
+5. Verify Energy Zone compatibility and evolution line completeness`
         }
       }
     ]
