@@ -10,8 +10,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CSV path - adjust relative to the built dist folder
-const CSV_PATH = path.join(__dirname, '../../data/pokemon_pocket_cards.csv');
+// CSV path - points to data directory in published package
+const CSV_PATH = path.join(__dirname, '../data/pokemon_pocket_cards.csv');
 
 // Field selection presets to reduce context usage
 // - minimal: Just id and name (smallest response)
