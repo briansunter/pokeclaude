@@ -8,11 +8,11 @@
     "scraper"
   ],
   "scripts": {
-    "scrape": "npm run scrape -w scraper",
-    "scrape:full": "npm run scrape:full -w scraper",
-    "build": "npm run build -w mcp-server",
-    "typecheck": "npm run typecheck -w mcp-server && npm run typecheck -w scraper",
-    "dev": "npm run dev -w mcp-server"
+    "scrape": "cd scraper && npm run scrape",
+    "scrape:full": "cd scraper && npm run scrape:full",
+    "build": "cd mcp-server && npm run build",
+    "typecheck": "cd mcp-server && npm run typecheck && cd ../scraper && npm run typecheck",
+    "dev": "cd mcp-server && npm run dev"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
