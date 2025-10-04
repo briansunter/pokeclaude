@@ -136,7 +136,7 @@ class DuckDBClient {
       conditions.push(`set_code = '${filters.set}'`);
     }
     if (filters.hasAttacks !== undefined) {
-      conditions.push(filters.hasAttacks ? `attacks != ''` : `attacks = ''`);
+      conditions.push(filters.hasAttacks ? `attacks IS NOT NULL` : `attacks IS NULL`);
     }
     if (filters.retreatCost !== undefined) {
       conditions.push(`retreat_cost = '${filters.retreatCost}'`);
@@ -187,7 +187,7 @@ class DuckDBClient {
         ROUND(AVG(TRY_CAST(hp AS INTEGER)), 1) as avg_hp,
         ROUND(AVG(TRY_CAST(retreat_cost AS INTEGER)), 1) as avg_retreat_cost
       FROM cards
-      WHERE type != ''
+      WHERE type IS NOT NULL
       GROUP BY type
       ORDER BY count DESC
     `);
@@ -206,7 +206,7 @@ class DuckDBClient {
       FROM cards
       WHERE type = '${card.type}'
         AND name != '${cardName}'
-        AND attacks != ''
+        AND attacks IS NOT NULL
       ORDER BY name, type, hp, attacks, weakness, retreat_cost, CAST(hp AS INTEGER) DESC
       LIMIT 10
     `);
@@ -216,7 +216,7 @@ class DuckDBClient {
       SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
         name, attacks as description
       FROM cards
-      WHERE type = ''
+      WHERE type IS NULL
         AND name NOT LIKE '%Energy%'
       ORDER BY name, type, hp, attacks, weakness, retreat_cost
       LIMIT 15
@@ -241,7 +241,7 @@ class DuckDBClient {
         WHERE type = '${targetType}'
         LIMIT 1
       )
-      AND attacks != ''
+      AND attacks IS NOT NULL
       ORDER BY name, type, hp, attacks, weakness, retreat_cost, CAST(hp AS INTEGER) DESC
       LIMIT 20
     `);
@@ -251,7 +251,7 @@ class DuckDBClient {
     return this.query(`
       SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost) *
       FROM cards
-      WHERE attacks != ''
+      WHERE attacks IS NOT NULL
       ORDER BY name, type, hp, attacks, weakness, retreat_cost, set_code, card_number
     `);
   }
@@ -284,30 +284,43 @@ const dbClient = new DuckDBClient(CSV_PATH);
 const server = new McpServer({
   name: 'pokemon-pocket-deck-builder',
   version: '1.0.0',
-  description: 'Pokemon Pocket TCG deck builder with DuckDB. All tools support field filtering to reduce context usage: use "minimal" (id, name), "basic" (common fields, default), "full" (all fields), or custom arrays like ["name", "type", "hp"].'
+  description: 'Pokemon Pocket TCG deck builder with DuckDB. Includes 2000+ cards: Pokemon, Trainers (Supporters like Giovanni, Erika), and Items (Rare Candy, Pokémon Communication, etc.). 💡 **IMPORTANT: Don\'t specify fields parameter - tools auto-default to "basic" which includes ALL game data (type, HP, attacks, abilities, weakness, retreat) WITHOUT heavy image URLs. This saves 3-4x tokens.** Only specify fields="full" if user explicitly asks "show me the image" or "give me the URL". "basic" is comprehensive for all gameplay queries. To search Trainers/Items: use hasAttacks=false or query_cards with type IS NULL.'
 });
 
 // TOOLS
 // All tools support field filtering via the 'fields' parameter:
+// - "minimal": Returns only id, name - USE FOR: Listings, browsing card names
 // - "basic" (default): Returns id, name, type, hp, attacks, weakness, retreat_cost, rarity
-// - "minimal": Returns only id, name
-// - "full": Returns all 15 fields including images and URLs
+//   - USE FOR: Most queries, deck building, searching - NO images/URLs (saves tokens!)
+// - "full": Returns all 15 fields including image_url, card_url, set_code, set_name, etc.
+//   - USE ONLY WHEN: User explicitly asks for images, URLs, or complete card data
+//   - WARNING: Uses 3-4x more tokens than "basic" - avoid unless necessary!
 // - Custom array: e.g., ["name", "type", "hp"] for specific fields
-// This helps reduce token usage in MCP responses.
+//
+// FIELD SELECTION GUIDELINES:
+// ✅ DO: Use "minimal" for listings and "basic" for queries (default)
+// ❌ DON'T: Use "full" unless user specifically needs image_url or card_url
+// 💡 TIP: "basic" excludes image_url, card_url, set_name, set_code, card_number, abilities, resistance
+//
+// HOW TO SEARCH FOR TRAINERS/ITEMS:
+// 1. search_cards with hasAttacks=false - Returns all Trainers and Items (187 cards)
+// 2. search_cards with name="Giovanni" and hasAttacks=false - Search specific trainer
+// 3. query_cards with "WHERE type IS NULL" - Custom SQL for trainers
+// 4. find_synergies - Automatically includes 10 recommended trainers for any Pokemon
 
 // 1. Search cards with flexible filters
 server.registerTool(
   'search_cards',
   {
     title: 'Search Pokemon Cards',
-    description: 'Search for Pokemon cards using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants. Use fields parameter to control response size: "minimal" (id, name), "basic" (common fields, default), or "full" (all fields), or custom array.',
+    description: 'Search for Pokemon cards, Trainers, and Items using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants. **To search Trainers/Items**: Set hasAttacks=false (187 trainer/item cards available including Giovanni, Erika, Rare Candy, Pokémon Communication, etc.). 💡 **Don\'t specify fields - auto-defaults to "basic" with ALL game data (type, HP, attacks, abilities, weakness, retreat). Only add fields="full" if user asks for image/URL (saves 3-4x tokens).**',
     inputSchema: {
-      name: z.string().optional().describe('Card name to search for (partial match)'),
-      type: z.string().optional().describe('Pokemon type (Fire, Water, Grass, etc.)'),
+      name: z.string().optional().describe('Card name to search for (partial match). Works for Pokemon, Trainers, and Items.'),
+      type: z.string().optional().describe('Pokemon type (Fire, Water, Grass, etc.). Leave empty to search Trainers/Items.'),
       minHp: z.number().optional().describe('Minimum HP'),
       maxHp: z.number().optional().describe('Maximum HP'),
       set: z.string().optional().describe('Set code (A1, A2, A3, etc.)'),
-      hasAttacks: z.boolean().optional().describe('Filter by whether card has attacks'),
+      hasAttacks: z.boolean().optional().describe('Filter by whether card has attacks. Set to FALSE to get Trainers/Items (Supporters and Items). Set to TRUE to get only Pokemon with attacks. Leave undefined for all cards.'),
       retreatCost: z.number().optional().describe('Retreat cost (0-4)'),
       weakness: z.string().optional().describe('Weakness type'),
       limit: z.number().optional().describe('Maximum results to return (default 50)'),
@@ -315,7 +328,7 @@ server.registerTool(
       fields: z.union([
         z.enum(['minimal', 'basic', 'full']),
         z.array(z.string())
-      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
+      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic" = comprehensive game data WITHOUT images). "basic" includes: type, HP, attacks, abilities, weakness, retreat. Only specify if: (1) "minimal" for name-only lists, (2) "full" when user explicitly asks for images/URLs (costs 3-4x tokens), (3) custom array for specific fields. For most queries, omit this parameter.')
     }
   },
   async (params) => {
@@ -338,13 +351,13 @@ server.registerTool(
   'get_card',
   {
     title: 'Get Card Details',
-    description: 'Get detailed information about a specific card by exact name. Use fields parameter to control response size.',
+    description: 'Get detailed information about a specific card by exact name. 💡 **Don\'t specify fields - auto-defaults to "basic" with ALL game data (type, HP, attacks, abilities, weakness, retreat). Only add fields="full" if user asks for image/URL.**',
     inputSchema: {
       name: z.string().describe('Exact card name'),
       fields: z.union([
         z.enum(['minimal', 'basic', 'full']),
         z.array(z.string())
-      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
+      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic" = all game data). Only specify if user explicitly asks for images ("full"), needs just names ("minimal"), or wants specific fields (custom array). Omit for normal queries.')
     }
   },
   async ({ name, fields }) => {
@@ -372,13 +385,13 @@ server.registerTool(
   'find_synergies',
   {
     title: 'Find Card Synergies',
-    description: 'Find cards that synergize well with a given card (same type, supporting trainers). Use fields parameter to control response size.',
+    description: 'Find cards that synergize well with a given Pokemon. Returns: (1) Same-type Pokemon with complementary roles, and (2) 10 recommended Trainer/Item cards to support your strategy. 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
     inputSchema: {
       cardName: z.string().describe('Name of the main card to build around'),
       fields: z.union([
         z.enum(['minimal', 'basic', 'full']),
         z.array(z.string())
-      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
+      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic"). Only specify for special cases: "minimal" (just names), "full" (if user asks for images).')
     }
   },
   async ({ cardName, fields }) => {
@@ -405,13 +418,13 @@ server.registerTool(
   'find_counters',
   {
     title: 'Find Counter Cards',
-    description: 'Find cards that counter a specific type (exploit weakness). Use fields parameter to control response size.',
+    description: 'Find cards that counter a specific type (exploit weakness). 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
     inputSchema: {
       targetType: z.string().describe('Pokemon type to counter (Fire, Water, Grass, etc.)'),
       fields: z.union([
         z.enum(['minimal', 'basic', 'full']),
         z.array(z.string())
-      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
+      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic"). Only specify for: "minimal" (names only) or "full" (if user asks for images).')
     }
   },
   async ({ targetType, fields }) => {
@@ -454,13 +467,13 @@ server.registerTool(
   'query_cards',
   {
     title: 'Custom SQL Query',
-    description: 'Run a custom SQL query against the cards table. Use fields parameter to control response size.',
+    description: 'Run a custom SQL query against the cards table. 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
     inputSchema: {
       sql: z.string().describe('SQL query to execute (SELECT only)'),
       fields: z.union([
         z.enum(['minimal', 'basic', 'full']),
         z.array(z.string())
-      ]).optional().describe('Field selection: "minimal", "basic" (default), "full", or array of field names')
+      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic"). Only specify if needed: "minimal" (names), "full" (images).')
     }
   },
   async ({ sql, fields }) => {
@@ -492,7 +505,42 @@ server.registerTool(
   }
 );
 
-// 7. Analyze deck composition
+// 7. List all Trainers and Items
+server.registerTool(
+  'list_trainers',
+  {
+    title: 'List All Trainers and Items',
+    description: 'Get a list of all available Trainer and Item cards (187 cards total). Includes Supporters (Giovanni, Erika, etc.) and Items (Rare Candy, Pokémon Communication, etc.). 💡 **Don\'t specify fields - auto-defaults to "minimal" (just names, perfect for trainers).**',
+    inputSchema: {
+      limit: z.number().optional().describe('Maximum results to return (default 50)'),
+      fields: z.union([
+        z.enum(['minimal', 'basic', 'full']),
+        z.array(z.string())
+      ]).optional().describe('💡 LEAVE UNSET (defaults to "minimal" for efficiency). Only specify for: "basic" (more details) or "full" (images).')
+    }
+  },
+  async ({ limit, fields }) => {
+    const trainers = await dbClient.query(`
+      SELECT DISTINCT ON (name) *
+      FROM cards
+      WHERE type IS NULL
+        AND name NOT LIKE '%Energy%'
+      ORDER BY name
+      LIMIT ${limit || 50}
+    `);
+    const filtered = filterFields(trainers, fields || 'minimal');
+    return {
+      content: [
+        {
+          type: 'text',
+          text: safeJsonStringify(filtered)
+        }
+      ]
+    };
+  }
+);
+
+// 8. Analyze deck composition
 server.registerTool(
   'analyze_deck',
   {

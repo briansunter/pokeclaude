@@ -1,0 +1,657 @@
+<script type="module">
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, AlertCircle, CheckCircle, XCircle, Zap, Target, TrendingUp } from 'lucide-react';
+
+const MATCHUPS = {
+  pikachu: { name: "Pikachu ex", winRate: 60, threat: "high", turns: "5-6" },
+  mewtwo: { name: "Mewtwo ex/Gardevoir", winRate: 50, threat: "medium", turns: "6-8" },
+  charizard: { name: "Charizard ex", winRate: 55, threat: "medium", turns: "6-7" },
+  giratina: { name: "Giratina ex/Darkrai ex (Mirror)", winRate: 50, threat: "medium", turns: "6-8" },
+  celebi: { name: "Celebi ex", winRate: 58, threat: "low", turns: "5-6" },
+};
+
+const HAND_CARDS = [
+  { id: 'druddigon', name: 'Druddigon', type: 'pokemon' },
+  { id: 'darkrai', name: 'Darkrai ex', type: 'pokemon' },
+  { id: 'giratina', name: 'Giratina ex', type: 'pokemon' },
+  { id: 'shaymin', name: 'Shaymin', type: 'pokemon' },
+  { id: 'rocky', name: 'Rocky Helmet', type: 'item' },
+  { id: 'xspeed', name: 'X Speed', type: 'item' },
+  { id: 'research', name: "Professor's Research", type: 'supporter' },
+  { id: 'sabrina', name: 'Sabrina', type: 'supporter' },
+  { id: 'cyrus', name: 'Cyrus', type: 'supporter' },
+  { id: 'red', name: 'Red', type: 'supporter' },
+  { id: 'mars', name: 'Mars', type: 'supporter' },
+];
+
+function PokemonPocketAdvisor() {
+  const [activeTab, setActiveTab] = useState('setup');
+  const [matchup, setMatchup] = useState('pikachu');
+  const [goingFirst, setGoingFirst] = useState(true);
+  const [currentTurn, setCurrentTurn] = useState(1);
+  const [openingHand, setOpeningHand] = useState([]);
+  const [boardState, setBoardState] = useState({
+    active: null,
+    bench: [],
+    darkraiEnergy: 0,
+    giratinaEnergy: 0,
+    opponentActive: null,
+    opponentDamage: 0,
+    yourScore: 0,
+    opponentScore: 0,
+  });
+
+  const evaluateHand = (hand) => {
+    const has = (cardId) => hand.includes(cardId);
+    
+    // God Tier
+    if (has('druddigon') && has('rocky') && has('darkrai') && has('giratina') && has('research')) {
+      return { tier: 'GOD', winRate: 75, keep: true, description: "The Dream - Perfect setup hand" };
+    }
+    if (has('druddigon') && has('rocky') && has('shaymin') && (has('darkrai') || has('giratina')) && has('xspeed')) {
+      return { tier: 'GOD', winRate: 75, keep: true, description: "The Wall - Defensive perfection" };
+    }
+    
+    // Tier 1
+    if (has('druddigon') && (has('darkrai') || has('giratina')) && has('research')) {
+      return { tier: 'TIER 1', winRate: 65, keep: true, description: "Core + Search - Solid foundation" };
+    }
+    if (has('darkrai') && has('giratina') && has('research')) {
+      return { tier: 'TIER 1', winRate: 65, keep: true, description: "Double Attacker - Aggressive start" };
+    }
+    
+    // Tier 2
+    if (has('druddigon') && (has('darkrai') || has('giratina')) && !has('research')) {
+      return { tier: 'TIER 2', winRate: 55, keep: true, description: "Single Attacker - Risky but playable" };
+    }
+    if (has('research') && (has('darkrai') || has('giratina'))) {
+      return { tier: 'TIER 2', winRate: 55, keep: true, description: "Supporter Heavy - Need draws badly" };
+    }
+    
+    return { tier: 'POOR', winRate: 40, keep: false, description: "Weak hand - Hope for good draws" };
+  };
+
+  const getTurnAdvice = () => {
+    const advice = [];
+    const matchupData = MATCHUPS[matchup];
+    
+    if (currentTurn === 1) {
+      advice.push({
+        priority: 'CRITICAL',
+        action: goingFirst ? "Cannot attach energy! Focus on bench setup." : "ATTACH ENERGY to Darkrai ex (Nightmare Aura triggers!)",
+        details: [
+          "Place Druddigon active with Rocky Helmet",
+          "Bench Darkrai ex (Slot 1) and Giratina ex (Slot 2)",
+          "Use Professor's Research if available",
+          goingFirst ? "Pass turn (no energy allowed)" : "Opponent's active takes 20 damage from Nightmare Aura"
+        ]
+      });
+    } else if (currentTurn === 2) {
+      advice.push({
+        priority: 'HIGH',
+        action: "Attach to Darkrai ex + Use Giratina's Broken-Space Bellow",
+        details: [
+          `Nightmare Aura triggers: +20 damage (Total chip: ${20 + (goingFirst ? 0 : 20)} damage)`,
+          "Giratina gains 2 Psychic Energy from ability",
+          "Evaluate opponent's bench for Sabrina targets",
+          matchup === 'mewtwo' ? "⚠️ CRITICAL: Look for Ralts to Sabrina!" : "",
+          matchup === 'pikachu' ? "⚠️ Track their bench count (Circle Circuit damage)" : ""
+        ].filter(Boolean)
+      });
+    } else if (currentTurn === 3) {
+      const chipDamage = (goingFirst ? 40 : 60);
+      advice.push({
+        priority: 'DECISION POINT',
+        action: `Darkrai has 2 Energy - Can attack for 80! (Opponent has ${chipDamage} chip damage)`,
+        details: [
+          `Total damage potential: 80 + ${chipDamage} chip = ${80 + chipDamage}`,
+          boardState.opponentDamage + chipDamage >= 100 ? "✓ LETHAL RANGE - Go for knockout!" : "Continue setup with Giratina ability",
+          matchup === 'mewtwo' ? "If Ralts visible, use Sabrina NOW before evolution" : "",
+          matchup === 'pikachu' && boardState.opponentDamage < 40 ? "Retreat Druddigon if taking too much damage" : "",
+          "Use X Speed to retreat for free if needed"
+        ].filter(Boolean)
+      });
+    } else if (currentTurn === 4) {
+      advice.push({
+        priority: 'KNOCKOUT WINDOW',
+        action: "Primary KO opportunity - Execute!",
+        details: [
+          `Nightmare Aura total: ${(currentTurn - 1) * 20 * (goingFirst ? 0.75 : 1)} damage`,
+          "Darkrai Dark Prism: 80 damage (+20 vs Psychic weakness)",
+          "Giratina needs 6 total energy for Chaotic Impact",
+          matchup === 'pikachu' ? "Pikachu ex has 120 HP - Should be in lethal range!" : "",
+          matchup === 'mewtwo' ? "Target Mewtwo BEFORE Gardevoir evolves!" : "",
+          "Consider using Red if target has 131-150 HP"
+        ]
+      });
+    } else {
+      advice.push({
+        priority: 'ENDGAME',
+        action: "Close out the match",
+        details: [
+          `Score: You ${boardState.yourScore} - Opponent ${boardState.opponentScore}`,
+          boardState.yourScore >= 2 ? "ONE MORE KO TO WIN!" : "Need 2+ knockouts still",
+          boardState.giratinaEnergy >= 6 ? "Giratina ready for 130-150 damage nuke" : "Continue energy stacking",
+          "Retreat wounded ex Pokémon to deny 2-point KOs",
+          "Track opponent's energy for counterattack threat"
+        ]
+      });
+    }
+    
+    return advice;
+  };
+
+  const getMatchupAdvice = () => {
+    const matchupData = MATCHUPS[matchup];
+    
+    switch(matchup) {
+      case 'pikachu':
+        return {
+          strategy: "Rush down before they set up bench",
+          key: "Pikachu ex has only 120 HP - target with Darkrai",
+          threats: [
+            "Circle Circuit: 30 × bench count (max 90 damage)",
+            "They're fast - attacks Turn 2-3",
+            "Rocky Helmet is MVP (30 reflect damage = 25% of HP)"
+          ],
+          tips: [
+            "Use Sabrina to disrupt bench setup",
+            "Nightmare Aura + Darkrai = 180 total damage > 120 HP",
+            "Target is soft - win by Turn 5-6"
+          ]
+        };
+      case 'mewtwo':
+        return {
+          strategy: "Kill Ralts before Gardevoir evolves!",
+          key: "Use Sabrina Turn 2-3 on Ralts/Kirlia",
+          threats: [
+            "Gardevoir evolves Turn 4 (energy acceleration)",
+            "Psydrive: 150 damage (but Mewtwo weak to Darkness)",
+            "If Gardevoir online, game becomes much harder"
+          ],
+          tips: [
+            "Sabrina Ralts Turn 2, kill it Turn 3",
+            "Darkrai gets +20 damage vs Mewtwo (Weakness)",
+            "Win window: Turns 2-4 before Gardevoir",
+            "Dark Prism: 100 damage to Mewtwo with weakness"
+          ]
+        };
+      case 'charizard':
+        return {
+          strategy: "Apply pressure Turns 2-4 during setup",
+          key: "Don't let them complete evolution chain",
+          threats: [
+            "Charizard ex: 180 HP, massive damage",
+            "Needs 3+ turns to evolve (you have time)",
+            "Moltres ex can accelerate energy"
+          ],
+          tips: [
+            "Target Charmander/Charmeleon with Sabrina",
+            "Apply constant pressure - don't give breathing room",
+            "Giratina + Red can't OHKO (180 HP too high)",
+            "Need chip damage first or 2-turn strategy"
+          ]
+        };
+      default:
+        return {
+          strategy: "Standard gameplan",
+          key: "Execute perfect curve",
+          threats: ["Varies by opponent"],
+          tips: ["Follow turn-by-turn guide"]
+        };
+    }
+  };
+
+  const handEval = openingHand.length === 5 ? evaluateHand(openingHand) : null;
+  const turnAdvice = getTurnAdvice();
+  const matchupAdvice = getMatchupAdvice();
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white p-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 mb-4 border border-purple-500/30">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Giratina/Darkrai Master Advisor
+          </h1>
+          <p className="text-purple-300">Ultra Ball 3 → Master Ball Decision Tree Assistant</p>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex gap-2 mb-4 overflow-x-auto">
+          {['setup', 'game', 'hand', 'matchup', 'reference'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap ${
+                activeTab === tab
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-black/40 text-purple-300 hover:bg-purple-800/50'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Setup Tab */}
+        {activeTab === 'setup' && (
+          <div className="space-y-4">
+            {/* Going First/Second */}
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Zap className="text-yellow-400" />
+                Game Setup
+              </h2>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <button
+                  onClick={() => setGoingFirst(true)}
+                  className={`p-4 rounded-lg font-semibold ${
+                    goingFirst ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                >
+                  Going First
+                  <div className="text-sm text-gray-300 mt-1">No energy Turn 1</div>
+                </button>
+                <button
+                  onClick={() => setGoingFirst(false)}
+                  className={`p-4 rounded-lg font-semibold ${
+                    !goingFirst ? 'bg-green-600' : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                >
+                  Going Second
+                  <div className="text-sm text-gray-300 mt-1">Energy Turn 1!</div>
+                </button>
+              </div>
+
+              {/* Matchup Selection */}
+              <h3 className="font-semibold mb-2">Opponent's Deck</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {Object.entries(MATCHUPS).map(([key, data]) => (
+                  <button
+                    key={key}
+                    onClick={() => setMatchup(key)}
+                    className={`p-3 rounded-lg text-left ${
+                      matchup === key ? 'bg-purple-600' : 'bg-gray-700 hover:bg-gray-600'
+                    }`}
+                  >
+                    <div className="font-semibold">{data.name}</div>
+                    <div className="text-sm text-gray-300">
+                      WR: {data.winRate}% • {data.turns} turns
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Opening Hand Selector */}
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+              <h2 className="text-xl font-bold mb-4">Opening Hand (Select 5 Cards)</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
+                {HAND_CARDS.map(card => (
+                  <button
+                    key={card.id}
+                    onClick={() => {
+                      if (openingHand.includes(card.id)) {
+                        setOpeningHand(openingHand.filter(c => c !== card.id));
+                      } else if (openingHand.length < 5) {
+                        setOpeningHand([...openingHand, card.id]);
+                      }
+                    }}
+                    className={`p-3 rounded-lg text-left ${
+                      openingHand.includes(card.id)
+                        ? 'bg-purple-600 border-2 border-yellow-400'
+                        : 'bg-gray-700 hover:bg-gray-600'
+                    }`}
+                  >
+                    <div className="font-semibold">{card.name}</div>
+                    <div className="text-xs text-gray-400">{card.type}</div>
+                  </button>
+                ))}
+              </div>
+
+              {openingHand.length === 5 && handEval && (
+                <div className={`p-4 rounded-lg ${
+                  handEval.tier === 'GOD' ? 'bg-yellow-600/30 border border-yellow-500' :
+                  handEval.tier === 'TIER 1' ? 'bg-green-600/30 border border-green-500' :
+                  handEval.tier === 'TIER 2' ? 'bg-orange-600/30 border border-orange-500' :
+                  'bg-red-600/30 border border-red-500'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    {handEval.keep ? <CheckCircle className="text-green-400" /> : <XCircle className="text-red-400" />}
+                    <h3 className="font-bold text-lg">{handEval.tier} HAND</h3>
+                  </div>
+                  <p className="mb-2">{handEval.description}</p>
+                  <div className="text-sm">
+                    <strong>Win Rate:</strong> {handEval.winRate}%
+                  </div>
+                  <div className="text-sm">
+                    <strong>Keep?</strong> {handEval.keep ? 'YES - Execute standard gameplan' : 'Risky - Need good draws'}
+                  </div>
+                </div>
+              )}
+
+              {openingHand.length < 5 && (
+                <div className="text-center text-gray-400 py-4">
+                  Select {5 - openingHand.length} more card{5 - openingHand.length !== 1 ? 's' : ''}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Game Tab */}
+        {activeTab === 'game' && (
+          <div className="space-y-4">
+            {/* Turn Tracker */}
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold">Turn {currentTurn}</h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentTurn(Math.max(1, currentTurn - 1))}
+                    className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
+                  >
+                    ← Prev
+                  </button>
+                  <button
+                    onClick={() => setCurrentTurn(currentTurn + 1)}
+                    className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              {/* Score */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-blue-600/30 p-4 rounded-lg">
+                  <div className="text-sm text-gray-300">Your Score</div>
+                  <div className="text-3xl font-bold">{boardState.yourScore} / 3</div>
+                </div>
+                <div className="bg-red-600/30 p-4 rounded-lg">
+                  <div className="text-sm text-gray-300">Opponent Score</div>
+                  <div className="text-3xl font-bold">{boardState.opponentScore} / 3</div>
+                </div>
+              </div>
+
+              {/* Energy Tracking */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-purple-600/30 p-3 rounded-lg">
+                  <div className="text-sm mb-2">Darkrai ex Energy</div>
+                  <div className="flex gap-2">
+                    {[0,1,2,3,4].map(num => (
+                      <button
+                        key={num}
+                        onClick={() => setBoardState({...boardState, darkraiEnergy: num})}
+                        className={`w-10 h-10 rounded ${
+                          boardState.darkraiEnergy === num ? 'bg-purple-600' : 'bg-gray-700'
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-pink-600/30 p-3 rounded-lg">
+                  <div className="text-sm mb-2">Giratina ex Energy</div>
+                  <div className="flex gap-2">
+                    {[0,2,4,6].map(num => (
+                      <button
+                        key={num}
+                        onClick={() => setBoardState({...boardState, giratinaEnergy: num})}
+                        className={`w-10 h-10 rounded ${
+                          boardState.giratinaEnergy === num ? 'bg-pink-600' : 'bg-gray-700'
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Damage Tracking */}
+              <div className="bg-red-600/30 p-3 rounded-lg">
+                <div className="text-sm mb-2">Opponent Active Damage</div>
+                <input
+                  type="range"
+                  min="0"
+                  max="200"
+                  step="10"
+                  value={boardState.opponentDamage}
+                  onChange={(e) => setBoardState({...boardState, opponentDamage: parseInt(e.target.value)})}
+                  className="w-full"
+                />
+                <div className="text-center text-2xl font-bold">{boardState.opponentDamage} HP damage</div>
+              </div>
+            </div>
+
+            {/* Turn Advice */}
+            <div className="space-y-3">
+              {turnAdvice.map((advice, idx) => (
+                <div key={idx} className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+                  <div className="flex items-start gap-3 mb-3">
+                    <Target className={`
+                      ${advice.priority === 'CRITICAL' ? 'text-red-400' : ''}
+                      ${advice.priority === 'HIGH' ? 'text-yellow-400' : ''}
+                      ${advice.priority === 'DECISION POINT' ? 'text-blue-400' : ''}
+                      ${advice.priority === 'KNOCKOUT WINDOW' ? 'text-green-400' : ''}
+                      ${advice.priority === 'ENDGAME' ? 'text-purple-400' : ''}
+                    `} />
+                    <div className="flex-1">
+                      <div className={`font-bold mb-2 ${
+                        advice.priority === 'CRITICAL' ? 'text-red-400' : ''
+                      }`}>
+                        [{advice.priority}] {advice.action}
+                      </div>
+                      <ul className="space-y-1">
+                        {advice.details.map((detail, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                            <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0 text-purple-400" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Hand Evaluator Tab */}
+        {activeTab === 'hand' && (
+          <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+            <h2 className="text-xl font-bold mb-4">Hand Tier System</h2>
+            
+            <div className="space-y-4">
+              <div className="bg-yellow-600/30 border border-yellow-500 rounded-lg p-4">
+                <h3 className="font-bold text-lg mb-2">GOD TIER (75%+ Win Rate)</h3>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <strong>The Dream:</strong> Druddigon + Rocky Helmet + Darkrai ex + Giratina ex + Professor's Research
+                  </div>
+                  <div>
+                    <strong>The Wall:</strong> Druddigon + Rocky Helmet + Shaymin + (Darkrai or Giratina) + X Speed
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-600/30 border border-green-500 rounded-lg p-4">
+                <h3 className="font-bold text-lg mb-2">TIER 1 (65%+ Win Rate)</h3>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <strong>Core + Search:</strong> Druddigon + (Darkrai or Giratina) + Professor's Research
+                  </div>
+                  <div>
+                    <strong>Double Attacker:</strong> Darkrai ex + Giratina ex + Professor's Research
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-orange-600/30 border border-orange-500 rounded-lg p-4">
+                <h3 className="font-bold text-lg mb-2">TIER 2 (55%+ Win Rate - Risky)</h3>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <strong>Single Attacker:</strong> Druddigon + (Darkrai or Giratina) + no Professor's Research
+                  </div>
+                  <div>
+                    <strong>Supporter Heavy:</strong> Professor's Research + (Darkrai or Giratina) + multiple supporters
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-red-600/30 border border-red-500 rounded-lg p-4">
+                <h3 className="font-bold text-lg mb-2">POOR HAND (40% Win Rate)</h3>
+                <div className="text-sm">
+                  Missing core pieces (no ex Pokémon, no Druddigon, no Professor's Research). Pray for draws.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Matchup Tab */}
+        {activeTab === 'matchup' && (
+          <div className="space-y-4">
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+              <h2 className="text-xl font-bold mb-4">vs {MATCHUPS[matchup].name}</h2>
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="text-center">
+                  <div className="text-sm text-gray-400">Win Rate</div>
+                  <div className="text-2xl font-bold text-green-400">{MATCHUPS[matchup].winRate}%</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-gray-400">Threat Level</div>
+                  <div className={`text-2xl font-bold ${
+                    MATCHUPS[matchup].threat === 'high' ? 'text-red-400' :
+                    MATCHUPS[matchup].threat === 'medium' ? 'text-yellow-400' :
+                    'text-green-400'
+                  }`}>
+                    {MATCHUPS[matchup].threat.toUpperCase()}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-gray-400">Game Length</div>
+                  <div className="text-2xl font-bold">{MATCHUPS[matchup].turns}</div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-bold text-lg mb-2 text-purple-400">Strategy</h3>
+                  <p className="text-gray-300">{matchupAdvice.strategy}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-lg mb-2 text-yellow-400">Key Insight</h3>
+                  <p className="text-gray-300">{matchupAdvice.key}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-lg mb-2 text-red-400">Threats</h3>
+                  <ul className="space-y-1">
+                    {matchupAdvice.threats.map((threat, i) => (
+                      <li key={i} className="flex items-start gap-2 text-gray-300">
+                        <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0 text-red-400" />
+                        {threat}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-lg mb-2 text-green-400">Pro Tips</h3>
+                  <ul className="space-y-1">
+                    {matchupAdvice.tips.map((tip, i) => (
+                      <li key={i} className="flex items-start gap-2 text-gray-300">
+                        <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0 text-green-400" />
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reference Tab */}
+        {activeTab === 'reference' && (
+          <div className="space-y-4">
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-purple-500/30">
+              <h2 className="text-xl font-bold mb-4">Quick Reference</h2>
+              
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-bold text-purple-400 mb-2">Damage Calculations</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="bg-gray-800 p-2 rounded">Nightmare Aura: 20/turn</div>
+                    <div className="bg-gray-800 p-2 rounded">Rough Skin: 10/attack</div>
+                    <div className="bg-gray-800 p-2 rounded">Rocky Helmet: 20/attack</div>
+                    <div className="bg-gray-800 p-2 rounded">Dark Prism: 80 dmg</div>
+                    <div className="bg-gray-800 p-2 rounded">Chaotic Impact: 130 dmg</div>
+                    <div className="bg-gray-800 p-2 rounded">Red Boost: +20 dmg</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-purple-400 mb-2">Energy Requirements</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="bg-gray-800 p-2 rounded">Darkrai Dark Prism: 2 Darkness + 1 Colorless (DDC)</div>
+                    <div className="bg-gray-800 p-2 rounded">Giratina Chaotic Impact: 2 Psychic + 1 Psychic + 1 Colorless (PPPC)</div>
+                    <div className="bg-gray-800 p-2 rounded">Darkrai ready: Turn 3 (going first) or Turn 2 (going second)</div>
+                    <div className="bg-gray-800 p-2 rounded">Giratina ready: Turn 5-6 (needs 4 Psychic + 2 Darkness)</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-purple-400 mb-2">Critical Timings</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="bg-gray-800 p-2 rounded">Turn 1: Setup bench, use Professor's Research</div>
+                    <div className="bg-gray-800 p-2 rounded">Turn 2: Nightmare Aura starts, Giratina ability</div>
+                    <div className="bg-gray-800 p-2 rounded">Turn 3: Decision point - attack or continue setup</div>
+                    <div className="bg-gray-800 p-2 rounded">Turn 4: First KO window</div>
+                    <div className="bg-gray-800 p-2 rounded">Turn 5-6: Close out with Giratina</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-purple-400 mb-2">Common HP Totals</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="bg-gray-800 p-2 rounded">Pikachu ex: 120 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Mewtwo ex: 150 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Darkrai ex: 140 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Giratina ex: 150 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Charizard ex: 180 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Ralts: 60 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Kirlia: 90 HP</div>
+                    <div className="bg-gray-800 p-2 rounded">Gardevoir: 110 HP</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-purple-400 mb-2">Pro Micro Tips</h3>
+                  <ul className="space-y-1 text-sm text-gray-300">
+                    <li>• ALWAYS retreat BEFORE attaching energy</li>
+                    <li>• Broken-Space Bellow ENDS your turn - use last!</li>
+                    <li>• Track cumulative Nightmare Aura damage mentally</li>
+                    <li>• Use X Speed to retreat for free (saves energy)</li>
+                    <li>• Sabrina Turn 2-3 on pre-evolutions is game-winning</li>
+                    <li>• Red for 131-150 HP targets (Giratina 130 → 150)</li>
+                    <li>• Retreat wounded ex before KO (deny 2 points)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default PokemonPocketAdvisor;
+</script>

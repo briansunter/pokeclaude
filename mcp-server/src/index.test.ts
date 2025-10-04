@@ -128,7 +128,7 @@ describe('Server Initialization', () => {
   test('should list all tools', async () => {
     const result = await client.request('tools/list');
     expect(result.tools).toBeArray();
-    expect(result.tools.length).toBe(7);
+    expect(result.tools.length).toBe(8);
 
     const toolNames = result.tools.map((t: any) => t.name);
     expect(toolNames).toContain('search_cards');
@@ -137,6 +137,7 @@ describe('Server Initialization', () => {
     expect(toolNames).toContain('find_counters');
     expect(toolNames).toContain('get_type_stats');
     expect(toolNames).toContain('query_cards');
+    expect(toolNames).toContain('list_trainers');
     expect(toolNames).toContain('analyze_deck');
   });
 });
@@ -274,6 +275,45 @@ describe('Field Filtering - find_counters', () => {
       expect(fields).toContain('name');
       expect(fields).not.toContain('image_url');
     }
+  });
+});
+
+describe('Trainers and Items', () => {
+  test('should list trainers and items', async () => {
+    const trainers = await client.callTool('list_trainers', {
+      limit: 20,
+      fields: 'minimal'
+    });
+
+    expect(trainers).toBeArray();
+    expect(trainers.length).toBeGreaterThan(0);
+    expect(trainers.length).toBeLessThanOrEqual(20);
+
+    // All should only have id and name
+    if (trainers.length > 0) {
+      expect(Object.keys(trainers[0])).toEqual(['id', 'name']);
+    }
+  });
+
+  test('should search trainers by name', async () => {
+    const giovanni = await client.callTool('search_cards', {
+      name: 'Giovanni',
+      hasAttacks: false
+    });
+
+    expect(giovanni).toBeArray();
+    expect(giovanni.length).toBeGreaterThan(0);
+    expect(giovanni.every((c: any) => c.name.includes('Giovanni'))).toBe(true);
+  });
+
+  test('should get all trainers with hasAttacks=false', async () => {
+    const allTrainers = await client.callTool('search_cards', {
+      hasAttacks: false,
+      limit: 50
+    });
+
+    expect(allTrainers).toBeArray();
+    expect(allTrainers.length).toBeGreaterThan(0);
   });
 });
 

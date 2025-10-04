@@ -110,13 +110,13 @@ const FALLBACK_SETS: SetInfo[] = [
   { code: 'P-A', name: 'Promo-A P-A', release_date: '', total_cards: 0 },
 ];
 
-async function scrapeSet(setInfo: SetInfo): Promise<PokemonCard[]> {
+async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCard[]> {
   const cards: PokemonCard[] = [];
   const baseUrl = 'https://pocket.limitlesstcg.com/cards';
   const url = baseUrl + '/' + setInfo.code;
-  
+
   console.log('Scraping set: ' + setInfo.name + ' (' + setInfo.code + ')...');
-  
+
   try {
     const response = await axios.get(url, {
       headers: {
@@ -124,27 +124,27 @@ async function scrapeSet(setInfo: SetInfo): Promise<PokemonCard[]> {
       },
       timeout: 30000
     });
-    
+
     const $ = cheerio.load(response.data);
-    
+
     $('a[href*="/cards/"]').each((_, element) => {
       const href = $(element).attr('href');
       if (!href || href === '/cards/' + setInfo.code) return;
-      
-      const cardMatch = href.match(/\/cards\/([A-Z0-9\-]+_\d+)/i) || 
+
+      const cardMatch = href.match(/\/cards\/([A-Z0-9\-]+_\d+)/i) ||
                        href.match(/\/cards\/([A-Z0-9\-]+)\/(\d+)/i);
-      
+
       if (cardMatch) {
         const fullCardId = cardMatch[1];
         const cardNumber = fullCardId.includes('_') ? fullCardId.split('_')[1] : cardMatch[2];
-        
+
         const img = $(element).find('img').first();
         const paddedNumber = cardNumber.padStart(3, '0');
         const cdnUrl = 'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket';
         const imgSrc = img.attr('src') || cdnUrl + '/' + setInfo.code + '/' + setInfo.code + '_' + paddedNumber + '_EN_SM.webp';
-        
+
         const cardName = img.attr('alt') || img.attr('title') || 'Unknown';
-        
+
         cards.push({
           id: uuidv4(),
           set_code: setInfo.code,
@@ -156,7 +156,7 @@ async function scrapeSet(setInfo: SetInfo): Promise<PokemonCard[]> {
         });
       }
     });
-    
+
     if (cards.length === 0 && setInfo.total_cards > 0) {
       console.log('  No cards found in HTML, generating from card count...');
       for (let i = 1; i <= setInfo.total_cards; i++) {
@@ -173,23 +173,38 @@ async function scrapeSet(setInfo: SetInfo): Promise<PokemonCard[]> {
         });
       }
     }
-    
+
     console.log('  Found ' + cards.length + ' cards');
 
-    // Scrape detailed info for each card
-    for (let i = 0; i < cards.length; i++) {
-      await scrapeCardDetails(cards[i]);
-      if (i % 10 === 0) {
-        console.log('  Progress: ' + i + '/' + cards.length);
-      }
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    // Scrape card details in parallel batches
+    await scrapeCardsInBatches(cards, concurrency);
 
   } catch (error) {
     console.error('  Error scraping set ' + setInfo.code + ':', error);
   }
-  
+
   return cards;
+}
+
+// Scrape cards in parallel batches to avoid overwhelming the server
+async function scrapeCardsInBatches(cards: PokemonCard[], concurrency: number): Promise<void> {
+  const total = cards.length;
+  let completed = 0;
+
+  console.log(`  Scraping ${total} cards with concurrency ${concurrency}...`);
+
+  for (let i = 0; i < cards.length; i += concurrency) {
+    const batch = cards.slice(i, i + concurrency);
+
+    await Promise.all(
+      batch.map(card => scrapeCardDetails(card))
+    );
+
+    completed += batch.length;
+    if (completed % 50 === 0 || completed === total) {
+      console.log(`  Progress: ${completed}/${total}`);
+    }
+  }
 }
 
 async function scrapeCardDetails(card: PokemonCard): Promise<void> {
@@ -288,7 +303,11 @@ function exportToCSV(cards: PokemonCard[], filename: string): void {
   const csvLines = [headers.join(',')];
   
   for (const card of cards) {
-    const attacksStr = card.attacks ? card.attacks.map(a => a.name + ': ' + (a.damage || '')).join('; ') : '';
+    const attacksStr = card.attacks ? card.attacks.map(a => {
+      let str = a.name + ': ' + (a.damage || '');
+      if (a.effect) str += ' - ' + a.effect;
+      return str;
+    }).join('; ') : '';
     const row = [
       escapeCsv(card.id),
       escapeCsv(card.set_code),
@@ -403,8 +422,16 @@ function parseExistingCsv(filename: string): PokemonCard[] {
       if (parts.length >= 15) {
         const attacksStr = parts[9]?.replace(/"/g, '') || '';
         const attacks: Attack[] = attacksStr.split(';').map(a => {
-          const [name, damage] = a.trim().split(':');
-          return { name: name?.trim() || '', damage: damage?.trim() || '' };
+          const [name, rest] = a.trim().split(':');
+          if (!rest) return { name: name?.trim() || '' };
+
+          // Split on ' - ' to separate damage from effect
+          const [damage, effect] = rest.split(' - ').map(s => s.trim());
+          return {
+            name: name?.trim() || '',
+            damage: damage || undefined,
+            effect: effect || undefined
+          };
         }).filter(a => a.name);
 
         cards.push({
@@ -461,12 +488,15 @@ async function main() {
   const newCards: PokemonCard[] = [];
   let skippedCount = 0;
 
-  for (const setInfo of sets) {
-    console.log('Scraping set: ' + setInfo.name + ' (' + setInfo.code + ')...');
+  // Scrape all sets in parallel
+  console.log(`\n🚀 Scraping ${sets.length} sets in parallel...\n`);
 
-    const setCards = await scrapeSet(setInfo);
+  const allSetCards = await Promise.all(
+    sets.map(setInfo => scrapeSet(setInfo))
+  );
 
-    // Filter out cards that already exist
+  // Flatten and filter cards
+  for (const setCards of allSetCards) {
     for (const card of setCards) {
       const key = `${card.set_code}:${card.card_number}`;
       if (!isFullScrape && existingCardKeys.has(key)) {
@@ -475,10 +505,6 @@ async function main() {
         newCards.push(card);
       }
     }
-
-    console.log(`  New cards from this set: ${setCards.length - (isFullScrape ? 0 : setCards.filter(c => existingCardKeys.has(`${c.set_code}:${c.card_number}`)).length)}`);
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
   }
 
   // Merge with existing cards
