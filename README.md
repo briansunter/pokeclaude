@@ -31,14 +31,23 @@ Build decks, find synergies, and counter strategies with AI assistance:
 
 ## 🚀 Quick Start
 
+> **Package Manager:** This project works with both **npm** and **bun**. Use whichever you prefer!
+
 ### Installation
 
+**With npm:**
 ```bash
 npm install
 ```
 
+**With bun:**
+```bash
+bun install
+```
+
 ### Update Card Data
 
+**With npm:**
 ```bash
 # Incremental update (recommended - only new cards)
 npm run scrape
@@ -47,17 +56,34 @@ npm run scrape
 npm run scrape:full
 ```
 
+**With bun:**
+```bash
+# Incremental update (recommended - only new cards)
+bun run scrape
+
+# Full refresh (all cards from scratch)
+bun run scrape:full
+```
+
 ### Build MCP Server
 
+**With npm:**
 ```bash
 npm run build
 ```
 
+**With bun:**
+```bash
+bun run build
+```
+
 ### Setup with Claude Desktop
 
-1. Build the server:
+1. Build the server (use npm or bun):
    ```bash
    npm run build
+   # or
+   bun run build
    ```
 
 2. Add to your Claude Desktop config:
@@ -173,6 +199,7 @@ The scraper automatically finds new Pokemon Pocket sets:
 
 ## 🛠️ Development
 
+**With npm:**
 ```bash
 # Type check all workspaces
 npm run typecheck
@@ -183,6 +210,20 @@ npm run build
 # Update card data
 npm run scrape
 ```
+
+**With bun:**
+```bash
+# Type check all workspaces
+bun run typecheck
+
+# Build MCP server
+bun run build
+
+# Update card data
+bun run scrape
+```
+
+> **Note:** Both package managers are fully supported. Bun is faster for installation and running scripts, while npm has broader compatibility. The CI/CD pipeline uses bun for performance.
 
 ## 📊 Data Quality
 
