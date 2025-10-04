@@ -63,7 +63,47 @@ search_cards({ name: "Pikachu", uniqueOnly: false })
 
 See [DUPLICATE_FILTERING.md](./DUPLICATE_FILTERING.md) for detailed documentation.
 
-## Installation
+## 🚀 Quick Start (Recommended)
+
+**The easiest way to use this server is via the published npm package:**
+
+### Setup with Claude Desktop
+
+Add this to your Claude Desktop config:
+- **macOS/Linux:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+**Using npx (recommended - works with any Node installation):**
+```json
+{
+  "mcpServers": {
+    "pokemon-pocket": {
+      "command": "npx",
+      "args": ["pokemon-pocket-mcp-server"]
+    }
+  }
+}
+```
+
+**Using bunx (faster, requires bun):**
+```json
+{
+  "mcpServers": {
+    "pokemon-pocket": {
+      "command": "bunx",
+      "args": ["pokemon-pocket-mcp-server"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop after adding the configuration.
+
+> **Note:** No installation or building needed! The package is fetched automatically and stays up-to-date.
+
+## 🛠️ Development Setup
+
+**For contributors who want to modify the server:**
 
 ```bash
 cd mcp-server
@@ -71,24 +111,18 @@ npm install
 npm run build
 ```
 
-## Setup with Claude Desktop
-
-Add this to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+Then update your Claude Desktop config to point to your local build:
 
 ```json
 {
   "mcpServers": {
     "pokemon-pocket": {
       "command": "node",
-      "args": [
-        "/Users/bsunter/code/pokeclaude/mcp-server/dist/index.js"
-      ]
+      "args": ["/absolute/path/to/pokeclaude/mcp-server/dist/index.js"]
     }
   }
 }
 ```
-
-Restart Claude Desktop after adding the configuration.
 
 ## Usage Examples
 

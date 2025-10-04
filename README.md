@@ -29,19 +29,64 @@ Build decks, find synergies, and counter strategies with AI assistance:
 - **Complete Data** - Abilities, attacks, stats, weaknesses, images
 - **UUID Primary Keys** - Production-ready database schema
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Published Package)
+
+**The easiest way to use this MCP server is via npx/bunx:**
+
+### Setup with Claude Desktop
+
+1. Add to your Claude Desktop config:
+
+   **macOS/Linux:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+   **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+   **Using npx (works with any Node installation):**
+   ```json
+   {
+     "mcpServers": {
+       "pokemon-pocket": {
+         "command": "npx",
+         "args": ["pokemon-pocket-mcp-server"]
+       }
+     }
+   }
+   ```
+
+   **Using bunx (faster, requires bun):**
+   ```json
+   {
+     "mcpServers": {
+       "pokemon-pocket": {
+         "command": "bunx",
+         "args": ["pokemon-pocket-mcp-server"]
+       }
+     }
+   }
+   ```
+
+2. Restart Claude Desktop
+
+3. Start querying Pokemon cards through Claude!
+
+> **Note:** Using npx/bunx means you don't need to install or build anything manually. The package is fetched automatically and always stays up-to-date!
+
+## 🛠️ Development Setup (For Contributors)
 
 > **Package Manager:** This project works with both **npm** and **bun**. Use whichever you prefer!
 
-### Installation
+### Clone and Install
 
 **With npm:**
 ```bash
+git clone https://github.com/briansunter/pokeclaude.git
+cd pokeclaude
 npm install
 ```
 
 **With bun:**
 ```bash
+git clone https://github.com/briansunter/pokeclaude.git
+cd pokeclaude
 bun install
 ```
 
@@ -77,34 +122,20 @@ npm run build
 bun run build
 ```
 
-### Setup with Claude Desktop
+### Run Locally
 
-1. Build the server (use npm or bun):
-   ```bash
-   npm run build
-   # or
-   bun run build
-   ```
+After building, update your Claude Desktop config to point to your local build:
 
-2. Add to your Claude Desktop config:
-
-   **macOS/Linux:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-   **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-   ```json
-   {
-     "mcpServers": {
-       "pokemon-pocket": {
-         "command": "node",
-         "args": ["/absolute/path/to/pokeclaude/mcp-server/dist/index.js"]
-       }
-     }
-   }
-   ```
-
-3. Restart Claude Desktop
-
-4. Start querying Pokemon cards through Claude!
+```json
+{
+  "mcpServers": {
+    "pokemon-pocket": {
+      "command": "node",
+      "args": ["/absolute/path/to/pokeclaude/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
 
 ## 💡 Usage Examples
 
