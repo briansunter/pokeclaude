@@ -2,10 +2,35 @@
   "name": "pokemon-pocket-mcp-server",
   "version": "1.0.0",
   "description": "MCP server for querying Pokemon Pocket TCG cards with DuckDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "license": "MIT",
+  "author": "Pokemon Pocket MCP Contributors",
   "bin": {
     "pokemon-pocket-mcp": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/briansunter/pokeclaude.git",
+    "directory": "mcp-server"
+  },
+  "keywords": [
+    "mcp",
+    "pokemon",
+    "pokemon-pocket",
+    "tcg",
+    "duckdb",
+    "model-context-protocol"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
@@ -24,5 +49,8 @@
     "@types/uuid": "^10.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
