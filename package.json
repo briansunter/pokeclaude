@@ -20,7 +20,7 @@
     "format:check": "prettier --check \"**/*.{ts,js,json,md,yml,yaml}\"",
     "test": "npm run test:mcp-server && npm run test:scraper",
     "test:mcp-server": "cd mcp-server && npm run test",
-    "test:scraper": "cd scraper && npm run test || echo 'No test script defined for scraper'",
+    "test:scraper": "cd scraper && npm run test",
     "check:all": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "prepare": "husky"
   },
