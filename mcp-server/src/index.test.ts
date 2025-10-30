@@ -107,7 +107,7 @@ class MCPClient {
           this.pendingRequests.delete(id);
           reject(new Error(`Request ${id} timed out`));
         }
-      }, 5000);
+      }, 60000);
     });
   }
 
