@@ -41,6 +41,7 @@ pokeclaude/
 - **Field Presets** - minimal/basic/full to control response size
 
 **Core Flow** (mcp-server/src/index.ts:1):
+
 1. Server starts → Loads CSV into DuckDB in-memory database
 2. 7 Tools registered (search, filter, analyze, query)
 3. 3 Resources exposed (full cards, unique cards, type stats)
@@ -79,6 +80,7 @@ cards (
 ## Common Development Commands
 
 ### Using npm (recommended for beginners)
+
 ```bash
 # Type check all workspaces
 npm run typecheck
@@ -97,6 +99,7 @@ cd mcp-server && npm run dev
 ```
 
 ### Using bun (faster, recommended for contributors)
+
 ```bash
 # Type check all workspaces
 bun run typecheck
@@ -115,6 +118,7 @@ cd mcp-server && bun run dev
 ```
 
 ### Scraper-only commands
+
 ```bash
 # Incremental scrape (only new cards)
 npm run scrape
@@ -124,6 +128,7 @@ npm run scrape:full
 ```
 
 ### Workspace-specific commands
+
 ```bash
 cd mcp-server && npm run build      # Build MCP server
 cd scraper && npm run scrape        # Run scraper only
@@ -140,6 +145,7 @@ cd mcp-server && npm run test:manual
 ```
 
 **CI Pipeline** (`.github/workflows/release.yml:1`):
+
 - Uses **bun** for performance
 - Type checking → Build → Semantic release
 - Automatic npm publishing on master/main branch
@@ -183,6 +189,7 @@ cd mcp-server && npm run test:manual
 ## Data Quality & Updates
 
 ### Current Data
+
 - ✅ **2,077 total cards** across 12 sets (A1-A4b, P-A)
 - ✅ **1,068 unique cards** (auto-deduplicates 43.5% art variants)
 - ✅ **1068 unique cards** with attacks (filters trainers, non-combat)
@@ -190,6 +197,7 @@ cd mcp-server && npm run test:manual
 - ✅ **Zero parsing errors** on production data
 
 ### Auto-Discovery Process
+
 1. Scrapes limitlesstcg.com main page
 2. Discovers all set links (A1, A2, A3, A4b, P-A, etc.)
 3. Compares with existing CSV data
@@ -201,7 +209,9 @@ cd mcp-server && npm run test:manual
 ## Package Publishing
 
 ### Published Package
+
 The `mcp-server` is published to npm as `pokemon-pocket-mcp-server`:
+
 - **Usage**: `npx pokemon-pocket-mcp-server` or `bunx pokemon-pocket-mcp-server`
 - **Auto-updates**: Always uses latest published version
 - **Files bundled**: `dist`, `data/pokemon_pocket_cards.csv`, `README.md`
@@ -209,6 +219,7 @@ The `mcp-server` is published to npm as `pokemon-pocket-mcp-server`:
 ### Claude Desktop Setup
 
 **Using npx (works with any Node):**
+
 ```json
 {
   "mcpServers": {
@@ -221,6 +232,7 @@ The `mcp-server` is published to npm as `pokemon-pocket-mcp-server`:
 ```
 
 **Using bunx (faster, requires bun):**
+
 ```json
 {
   "mcpServers": {
@@ -235,6 +247,7 @@ The `mcp-server` is published to npm as `pokemon-pocket-mcp-server`:
 ### Local Development Setup
 
 After building, use absolute path in config:
+
 ```json
 {
   "mcpServers": {
@@ -263,20 +276,24 @@ These rules are integrated into deck analysis and optimization prompts.
 ## Key Implementation Details
 
 ### Duplicate Filtering
+
 Cards are considered unique by: `name`, `type`, `hp`, `attacks`, `weakness`, `retreat_cost`
 
 **Example**:
+
 - Pikachu ex (Circle Circuit) appears 7 times across sets = **1 unique card**
 - Pikachu has 7 different attack versions = **7 unique cards**
 
 ### Field Selection (mcp-server/src/index.ts:16)
 
 Three presets to control response size:
+
 - **minimal**: `['id', 'name']` - Smallest response
 - **basic**: Common fields without images (default)
 - **full**: All 15 fields including set info, images, URLs
 
 ### Build Process
+
 1. `prebuild` script copies CSV from `../data/` to `mcp-server/data/`
 2. TypeScript compilation outputs to `mcp-server/dist/`
 3. Published package includes: `dist/`, `data/`, `README.md`
@@ -284,6 +301,7 @@ Three presets to control response size:
 ## Semantic Release
 
 **Automatic versioning & publishing**:
+
 - **Triggers**: Push to master/main or merged PR
 - **Workflow**: Checkout → Setup Bun → Install → Typecheck → Build → Release
 - **Token**: Requires `NPM_TOKEN` secret for npm publishing
@@ -291,17 +309,20 @@ Three presets to control response size:
 ## Troubleshooting
 
 ### Server not in Claude Desktop
+
 - Check config path: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Verify absolute path to `dist/index.js`
 - Restart Claude Desktop completely
 - Check logs: `~/Library/Logs/Claude/`
 
 ### DuckDB errors
+
 - Ensure CSV exists at `mcp-server/data/pokemon_pocket_cards.csv`
 - Run `npm run build` to copy CSV
 - Check CSV encoding (should be UTF-8)
 
 ### Scraper issues
+
 - Timeout: Scraper has 30s timeout per request
 - User-Agent: Configured to avoid blocking
 - Network errors: Incremental mode skips failed sets
@@ -321,6 +342,7 @@ Three presets to control response size:
 ## Example Workflows
 
 ### 1. Add New Card Data
+
 ```bash
 npm run scrape        # Incremental update (6-7 min)
 npm run build         # Build MCP server with new data
@@ -328,6 +350,7 @@ npm run build         # Build MCP server with new data
 ```
 
 ### 2. Modify MCP Tools
+
 ```bash
 cd mcp-server
 npm run dev           # Run in dev mode (auto-reload)
@@ -338,6 +361,7 @@ npm run build         # Build for production
 ```
 
 ### 3. Update Game Rules
+
 ```bash
 # Edit mcp-server/src/gameRules.ts
 # Add new constants, update GAME_CONTEXT
@@ -348,6 +372,7 @@ npm run test          # Ensure tests pass
 ## Package Managers
 
 **Both npm and bun fully supported:**
+
 - **npm**: Broader compatibility, easier for beginners
 - **bun**: Faster installation and script execution
 - **CI/CD**: Uses bun for performance

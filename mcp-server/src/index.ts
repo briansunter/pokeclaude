@@ -30,13 +30,30 @@ const FIELD_PRESETS = {
   minimal: ['id', 'name'] as const,
   basic: ['id', 'name', 'type', 'hp', 'attacks', 'weakness', 'retreat_cost', 'rarity'] as const,
   full: [
-    'id', 'set_code', 'set_name', 'card_number', 'name', 'type', 'hp',
-    'rarity', 'abilities', 'attacks', 'weakness', 'resistance',
-    'retreat_cost', 'image_url', 'card_url',
+    'id',
+    'set_code',
+    'set_name',
+    'card_number',
+    'name',
+    'type',
+    'hp',
+    'rarity',
+    'abilities',
+    'attacks',
+    'weakness',
+    'resistance',
+    'retreat_cost',
+    'image_url',
+    'card_url',
     // Evolution metadata fields
-    'evolution_stage', 'evolves_from', 'evolves_to', 'evolution_type',
-    'base_pokemon_id', 'is_evolution', 'evolution_method'
-  ] as const
+    'evolution_stage',
+    'evolves_from',
+    'evolves_to',
+    'evolution_type',
+    'base_pokemon_id',
+    'is_evolution',
+    'evolution_method',
+  ] as const,
 };
 
 type FieldPreset = keyof typeof FIELD_PRESETS;
@@ -44,38 +61,37 @@ type FieldArray = string[];
 type FieldSelection = FieldPreset | FieldArray;
 
 // Helper to filter fields from objects
-function filterFields<T extends Record<string, any>>(
+function filterFields<T extends Record<string, unknown>>(
   data: T | T[],
   fields?: FieldSelection
-): any {
+): T | T[] {
   if (!fields) {
     return data; // full fields if not specified
   }
 
-  const fieldList = typeof fields === 'string'
-    ? FIELD_PRESETS[fields as FieldPreset] || []
-    : fields;
+  const fieldList =
+    typeof fields === 'string' ? FIELD_PRESETS[fields as FieldPreset] || [] : fields;
 
   const filterObject = (obj: T) => {
-    const filtered: Record<string, any> = {};
+    const filtered: Record<string, unknown> = {};
     for (const field of fieldList) {
       if (field in obj) {
-        filtered[field] = obj[field];
+        filtered[field] = (obj as Record<string, unknown>)[field];
       }
     }
-    return filtered;
+    return filtered as T;
   };
 
-  return Array.isArray(data)
-    ? data.map(filterObject)
-    : filterObject(data);
+  return Array.isArray(data) ? data.map(filterObject) : filterObject(data);
 }
 
 // Helper to serialize data with BigInt support
-function safeJsonStringify(data: any): string {
-  return JSON.stringify(data, (key, value) =>
-    typeof value === 'bigint' ? value.toString() : value
-  , 2);
+function safeJsonStringify(data: unknown): string {
+  return JSON.stringify(
+    data,
+    (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
+    2
+  );
 }
 
 interface Card {
@@ -102,6 +118,14 @@ interface Card {
   base_pokemon_id?: string;
   is_evolution?: string;
   evolution_method?: string;
+  [key: string]: unknown;
+}
+
+interface TypeStats {
+  type: string;
+  count: number;
+  avg_hp: number;
+  avg_retreat_cost: number;
 }
 
 class DuckDBClient {
@@ -124,10 +148,10 @@ class DuckDBClient {
     console.error('DuckDB initialized with Pokemon cards');
   }
 
-  async query(sql: string): Promise<any[]> {
+  async query(sql: string): Promise<Card[]> {
     await this.ready;
     const result = await this.connection.runAndReadAll(sql);
-    return result.getRowObjectsJson();
+    return result.getRowObjectsJson() as Card[];
   }
 
   async searchCards(filters: {
@@ -173,7 +197,7 @@ class DuckDBClient {
     const limit = filters.limit || 50;
 
     // Default to filtering out duplicates (uniqueOnly defaults to true)
-    const uniqueOnly = filters.uniqueOnly !== false;  // true unless explicitly set to false
+    const uniqueOnly = filters.uniqueOnly !== false; // true unless explicitly set to false
 
     const selectClause = uniqueOnly
       ? 'SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost) *'
@@ -203,8 +227,8 @@ class DuckDBClient {
     return results[0] || null;
   }
 
-  async getTypeStats(): Promise<any[]> {
-    return this.query(`
+  async getTypeStats(): Promise<TypeStats[]> {
+    const results = await this.query(`
       SELECT
         type,
         COUNT(*) as count,
@@ -215,12 +239,17 @@ class DuckDBClient {
       GROUP BY type
       ORDER BY count DESC
     `);
+    return results as unknown as TypeStats[];
   }
 
-  async findSynergies(cardName: string): Promise<any> {
+  async findSynergies(cardName: string): Promise<{
+    card?: Card;
+    sameTypeCards?: Card[];
+    trainers?: Card[];
+  }> {
     const card = await this.getCardByName(cardName);
     if (!card || !card.type) {
-      return { error: 'Card not found or has no type' };
+      throw new Error('Card not found or has no type');
     }
 
     // Find cards of same type with complementary roles (unique cards only)
@@ -249,7 +278,7 @@ class DuckDBClient {
     return {
       card: card,
       sameTypeCards: sameType,
-      trainers: trainers.slice(0, 10)
+      trainers: trainers.slice(0, 10),
     };
   }
 
@@ -280,7 +309,9 @@ class DuckDBClient {
     `);
   }
 
-  async analyzeEnergyCost(attacks: string): Promise<{ total: number; types: Record<string, number> }> {
+  async analyzeEnergyCost(
+    attacks: string
+  ): Promise<{ total: number; types: Record<string, number> }> {
     // Parse attacks string to count energy symbols
     const energyTypes: Record<string, number> = {};
     let total = 0;
@@ -308,7 +339,8 @@ const dbClient = new DuckDBClient(CSV_PATH);
 const server = new McpServer({
   name: 'pokemon-pocket-deck-builder',
   version: '1.0.0',
-  description: 'Pokemon TCG Pocket deck builder (20-card format, Energy Zone system, 3-point win). Includes 2000+ cards: Pokemon, Trainers, and Items. Key rules: Max 3 bench slots, auto-generate 1 Energy/turn (not from deck), 1-2 Energy types recommended for consistency, Pokemon ex worth 2 points. 💡 **IMPORTANT: Don\'t specify fields parameter - tools auto-default to "basic" which includes ALL game data (type, HP, attacks, abilities, weakness, retreat) WITHOUT heavy image URLs. This saves 3-4x tokens.** Only specify fields="full" if user explicitly asks "show me the image" or "give me the URL".'
+  description:
+    'Pokemon TCG Pocket deck builder (20-card format, Energy Zone system, 3-point win). Includes 2000+ cards: Pokemon, Trainers, and Items. Key rules: Max 3 bench slots, auto-generate 1 Energy/turn (not from deck), 1-2 Energy types recommended for consistency, Pokemon ex worth 2 points. 💡 **IMPORTANT: Don\'t specify fields parameter - tools auto-default to "basic" which includes ALL game data (type, HP, attacks, abilities, weakness, retreat) WITHOUT heavy image URLs. This saves 3-4x tokens.** Only specify fields="full" if user explicitly asks "show me the image" or "give me the URL".',
 });
 
 // TOOLS
@@ -337,25 +369,46 @@ server.registerTool(
   'search_cards',
   {
     title: 'Search Pokemon Cards',
-    description: 'Search for Pokemon cards, Trainers, and Items using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants. **To search Trainers/Items**: Set hasAttacks=false (187 trainer/item cards available including Giovanni, Erika, Rare Candy, Pokémon Communication, etc.). 💡 **Don\'t specify fields - auto-defaults to "basic" with ALL game data (type, HP, attacks, abilities, weakness, retreat). Only add fields="full" if user asks for image/URL (saves 3-4x tokens).**',
+    description:
+      'Search for Pokemon cards, Trainers, and Items using filters like name, type, HP range, set, etc. By default returns only unique cards (filters out art variants). Set uniqueOnly=false to see all card variants. **To search Trainers/Items**: Set hasAttacks=false (187 trainer/item cards available including Giovanni, Erika, Rare Candy, Pokémon Communication, etc.). 💡 **Don\'t specify fields - auto-defaults to "basic" with ALL game data (type, HP, attacks, abilities, weakness, retreat). Only add fields="full" if user asks for image/URL (saves 3-4x tokens).**',
     inputSchema: {
-      name: z.string().optional().describe('Card name to search for (partial match). Works for Pokemon, Trainers, and Items.'),
-      type: z.string().optional().describe('Pokemon type (Fire, Water, Grass, etc.). Leave empty to search Trainers/Items.'),
+      name: z
+        .string()
+        .optional()
+        .describe(
+          'Card name to search for (partial match). Works for Pokemon, Trainers, and Items.'
+        ),
+      type: z
+        .string()
+        .optional()
+        .describe('Pokemon type (Fire, Water, Grass, etc.). Leave empty to search Trainers/Items.'),
       minHp: z.number().optional().describe('Minimum HP'),
       maxHp: z.number().optional().describe('Maximum HP'),
       set: z.string().optional().describe('Set code (A1, A2, A3, etc.)'),
-      hasAttacks: z.boolean().optional().describe('Filter by whether card has attacks. Set to FALSE to get Trainers/Items (Supporters and Items). Set to TRUE to get only Pokemon with attacks. Leave undefined for all cards.'),
+      hasAttacks: z
+        .boolean()
+        .optional()
+        .describe(
+          'Filter by whether card has attacks. Set to FALSE to get Trainers/Items (Supporters and Items). Set to TRUE to get only Pokemon with attacks. Leave undefined for all cards.'
+        ),
       retreatCost: z.number().optional().describe('Retreat cost (0-4)'),
       weakness: z.string().optional().describe('Weakness type'),
       limit: z.number().optional().describe('Maximum results to return (default 50)'),
-      uniqueOnly: z.boolean().optional().describe('If true, returns only unique cards (filters out duplicates with same stats but different art). If false, returns all card variants. Default: true'),
-      fields: z.union([
-        z.enum(['minimal', 'basic', 'full']),
-        z.array(z.string())
-      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic" = comprehensive game data WITHOUT images). "basic" includes: type, HP, attacks, abilities, weakness, retreat. Only specify if: (1) "minimal" for name-only lists, (2) "full" when user explicitly asks for images/URLs (costs 3-4x tokens), (3) custom array for specific fields. For most queries, omit this parameter.')
-    }
+      uniqueOnly: z
+        .boolean()
+        .optional()
+        .describe(
+          'If true, returns only unique cards (filters out duplicates with same stats but different art). If false, returns all card variants. Default: true'
+        ),
+      fields: z
+        .union([z.enum(['minimal', 'basic', 'full']), z.array(z.string())])
+        .optional()
+        .describe(
+          '💡 LEAVE UNSET (defaults to "basic" = comprehensive game data WITHOUT images). "basic" includes: type, HP, attacks, abilities, weakness, retreat. Only specify if: (1) "minimal" for name-only lists, (2) "full" when user explicitly asks for images/URLs (costs 3-4x tokens), (3) custom array for specific fields. For most queries, omit this parameter.'
+        ),
+    },
   },
-  async (params) => {
+  async params => {
     const { fields, ...filters } = params;
     const results = await dbClient.searchCards(filters);
     const filtered = filterFields(results, fields || 'basic');
@@ -363,9 +416,9 @@ server.registerTool(
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(filtered)
-        }
-      ]
+          text: safeJsonStringify(filtered),
+        },
+      ],
     };
   }
 );
@@ -375,21 +428,24 @@ server.registerTool(
   'get_card',
   {
     title: 'Get Card Details',
-    description: 'Get detailed information about a specific card by exact name. 💡 **Don\'t specify fields - auto-defaults to "basic" with ALL game data (type, HP, attacks, abilities, weakness, retreat). Only add fields="full" if user asks for image/URL.**',
+    description:
+      'Get detailed information about a specific card by exact name. 💡 **Don\'t specify fields - auto-defaults to "basic" with ALL game data (type, HP, attacks, abilities, weakness, retreat). Only add fields="full" if user asks for image/URL.**',
     inputSchema: {
       name: z.string().describe('Exact card name'),
-      fields: z.union([
-        z.enum(['minimal', 'basic', 'full']),
-        z.array(z.string())
-      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic" = all game data). Only specify if user explicitly asks for images ("full"), needs just names ("minimal"), or wants specific fields (custom array). Omit for normal queries.')
-    }
+      fields: z
+        .union([z.enum(['minimal', 'basic', 'full']), z.array(z.string())])
+        .optional()
+        .describe(
+          '💡 LEAVE UNSET (defaults to "basic" = all game data). Only specify if user explicitly asks for images ("full"), needs just names ("minimal"), or wants specific fields (custom array). Omit for normal queries.'
+        ),
+    },
   },
   async ({ name, fields }) => {
     const card = await dbClient.getCardByName(name);
     if (!card) {
       return {
         content: [{ type: 'text', text: `Card "${name}" not found` }],
-        isError: true
+        isError: true,
       };
     }
     const filtered = filterFields(card, fields || 'basic');
@@ -397,9 +453,9 @@ server.registerTool(
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(filtered)
-        }
-      ]
+          text: safeJsonStringify(filtered),
+        },
+      ],
     };
   }
 );
@@ -409,14 +465,17 @@ server.registerTool(
   'find_synergies',
   {
     title: 'Find Card Synergies',
-    description: 'Find cards that synergize well with a given Pokemon. Returns: (1) Same-type Pokemon with complementary roles, and (2) 10 recommended Trainer/Item cards to support your strategy. 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
+    description:
+      'Find cards that synergize well with a given Pokemon. Returns: (1) Same-type Pokemon with complementary roles, and (2) 10 recommended Trainer/Item cards to support your strategy. 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
     inputSchema: {
       cardName: z.string().describe('Name of the main card to build around'),
-      fields: z.union([
-        z.enum(['minimal', 'basic', 'full']),
-        z.array(z.string())
-      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic"). Only specify for special cases: "minimal" (just names), "full" (if user asks for images).')
-    }
+      fields: z
+        .union([z.enum(['minimal', 'basic', 'full']), z.array(z.string())])
+        .optional()
+        .describe(
+          '💡 LEAVE UNSET (defaults to "basic"). Only specify for special cases: "minimal" (just names), "full" (if user asks for images).'
+        ),
+    },
   },
   async ({ cardName, fields }) => {
     const synergies = await dbClient.findSynergies(cardName);
@@ -424,15 +483,15 @@ server.registerTool(
     const filtered = {
       card: synergies.card ? filterFields(synergies.card, fieldSelection) : synergies.card,
       sameTypeCards: filterFields(synergies.sameTypeCards || [], fieldSelection),
-      trainers: filterFields(synergies.trainers || [], fieldSelection)
+      trainers: filterFields(synergies.trainers || [], fieldSelection),
     };
     return {
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(filtered)
-        }
-      ]
+          text: safeJsonStringify(filtered),
+        },
+      ],
     };
   }
 );
@@ -442,14 +501,17 @@ server.registerTool(
   'find_counters',
   {
     title: 'Find Counter Cards',
-    description: 'Find cards that counter a specific type (exploit weakness). 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
+    description:
+      'Find cards that counter a specific type (exploit weakness). 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
     inputSchema: {
       targetType: z.string().describe('Pokemon type to counter (Fire, Water, Grass, etc.)'),
-      fields: z.union([
-        z.enum(['minimal', 'basic', 'full']),
-        z.array(z.string())
-      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic"). Only specify for: "minimal" (names only) or "full" (if user asks for images).')
-    }
+      fields: z
+        .union([z.enum(['minimal', 'basic', 'full']), z.array(z.string())])
+        .optional()
+        .describe(
+          '💡 LEAVE UNSET (defaults to "basic"). Only specify for: "minimal" (names only) or "full" (if user asks for images).'
+        ),
+    },
   },
   async ({ targetType, fields }) => {
     const counters = await dbClient.findCounters(targetType);
@@ -458,9 +520,9 @@ server.registerTool(
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(filtered)
-        }
-      ]
+          text: safeJsonStringify(filtered),
+        },
+      ],
     };
   }
 );
@@ -471,7 +533,7 @@ server.registerTool(
   {
     title: 'Get Type Statistics',
     description: 'Get statistics about card types (count, avg HP, avg retreat cost)',
-    inputSchema: {}
+    inputSchema: {},
   },
   async () => {
     const stats = await dbClient.getTypeStats();
@@ -479,9 +541,9 @@ server.registerTool(
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(stats)
-        }
-      ]
+          text: safeJsonStringify(stats),
+        },
+      ],
     };
   }
 );
@@ -491,14 +553,17 @@ server.registerTool(
   'query_cards',
   {
     title: 'Custom SQL Query',
-    description: 'Run a custom SQL query against the cards table. 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
+    description:
+      'Run a custom SQL query against the cards table. 💡 **Don\'t specify fields - auto-defaults to "basic" with all game data.**',
     inputSchema: {
       sql: z.string().describe('SQL query to execute (SELECT only)'),
-      fields: z.union([
-        z.enum(['minimal', 'basic', 'full']),
-        z.array(z.string())
-      ]).optional().describe('💡 LEAVE UNSET (defaults to "basic"). Only specify if needed: "minimal" (names), "full" (images).')
-    }
+      fields: z
+        .union([z.enum(['minimal', 'basic', 'full']), z.array(z.string())])
+        .optional()
+        .describe(
+          '💡 LEAVE UNSET (defaults to "basic"). Only specify if needed: "minimal" (names), "full" (images).'
+        ),
+    },
   },
   async ({ sql, fields }) => {
     try {
@@ -506,7 +571,7 @@ server.registerTool(
       if (!sql.trim().toUpperCase().startsWith('SELECT')) {
         return {
           content: [{ type: 'text', text: 'Only SELECT queries are allowed' }],
-          isError: true
+          isError: true,
         };
       }
       const results = await dbClient.query(sql);
@@ -515,15 +580,15 @@ server.registerTool(
         content: [
           {
             type: 'text',
-            text: safeJsonStringify(filtered)
-          }
-        ]
+            text: safeJsonStringify(filtered),
+          },
+        ],
       };
     } catch (err: unknown) {
       const error = err as Error;
       return {
         content: [{ type: 'text', text: `Query error: ${error.message}` }],
-        isError: true
+        isError: true,
       };
     }
   }
@@ -534,14 +599,17 @@ server.registerTool(
   'list_trainers',
   {
     title: 'List All Trainers and Items',
-    description: 'Get a list of all available Trainer and Item cards (187 cards total). Includes Supporters (Giovanni, Erika, etc.) and Items (Rare Candy, Pokémon Communication, etc.). 💡 **Don\'t specify fields - auto-defaults to "minimal" (just names, perfect for trainers).**',
+    description:
+      'Get a list of all available Trainer and Item cards (187 cards total). Includes Supporters (Giovanni, Erika, etc.) and Items (Rare Candy, Pokémon Communication, etc.). 💡 **Don\'t specify fields - auto-defaults to "minimal" (just names, perfect for trainers).**',
     inputSchema: {
       limit: z.number().optional().describe('Maximum results to return (default 50)'),
-      fields: z.union([
-        z.enum(['minimal', 'basic', 'full']),
-        z.array(z.string())
-      ]).optional().describe('💡 LEAVE UNSET (defaults to "minimal" for efficiency). Only specify for: "basic" (more details) or "full" (images).')
-    }
+      fields: z
+        .union([z.enum(['minimal', 'basic', 'full']), z.array(z.string())])
+        .optional()
+        .describe(
+          '💡 LEAVE UNSET (defaults to "minimal" for efficiency). Only specify for: "basic" (more details) or "full" (images).'
+        ),
+    },
   },
   async ({ limit, fields }) => {
     const trainers = await dbClient.query(`
@@ -557,9 +625,9 @@ server.registerTool(
       content: [
         {
           type: 'text',
-          text: safeJsonStringify(filtered)
-        }
-      ]
+          text: safeJsonStringify(filtered),
+        },
+      ],
     };
   }
 );
@@ -569,19 +637,18 @@ server.registerTool(
   'analyze_deck',
   {
     title: 'Analyze Deck Composition',
-    description: 'Analyze deck for Pokemon TCG Pocket rules compliance and strategic balance. Checks: 20-card limit, max 2 copies per card, Energy type count (1-2 recommended due to Energy Zone variance), evolution lines, basic Pokemon count (5-6 minimum), Pokemon/Trainer ratio (12/8 recommended), and win condition balance (ex Pokemon vs regular).',
+    description:
+      'Analyze deck for Pokemon TCG Pocket rules compliance and strategic balance. Checks: 20-card limit, max 2 copies per card, Energy type count (1-2 recommended due to Energy Zone variance), evolution lines, basic Pokemon count (5-6 minimum), Pokemon/Trainer ratio (12/8 recommended), and win condition balance (ex Pokemon vs regular).',
     inputSchema: {
-      cardNames: z.array(z.string()).describe('Array of card names in the deck (20 cards max)')
-    }
+      cardNames: z.array(z.string()).describe('Array of card names in the deck (20 cards max)'),
+    },
   },
   async ({ cardNames }) => {
-    const cards = await Promise.all(
-      cardNames.map(name => dbClient.getCardByName(name))
-    );
+    const cards = await Promise.all(cardNames.map(name => dbClient.getCardByName(name)));
 
     const validCards = cards.filter(c => c !== null) as Card[];
     const typeCount: Record<string, number> = {};
-    let totalEnergy = 0;
+    let _totalEnergy = 0;
     const energyTypes: Record<string, number> = {};
     const uniqueEnergyTypes = new Set<string>();
     let pokemonCount = 0;
@@ -611,7 +678,7 @@ server.registerTool(
 
       if (card.attacks) {
         const energyCost = await dbClient.analyzeEnergyCost(card.attacks);
-        totalEnergy += energyCost.total;
+        _totalEnergy += energyCost.total;
         for (const [type, count] of Object.entries(energyCost.types)) {
           energyTypes[type] = (energyTypes[type] || 0) + count;
           uniqueEnergyTypes.add(type);
@@ -627,13 +694,19 @@ server.registerTool(
       warnings.push(`Deck must be exactly 20 cards (current: ${cardNames.length})`);
     }
     if (energyTypeCount > 2) {
-      warnings.push(`3+ Energy types detected (${energyTypeCount}). Recommend 1-2 types for Energy Zone consistency`);
+      warnings.push(
+        `3+ Energy types detected (${energyTypeCount}). Recommend 1-2 types for Energy Zone consistency`
+      );
     }
     if (basicCount < 5) {
-      warnings.push(`Only ${basicCount} Basic Pokemon detected. Recommend 5-6 minimum for consistent starts`);
+      warnings.push(
+        `Only ${basicCount} Basic Pokemon detected. Recommend 5-6 minimum for consistent starts`
+      );
     }
     if (pokemonCount < 12 || pokemonCount > 15) {
-      warnings.push(`Pokemon count (${pokemonCount}) outside recommended range. Suggest 12-15 Pokemon, 5-8 Trainers`);
+      warnings.push(
+        `Pokemon count (${pokemonCount}) outside recommended range. Suggest 12-15 Pokemon, 5-8 Trainers`
+      );
     }
 
     return {
@@ -651,12 +724,13 @@ server.registerTool(
             energyTypes: Array.from(uniqueEnergyTypes),
             typeDistribution: typeCount,
             estimatedEnergyNeeds: energyTypes,
-            averageHp: validCards.reduce((sum, c) => sum + (parseInt(c.hp) || 0), 0) / validCards.length,
+            averageHp:
+              validCards.reduce((sum, c) => sum + (parseInt(c.hp) || 0), 0) / validCards.length,
             warnings,
-            rulesCompliant: warnings.length === 0
-          })
-        }
-      ]
+            rulesCompliant: warnings.length === 0,
+          }),
+        },
+      ],
     };
   }
 );
@@ -670,18 +744,18 @@ server.registerResource(
   {
     title: 'All Pokemon Cards',
     description: 'Complete Pokemon Pocket card database',
-    mimeType: 'application/json'
+    mimeType: 'application/json',
   },
-  async (uri) => {
+  async uri => {
     const cards = await dbClient.query('SELECT * FROM cards LIMIT 100');
     return {
       contents: [
         {
           uri: uri.href,
           text: safeJsonStringify(cards),
-          mimeType: 'application/json'
-        }
-      ]
+          mimeType: 'application/json',
+        },
+      ],
     };
   }
 );
@@ -693,18 +767,18 @@ server.registerResource(
   {
     title: 'Unique Pokemon Cards',
     description: 'One version of each unique card (excludes art variants)',
-    mimeType: 'application/json'
+    mimeType: 'application/json',
   },
-  async (uri) => {
+  async uri => {
     const cards = await dbClient.getUniqueCards();
     return {
       contents: [
         {
           uri: uri.href,
           text: safeJsonStringify(cards),
-          mimeType: 'application/json'
-        }
-      ]
+          mimeType: 'application/json',
+        },
+      ],
     };
   }
 );
@@ -716,18 +790,18 @@ server.registerResource(
   {
     title: 'Type Statistics',
     description: 'Statistical breakdown by Pokemon type',
-    mimeType: 'application/json'
+    mimeType: 'application/json',
   },
-  async (uri) => {
+  async uri => {
     const stats = await dbClient.getTypeStats();
     return {
       contents: [
         {
           uri: uri.href,
           text: safeJsonStringify(stats),
-          mimeType: 'application/json'
-        }
-      ]
+          mimeType: 'application/json',
+        },
+      ],
     };
   }
 );
@@ -739,11 +813,12 @@ server.registerPrompt(
   'build-deck',
   {
     title: 'Build Deck Around Card',
-    description: 'Generate a Pokemon TCG Pocket deck strategy centered around a specific card (20-card format)',
+    description:
+      'Generate a Pokemon TCG Pocket deck strategy centered around a specific card (20-card format)',
     argsSchema: {
       mainCard: z.string().describe('Main card to build deck around'),
-      strategy: z.enum(['aggro', 'control', 'midrange']).optional().describe('Deck strategy type')
-    }
+      strategy: z.enum(['aggro', 'control', 'midrange']).optional().describe('Deck strategy type'),
+    },
   },
   ({ mainCard, strategy }) => ({
     messages: [
@@ -767,10 +842,10 @@ Please:
 3. Consider important Trainers: Professor's Research (draw 2), Giovanni (+10 damage), Sabrina (switch), Rare Candy (Stage 2 evolution)
 4. Account for Energy Zone variance (1-2 types only)
 5. Explain win conditions (e.g., two ex KOs = instant win)
-6. List potential counters and how to play around them`
-        }
-      }
-    ]
+6. List potential counters and how to play around them`,
+        },
+      },
+    ],
   })
 );
 
@@ -782,8 +857,8 @@ server.registerPrompt(
     description: 'Build a Pokemon TCG Pocket deck to counter a specific type or strategy',
     argsSchema: {
       targetType: z.string().describe('Type or archetype to counter'),
-      sets: z.string().optional().describe('Available sets (comma-separated)')
-    }
+      sets: z.string().optional().describe('Available sets (comma-separated)'),
+    },
   },
   ({ targetType, sets }) => ({
     messages: [
@@ -804,10 +879,10 @@ Please:
 2. Consider disruption: Sabrina/Cyrus (force switches), Red Card/Mars (hand disruption)
 3. Suggest high HP Pokemon or tech cards (Giant Cape +20 HP, Rocky Helmet for chip damage)
 4. Explain the game plan against ${targetType}
-5. Build exactly 20 cards with 5-6 Basics minimum`
-        }
-      }
-    ]
+5. Build exactly 20 cards with 5-6 Basics minimum`,
+        },
+      },
+    ],
   })
 );
 
@@ -818,8 +893,8 @@ server.registerPrompt(
     title: 'Optimize Deck',
     description: 'Analyze and suggest improvements for an existing Pokemon TCG Pocket deck',
     argsSchema: {
-      deckList: z.string().describe('Current deck list (comma-separated card names)')
-    }
+      deckList: z.string().describe('Current deck list (comma-separated card names)'),
+    },
   },
   ({ deckList }) => ({
     messages: [
@@ -840,10 +915,10 @@ Please:
 2. Identify issues: Energy type count (>2 types = inconsistent), Basic count, Pokemon/Trainer ratio
 3. Check for key Trainers: Professor's Research (draw), Giovanni (+10 dmg), Sabrina (switch), Rare Candy (Stage 2)
 4. Suggest card swaps with reasoning (consider Giant Cape for HP breakpoints, ex Pokemon for faster wins)
-5. Verify Energy Zone compatibility and evolution line completeness`
-        }
-      }
-    ]
+5. Verify Energy Zone compatibility and evolution line completeness`,
+        },
+      },
+    ],
   })
 );
 
@@ -854,7 +929,7 @@ async function main() {
   console.error('Pokemon Pocket MCP Server running on stdio');
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error('Server error:', error);
   process.exit(1);
 });

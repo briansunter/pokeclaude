@@ -1,35 +1,31 @@
-name: Semantic Release
+name: Continuous Integration
 
 on:
   push:
     branches:
-      - main
       - master
+      - main
+      - '**'
   pull_request:
-    types: [closed]
     branches:
-      - main
       - master
+      - main
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
   pull-requests: write
-  packages: write
 
 jobs:
-  release:
-    name: Release
+  ci:
+    name: CI Checks
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
         timeout-minutes: 2
 
       - name: Setup Bun
@@ -58,9 +54,6 @@ jobs:
         run: bun run build
         timeout-minutes: 3
 
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bunx semantic-release
-        timeout-minutes: 10
+      - name: Check all quality gates
+        run: bun run check:all
+        timeout-minutes: 5
