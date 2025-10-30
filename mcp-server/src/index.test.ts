@@ -53,16 +53,38 @@ class MCPClient {
     });
 
     this.process.stdout!.on('data', (data: Buffer) => {
-      this.responseBuffer += data.toString();
+      const output = data.toString();
+      this.responseBuffer += output;
       this.processResponses();
     });
 
-    this.process.stderr!.on('data', () => {
-      // Suppress stderr
+    this.process.stderr!.on('data', (data: Buffer) => {
+      const error = data.toString();
+      // Only log critical errors to avoid clutter
+      if (error.includes('Error') || error.includes('error')) {
+        console.error('SERVER ERROR:', error.trim());
+      }
     });
 
-    // Wait for server initialization (4.5s to fit under 5s timeout)
-    await new Promise(resolve => setTimeout(resolve, 4500));
+    this.process.on('exit', (code, signal) => {
+      if (code !== 0) {
+        console.error(`SERVER EXITED with code ${code} and signal ${signal}`);
+      }
+    });
+
+    this.process.on('error', err => {
+      console.error('SERVER PROCESS ERROR:', err);
+    });
+
+    // Wait for server initialization
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // Check if process is still running
+    if (this.process.killed || this.process.exitCode !== null) {
+      throw new Error(
+        `Server process died during initialization (exitCode: ${this.process.exitCode})`
+      );
+    }
   }
 
   private processResponses() {
