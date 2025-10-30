@@ -44,7 +44,8 @@
   "dependencies": {
     "@duckdb/node-api": "^1.4.0-r.1",
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -408,7 +408,19 @@ server.registerTool(
         ),
     },
   },
-  async params => {
+  async (params: {
+    fields?: FieldSelection;
+    name?: string;
+    type?: string;
+    minHp?: number;
+    maxHp?: number;
+    set?: string;
+    hasAttacks?: boolean;
+    retreatCost?: number;
+    weakness?: string;
+    limit?: number;
+    uniqueOnly?: boolean;
+  }) => {
     const { fields, ...filters } = params;
     const results = await dbClient.searchCards(filters);
     const filtered = filterFields(results, fields || 'basic');
@@ -440,7 +452,7 @@ server.registerTool(
         ),
     },
   },
-  async ({ name, fields }) => {
+  async ({ name, fields }: { name: string; fields?: FieldSelection }) => {
     const card = await dbClient.getCardByName(name);
     if (!card) {
       return {
@@ -477,7 +489,7 @@ server.registerTool(
         ),
     },
   },
-  async ({ cardName, fields }) => {
+  async ({ cardName, fields }: { cardName: string; fields?: FieldSelection }) => {
     const synergies = await dbClient.findSynergies(cardName);
     const fieldSelection = fields || 'basic';
     const filtered = {
@@ -513,7 +525,7 @@ server.registerTool(
         ),
     },
   },
-  async ({ targetType, fields }) => {
+  async ({ targetType, fields }: { targetType: string; fields?: FieldSelection }) => {
     const counters = await dbClient.findCounters(targetType);
     const filtered = filterFields(counters, fields || 'basic');
     return {
@@ -565,7 +577,7 @@ server.registerTool(
         ),
     },
   },
-  async ({ sql, fields }) => {
+  async ({ sql, fields }: { sql: string; fields?: FieldSelection }) => {
     try {
       // Basic SQL injection protection
       if (!sql.trim().toUpperCase().startsWith('SELECT')) {
@@ -611,7 +623,7 @@ server.registerTool(
         ),
     },
   },
-  async ({ limit, fields }) => {
+  async ({ limit, fields }: { limit?: number; fields?: FieldSelection }) => {
     const trainers = await dbClient.query(`
       SELECT DISTINCT ON (name) *
       FROM cards
@@ -643,7 +655,7 @@ server.registerTool(
       cardNames: z.array(z.string()).describe('Array of card names in the deck (20 cards max)'),
     },
   },
-  async ({ cardNames }) => {
+  async ({ cardNames }: { cardNames: string[] }) => {
     const cards = await Promise.all(cardNames.map(name => dbClient.getCardByName(name)));
 
     const validCards = cards.filter(c => c !== null) as Card[];
