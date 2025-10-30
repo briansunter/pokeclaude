@@ -61,8 +61,8 @@ class MCPClient {
       // Suppress stderr
     });
 
-    // Wait for server initialization
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Wait for server initialization (increased for CI)
+    await new Promise(resolve => setTimeout(resolve, 3000));
   }
 
   private processResponses() {
