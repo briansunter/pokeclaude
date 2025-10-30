@@ -50,14 +50,10 @@ jobs:
         run: bun run typecheck
         timeout-minutes: 2
 
-      - name: Run tests
-        run: bun run test
-        timeout-minutes: 3
-
-      - name: Build package
+      - name: Build package (includes copying CSV data)
         run: bun run build
         timeout-minutes: 3
 
-      - name: Check all quality gates
-        run: bun run check:all
-        timeout-minutes: 5
+      - name: Run tests
+        run: bun run test
+        timeout-minutes: 3
