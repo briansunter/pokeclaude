@@ -16,11 +16,27 @@ const CSV_PATH = path.join(__dirname, '../data/pokemon_pocket_cards.csv');
 // Field selection presets to reduce context usage
 // - minimal: Just id and name (smallest response)
 // - basic: Common fields without images/URLs (default for all tools)
-// - full: All 15 fields including set info, images, and URLs
+// - full: All 22 fields including set info, images, URLs, and evolution metadata
+//
+// Evolution metadata fields:
+// - evolution_stage: 'Basic', 'Stage 1', 'Stage 2', 'Mega Evolution'
+// - evolves_from: Name of the Pokemon this card evolves from (empty for base forms)
+// - evolves_to: Comma-separated list of evolution names
+// - evolution_type: 'Regular', 'Mega', 'Primal', etc.
+// - base_pokemon_id: UUID of the base form (for mega evolutions)
+// - is_evolution: 'true' for evolution cards, 'false' for base forms
+// - evolution_method: How the evolution occurs (e.g., 'Mega Evolution')
 const FIELD_PRESETS = {
   minimal: ['id', 'name'] as const,
   basic: ['id', 'name', 'type', 'hp', 'attacks', 'weakness', 'retreat_cost', 'rarity'] as const,
-  full: ['id', 'set_code', 'set_name', 'card_number', 'name', 'type', 'hp', 'rarity', 'abilities', 'attacks', 'weakness', 'resistance', 'retreat_cost', 'image_url', 'card_url'] as const
+  full: [
+    'id', 'set_code', 'set_name', 'card_number', 'name', 'type', 'hp',
+    'rarity', 'abilities', 'attacks', 'weakness', 'resistance',
+    'retreat_cost', 'image_url', 'card_url',
+    // Evolution metadata fields
+    'evolution_stage', 'evolves_from', 'evolves_to', 'evolution_type',
+    'base_pokemon_id', 'is_evolution', 'evolution_method'
+  ] as const
 };
 
 type FieldPreset = keyof typeof FIELD_PRESETS;
@@ -78,6 +94,14 @@ interface Card {
   retreat_cost: string;
   image_url: string;
   card_url: string;
+  // Evolution metadata fields
+  evolution_stage?: string;
+  evolves_from?: string;
+  evolves_to?: string;
+  evolution_type?: string;
+  base_pokemon_id?: string;
+  is_evolution?: string;
+  evolution_method?: string;
 }
 
 class DuckDBClient {
