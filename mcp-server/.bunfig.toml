@@ -1,3 +1,0 @@
-[test]
-# Increase test timeout to 60 seconds
-timeout = 60000
