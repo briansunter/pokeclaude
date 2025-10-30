@@ -3,6 +3,23 @@ import * as cheerio from 'cheerio';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * Pokemon Pocket Card Scraper
+ *
+ * Automatically scrapes Pokemon TCG Pocket cards from limitlesstcg.com
+ * Features:
+ * - Auto-discovery of new sets (including B1: Mega Rising)
+ * - Incremental updates (only new cards)
+ * - Parallel scraping for speed
+ * - Support for all card types including:
+ *   * Basic Pokemon
+ *   * Stage 1/Stage 2 Evolution Pokemon
+ *   * ex cards (formerly GX cards)
+ *   * Mega evolution cards (B1 set)
+ *   * Trainer and Energy cards
+ * - DuckDB-ready CSV export with UUID primary keys
+ */
+
 interface PokemonCard {
   id: string;
   set_code: string;
@@ -19,6 +36,14 @@ interface PokemonCard {
   retreat_cost?: string;
   image_url: string;
   card_url: string;
+  // Evolution metadata fields
+  evolution_stage?: string;
+  evolves_from?: string;
+  evolves_to?: string;
+  evolution_type?: string;
+  base_pokemon_id?: string;
+  is_evolution?: string;
+  evolution_method?: string;
 }
 
 interface Attack {
@@ -35,6 +60,69 @@ interface SetInfo {
   total_cards: number;
 }
 
+/**
+ * Detect and populate evolution metadata for a Pokemon card
+ */
+function detectEvolutionMetadata(card: PokemonCard, allCards: PokemonCard[]): void {
+  const cardName = card.name.trim();
+
+  // Detect Mega Evolution: "Mega [Pokemon] ex"
+  const megaMatch = cardName.match(/^Mega\s+(.+?)(?:\s+ex)?$/i);
+  if (megaMatch) {
+    const baseName = megaMatch[1].trim();
+    card.evolution_stage = 'Mega Evolution';
+    card.evolves_from = baseName;
+    card.evolves_to = '';
+    card.evolution_type = 'Mega';
+    card.evolution_method = 'Mega Evolution';
+    card.is_evolution = 'true';
+
+    // Find base Pokemon ID
+    const baseCard = allCards.find(c => c.name === baseName);
+    if (baseCard) {
+      card.base_pokemon_id = baseCard.id;
+    }
+    return;
+  }
+
+  // Detect regular Pokemon cards
+  // For now, assume all Pokemon without "Mega" prefix are basic forms
+  // Future enhancement: detect Stage 1/Stage 2 via database lookup
+
+  // Check if this is a base form for any mega evolution
+  const hasMegaEvo = allCards.some(c => {
+    const cName = c.name.trim();
+    const match = cName.match(/^Mega\s+(.+?)(?:\s+ex)?$/i);
+    return match && match[1].trim() === cardName;
+  });
+
+  if (hasMegaEvo) {
+    // This is a base Pokemon that has a mega evolution
+    card.evolution_stage = 'Basic';
+    card.evolves_from = '';
+    // Find all mega evolutions
+    const megaEvos = allCards
+      .filter(c => {
+        const cName = c.name.trim();
+        const match = cName.match(/^Mega\s+(.+?)(?:\s+ex)?$/i);
+        return match && match[1].trim() === cardName;
+      })
+      .map(c => c.name);
+    card.evolves_to = megaEvos.join(', ');
+    card.evolution_type = 'Regular';
+    card.evolution_method = '';
+    card.is_evolution = 'false';
+  } else {
+    // Regular Pokemon without known evolution
+    card.evolution_stage = 'Basic';
+    card.evolves_from = '';
+    card.evolves_to = '';
+    card.evolution_type = 'Regular';
+    card.evolution_method = '';
+    card.is_evolution = 'false';
+  }
+}
+
 // Auto-detect sets from the website
 async function discoverSets(): Promise<SetInfo[]> {
   console.log('🔍 Auto-discovering sets from limitlesstcg.com...\n');
@@ -43,9 +131,9 @@ async function discoverSets(): Promise<SetInfo[]> {
     // Scrape the main cards page to find all available sets
     const response = await axios.get('https://pocket.limitlesstcg.com/cards', {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },
-      timeout: 30000
+      timeout: 30000,
     });
 
     const $ = cheerio.load(response.data);
@@ -58,7 +146,7 @@ async function discoverSets(): Promise<SetInfo[]> {
       if (!href) return;
 
       // Match /cards/{SET_CODE} but not /cards/{SET_CODE}/{NUMBER}
-      const match = href.match(/^\/cards\/([A-Z0-9\-]+)$/i);
+      const match = href.match(/^\/cards\/([A-Z0-9-]+)$/i);
       if (!match) return;
 
       const setCode = match[1];
@@ -72,7 +160,7 @@ async function discoverSets(): Promise<SetInfo[]> {
         code: setCode,
         name: setName,
         release_date: '',
-        total_cards: 0
+        total_cards: 0,
       });
     });
 
@@ -96,6 +184,7 @@ async function discoverSets(): Promise<SetInfo[]> {
 
 // Fallback sets in case auto-discovery fails
 const FALLBACK_SETS: SetInfo[] = [
+  { code: 'B1', name: 'Mega Rising B1', release_date: '', total_cards: 331 },
   { code: 'A4b', name: 'Deluxe Pack: ex A4b', release_date: '30 Sep 25', total_cards: 379 },
   { code: 'A4a', name: 'Secluded Springs A4a', release_date: '28 Aug 25', total_cards: 105 },
   { code: 'A4', name: 'Wisdom of Sea and Sky A4', release_date: '30 Jul 25', total_cards: 241 },
@@ -120,9 +209,9 @@ async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCar
   try {
     const response = await axios.get(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },
-      timeout: 30000
+      timeout: 30000,
     });
 
     const $ = cheerio.load(response.data);
@@ -131,8 +220,8 @@ async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCar
       const href = $(element).attr('href');
       if (!href || href === '/cards/' + setInfo.code) return;
 
-      const cardMatch = href.match(/\/cards\/([A-Z0-9\-]+_\d+)/i) ||
-                       href.match(/\/cards\/([A-Z0-9\-]+)\/(\d+)/i);
+      const cardMatch =
+        href.match(/\/cards\/([A-Z0-9-]+_\d+)/i) || href.match(/\/cards\/([A-Z0-9-]+)\/(\d+)/i);
 
       if (cardMatch) {
         const fullCardId = cardMatch[1];
@@ -141,7 +230,9 @@ async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCar
         const img = $(element).find('img').first();
         const paddedNumber = cardNumber.padStart(3, '0');
         const cdnUrl = 'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket';
-        const imgSrc = img.attr('src') || cdnUrl + '/' + setInfo.code + '/' + setInfo.code + '_' + paddedNumber + '_EN_SM.webp';
+        const imgSrc =
+          img.attr('src') ||
+          cdnUrl + '/' + setInfo.code + '/' + setInfo.code + '_' + paddedNumber + '_EN_SM.webp';
 
         const cardName = img.attr('alt') || img.attr('title') || 'Unknown';
 
@@ -152,7 +243,7 @@ async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCar
           card_number: cardNumber,
           name: cardName,
           image_url: imgSrc,
-          card_url: 'https://pocket.limitlesstcg.com' + href
+          card_url: 'https://pocket.limitlesstcg.com' + href,
         });
       }
     });
@@ -168,8 +259,9 @@ async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCar
           set_name: setInfo.name,
           card_number: i.toString(),
           name: 'Card ' + i,
-          image_url: cdnUrl + '/' + setInfo.code + '/' + setInfo.code + '_' + cardNumber + '_EN_SM.webp',
-          card_url: 'https://pocket.limitlesstcg.com/cards/' + setInfo.code + '_' + cardNumber
+          image_url:
+            cdnUrl + '/' + setInfo.code + '/' + setInfo.code + '_' + cardNumber + '_EN_SM.webp',
+          card_url: 'https://pocket.limitlesstcg.com/cards/' + setInfo.code + '_' + cardNumber,
         });
       }
     }
@@ -178,7 +270,6 @@ async function scrapeSet(setInfo: SetInfo, concurrency = 20): Promise<PokemonCar
 
     // Scrape card details in parallel batches
     await scrapeCardsInBatches(cards, concurrency);
-
   } catch (error) {
     console.error('  Error scraping set ' + setInfo.code + ':', error);
   }
@@ -196,9 +287,7 @@ async function scrapeCardsInBatches(cards: PokemonCard[], concurrency: number): 
   for (let i = 0; i < cards.length; i += concurrency) {
     const batch = cards.slice(i, i + concurrency);
 
-    await Promise.all(
-      batch.map(card => scrapeCardDetails(card))
-    );
+    await Promise.all(batch.map(card => scrapeCardDetails(card)));
 
     completed += batch.length;
     if (completed % 50 === 0 || completed === total) {
@@ -211,9 +300,9 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
   try {
     const response = await axios.get(card.card_url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },
-      timeout: 10000
+      timeout: 10000,
     });
 
     const $ = cheerio.load(response.data);
@@ -248,7 +337,11 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
     // Extract attacks
     const attacks: Attack[] = [];
     $('.card-text-attack').each((_, element) => {
-      const attackInfo = $(element).find('.card-text-attack-info').text().replace(/\s+/g, ' ').trim();
+      const attackInfo = $(element)
+        .find('.card-text-attack-info')
+        .text()
+        .replace(/\s+/g, ' ')
+        .trim();
       const attackEffect = $(element).find('.card-text-attack-effect').text().trim();
 
       // Parse attack name and damage (handles "Name 50" or "Name 30x" or just "Name")
@@ -257,12 +350,12 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
         attacks.push({
           name: match[1].trim(),
           damage: match[2],
-          effect: attackEffect || undefined
+          effect: attackEffect || undefined,
         });
       } else {
         attacks.push({
           name: attackInfo.trim(),
-          effect: attackEffect || undefined
+          effect: attackEffect || undefined,
         });
       }
     });
@@ -275,8 +368,7 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
 
     const retreatMatch = wrr.match(/Retreat:\s*(\d+)/);
     if (retreatMatch) card.retreat_cost = retreatMatch[1];
-
-  } catch (error) {
+  } catch (_error) {
     // Silently fail for individual cards
   }
 }
@@ -297,17 +389,29 @@ function exportToCSV(cards: PokemonCard[], filename: string): void {
     'resistance',
     'retreat_cost',
     'image_url',
-    'card_url'
+    'card_url',
+    // Evolution metadata fields
+    'evolution_stage',
+    'evolves_from',
+    'evolves_to',
+    'evolution_type',
+    'base_pokemon_id',
+    'is_evolution',
+    'evolution_method',
   ];
-  
+
   const csvLines = [headers.join(',')];
-  
+
   for (const card of cards) {
-    const attacksStr = card.attacks ? card.attacks.map(a => {
-      let str = a.name + ': ' + (a.damage || '');
-      if (a.effect) str += ' - ' + a.effect;
-      return str;
-    }).join('; ') : '';
+    const attacksStr = card.attacks
+      ? card.attacks
+          .map(a => {
+            let str = a.name + ': ' + (a.damage || '');
+            if (a.effect) str += ' - ' + a.effect;
+            return str;
+          })
+          .join('; ')
+      : '';
     const row = [
       escapeCsv(card.id),
       escapeCsv(card.set_code),
@@ -323,11 +427,19 @@ function exportToCSV(cards: PokemonCard[], filename: string): void {
       escapeCsv(card.resistance || ''),
       escapeCsv(card.retreat_cost || ''),
       escapeCsv(card.image_url),
-      escapeCsv(card.card_url)
+      escapeCsv(card.card_url),
+      // Evolution metadata
+      escapeCsv(card.evolution_stage || ''),
+      escapeCsv(card.evolves_from || ''),
+      escapeCsv(card.evolves_to || ''),
+      escapeCsv(card.evolution_type || ''),
+      escapeCsv(card.base_pokemon_id || ''),
+      escapeCsv(card.is_evolution || ''),
+      escapeCsv(card.evolution_method || ''),
     ];
     csvLines.push(row.join(','));
   }
-  
+
   writeFileSync(filename, csvLines.join('\n'), 'utf-8');
   console.log('\nExported ' + cards.length + ' cards to ' + filename);
 }
@@ -342,7 +454,7 @@ function escapeCsv(value: string): string {
 }
 
 // Load existing cards from CSV
-function loadExistingCards(filename: string): Set<string> {
+function _loadExistingCards(filename: string): Set<string> {
   if (!existsSync(filename)) {
     console.log('No existing CSV found, will scrape all cards');
     return new Set();
@@ -381,9 +493,7 @@ function loadExistingCards(filename: string): Set<string> {
 
 // Merge new cards with existing cards
 function mergeCards(existingCards: PokemonCard[], newCards: PokemonCard[]): PokemonCard[] {
-  const existingKeys = new Set(
-    existingCards.map(c => `${c.set_code}:${c.card_number}`)
-  );
+  const existingKeys = new Set(existingCards.map(c => `${c.set_code}:${c.card_number}`));
 
   const uniqueNewCards = newCards.filter(card => {
     const key = `${card.set_code}:${card.card_number}`;
@@ -421,18 +531,21 @@ function parseExistingCsv(filename: string): PokemonCard[] {
       const parts = line.split(',');
       if (parts.length >= 15) {
         const attacksStr = parts[9]?.replace(/"/g, '') || '';
-        const attacks: Attack[] = attacksStr.split(';').map(a => {
-          const [name, rest] = a.trim().split(':');
-          if (!rest) return { name: name?.trim() || '' };
+        const attacks: Attack[] = attacksStr
+          .split(';')
+          .map(a => {
+            const [name, rest] = a.trim().split(':');
+            if (!rest) return { name: name?.trim() || '' };
 
-          // Split on ' - ' to separate damage from effect
-          const [damage, effect] = rest.split(' - ').map(s => s.trim());
-          return {
-            name: name?.trim() || '',
-            damage: damage || undefined,
-            effect: effect || undefined
-          };
-        }).filter(a => a.name);
+            // Split on ' - ' to separate damage from effect
+            const [damage, effect] = rest.split(' - ').map(s => s.trim());
+            return {
+              name: name?.trim() || '',
+              damage: damage || undefined,
+              effect: effect || undefined,
+            };
+          })
+          .filter(a => a.name);
 
         cards.push({
           id: parts[0].replace(/"/g, ''),
@@ -443,13 +556,24 @@ function parseExistingCsv(filename: string): PokemonCard[] {
           type: parts[5].replace(/"/g, ''),
           hp: parts[6].replace(/"/g, ''),
           rarity: parts[7].replace(/"/g, ''),
-          abilities: parts[8]?.replace(/"/g, '').split(';').filter(a => a),
+          abilities: parts[8]
+            ?.replace(/"/g, '')
+            .split(';')
+            .filter(a => a),
           attacks: attacks,
           weakness: parts[10]?.replace(/"/g, ''),
           resistance: parts[11]?.replace(/"/g, ''),
           retreat_cost: parts[12]?.replace(/"/g, ''),
           image_url: parts[13].replace(/"/g, ''),
-          card_url: parts[14].replace(/"/g, '')
+          card_url: parts[14].replace(/"/g, ''),
+          // Evolution metadata fields (may not exist in old CSV)
+          evolution_stage: parts[15]?.replace(/"/g, ''),
+          evolves_from: parts[16]?.replace(/"/g, ''),
+          evolves_to: parts[17]?.replace(/"/g, ''),
+          evolution_type: parts[18]?.replace(/"/g, ''),
+          base_pokemon_id: parts[19]?.replace(/"/g, ''),
+          is_evolution: parts[20]?.replace(/"/g, ''),
+          evolution_method: parts[21]?.replace(/"/g, ''),
         });
       }
     }
@@ -478,9 +602,7 @@ async function main() {
 
   // Load existing cards if doing incremental update
   const existingCards = isFullScrape ? [] : parseExistingCsv(csvFile);
-  const existingCardKeys = new Set(
-    existingCards.map(c => `${c.set_code}:${c.card_number}`)
-  );
+  const existingCardKeys = new Set(existingCards.map(c => `${c.set_code}:${c.card_number}`));
 
   // Auto-discover sets from the website
   const sets = await discoverSets();
@@ -491,9 +613,7 @@ async function main() {
   // Scrape all sets in parallel
   console.log(`\n🚀 Scraping ${sets.length} sets in parallel...\n`);
 
-  const allSetCards = await Promise.all(
-    sets.map(setInfo => scrapeSet(setInfo))
-  );
+  const allSetCards = await Promise.all(sets.map(setInfo => scrapeSet(setInfo)));
 
   // Flatten and filter cards
   for (const setCards of allSetCards) {
@@ -509,6 +629,13 @@ async function main() {
 
   // Merge with existing cards
   const allCards = isFullScrape ? newCards : mergeCards(existingCards, newCards);
+
+  // Detect evolution metadata for all cards
+  console.log('\n🔍 Detecting evolution metadata...');
+  for (const card of allCards) {
+    detectEvolutionMetadata(card, allCards);
+  }
+  console.log(`✅ Populated evolution metadata for ${allCards.length} cards\n`);
 
   exportToCSV(allCards, csvFile);
 

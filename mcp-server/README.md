@@ -32,6 +32,7 @@ MCP server that enables AI agents (like Claude Code) to query and analyze Pokemo
 ## Duplicate Filtering
 
 The card database contains **2,077 total cards**, but many are duplicates with different art:
+
 - **1,890 cards** with attacks (total)
 - **1,068 unique cards** with attacks
 - **822 duplicate cards** (43.5% duplicates)
@@ -41,21 +42,24 @@ The card database contains **2,077 total cards**, but many are duplicates with d
 Cards are considered unique based on: `name`, `type`, `hp`, `attacks`, `weakness`, `retreat_cost`
 
 **Example:**
+
 - Pikachu ex (Circle Circuit) appears **7 times** across sets A1, A4b (different art, same stats) = **1 unique card**
 - Pikachu has **7 different versions** with different attacks (Gnaw, Spark, Circle Circuit, etc.) = **7 unique cards**
 
 ### How to Use
 
 **search_cards (defaults to unique cards):**
+
 ```javascript
 // Returns 7 unique Pikachu cards (default behavior)
-search_cards({ name: "Pikachu" })
+search_cards({ name: 'Pikachu' });
 
 // Returns all 21 Pikachu cards (including art variants)
-search_cards({ name: "Pikachu", uniqueOnly: false })
+search_cards({ name: 'Pikachu', uniqueOnly: false });
 ```
 
 **All tools filter duplicates by default:**
+
 - `search_cards` - Returns unique cards by default (set `uniqueOnly: false` to see all variants)
 - `find_synergies` - Always returns unique cards
 - `find_counters` - Always returns unique cards
@@ -70,10 +74,12 @@ See [DUPLICATE_FILTERING.md](./DUPLICATE_FILTERING.md) for detailed documentatio
 ### Setup with Claude Desktop
 
 Add this to your Claude Desktop config:
+
 - **macOS/Linux:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 **Using npx (recommended - works with any Node installation):**
+
 ```json
 {
   "mcpServers": {
@@ -86,6 +92,7 @@ Add this to your Claude Desktop config:
 ```
 
 **Using bunx (faster, requires bun):**
+
 ```json
 {
   "mcpServers": {
@@ -206,7 +213,8 @@ ORDER BY CAST(hp AS INTEGER) DESC
 
 ```javascript
 // Get breakdown of all types
-{} // No parameters needed
+{
+} // No parameters needed
 // Returns:
 // {
 //   "type": "Fire",
@@ -337,6 +345,7 @@ chmod +x dist/index.js
 Cards scraped from [limitlesstcg.com/pocket](https://pocket.limitlesstcg.com) using the scraper in `../scraper.ts`.
 
 Quality reports:
+
 - `../SPOT_CHECK_REPORT.md` - Manual verification results
 - `../COMPREHENSIVE_QA_REPORT.md` - DuckDB analysis results
 

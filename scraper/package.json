@@ -6,7 +6,8 @@
   "scripts": {
     "scrape": "tsx src/scraper.ts",
     "scrape:full": "tsx src/scraper.ts --full",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'No tests specified for scraper' && exit 0"
   },
   "dependencies": {
     "axios": "^1.6.5",

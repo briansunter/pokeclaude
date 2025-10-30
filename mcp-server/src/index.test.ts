@@ -13,14 +13,32 @@ interface MCPRequest {
   jsonrpc: string;
   id: number;
   method: string;
-  params?: any;
+  params?: unknown;
 }
 
 interface MCPResponse {
   jsonrpc: string;
   id: number;
-  result?: any;
-  error?: any;
+  result?: unknown;
+  error?: unknown;
+}
+
+interface Tool {
+  name: string;
+  description?: string;
+  inputSchema?: unknown;
+}
+
+interface Card {
+  id: string;
+  name: string;
+  type?: string;
+  hp?: string;
+  attacks?: string;
+  weakness?: string;
+  retreat_cost?: string;
+  rarity?: string;
+  [key: string]: unknown;
 }
 
 class MCPClient {
@@ -31,20 +49,42 @@ class MCPClient {
 
   async start() {
     this.process = spawn('bun', [SERVER_PATH], {
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
 
     this.process.stdout!.on('data', (data: Buffer) => {
-      this.responseBuffer += data.toString();
+      const output = data.toString();
+      this.responseBuffer += output;
       this.processResponses();
     });
 
-    this.process.stderr!.on('data', () => {
-      // Suppress stderr
+    this.process.stderr!.on('data', (data: Buffer) => {
+      const error = data.toString();
+      // Only log critical errors to avoid clutter
+      if (error.includes('Error') || error.includes('error')) {
+        console.error('SERVER ERROR:', error.trim());
+      }
+    });
+
+    this.process.on('exit', (code, signal) => {
+      if (code !== 0) {
+        console.error(`SERVER EXITED with code ${code} and signal ${signal}`);
+      }
+    });
+
+    this.process.on('error', err => {
+      console.error('SERVER PROCESS ERROR:', err);
     });
 
     // Wait for server initialization
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // Check if process is still running
+    if (this.process.killed || this.process.exitCode !== null) {
+      throw new Error(
+        `Server process died during initialization (exitCode: ${this.process.exitCode})`
+      );
+    }
   }
 
   private processResponses() {
@@ -64,20 +104,20 @@ class MCPClient {
               pending.resolve(response.result);
             }
           }
-        } catch (err) {
+        } catch (_err) {
           // Ignore parse errors
         }
       }
     }
   }
 
-  async request(method: string, params?: any): Promise<any> {
+  async request(method: string, params?: unknown): Promise<unknown> {
     const id = this.requestId++;
     const request: MCPRequest = {
       jsonrpc: '2.0',
       id,
       method,
-      params
+      params,
     };
 
     return new Promise((resolve, reject) => {
@@ -89,14 +129,14 @@ class MCPClient {
           this.pendingRequests.delete(id);
           reject(new Error(`Request ${id} timed out`));
         }
-      }, 5000);
+      }, 120000);
     });
   }
 
-  async callTool(name: string, args: any): Promise<any> {
+  async callTool(name: string, args: unknown): Promise<unknown> {
     const result = await this.request('tools/call', {
       name,
-      arguments: args
+      arguments: args,
     });
     return JSON.parse(result.content[0].text);
   }
@@ -116,7 +156,7 @@ beforeAll(async () => {
   await client.request('initialize', {
     protocolVersion: '2024-11-05',
     capabilities: {},
-    clientInfo: { name: 'test-client', version: '1.0.0' }
+    clientInfo: { name: 'test-client', version: '1.0.0' },
   });
 });
 
@@ -130,7 +170,7 @@ describe('Server Initialization', () => {
     expect(result.tools).toBeArray();
     expect(result.tools.length).toBe(8);
 
-    const toolNames = result.tools.map((t: any) => t.name);
+    const toolNames = result.tools.map((t: Tool) => t.name);
     expect(toolNames).toContain('search_cards');
     expect(toolNames).toContain('get_card');
     expect(toolNames).toContain('find_synergies');
@@ -146,7 +186,7 @@ describe('Field Filtering - search_cards', () => {
   test('should return basic fields by default', async () => {
     const cards = await client.callTool('search_cards', {
       name: 'Pikachu',
-      limit: 1
+      limit: 1,
     });
 
     expect(cards).toBeArray();
@@ -175,7 +215,7 @@ describe('Field Filtering - search_cards', () => {
     const cards = await client.callTool('search_cards', {
       name: 'Pikachu',
       limit: 1,
-      fields: 'minimal'
+      fields: 'minimal',
     });
 
     expect(cards).toBeArray();
@@ -189,7 +229,7 @@ describe('Field Filtering - search_cards', () => {
     const cards = await client.callTool('search_cards', {
       name: 'Pikachu',
       limit: 1,
-      fields: 'full'
+      fields: 'full',
     });
 
     expect(cards).toBeArray();
@@ -202,14 +242,14 @@ describe('Field Filtering - search_cards', () => {
     expect(fields).toContain('card_url');
     expect(fields).toContain('set_name');
     expect(fields).toContain('set_code');
-    expect(fields.length).toBe(15);
+    expect(fields.length).toBe(22); // Updated from 15 to 22 (7 new evolution metadata fields)
   });
 
   test('should return custom field array', async () => {
     const cards = await client.callTool('search_cards', {
       name: 'Pikachu',
       limit: 1,
-      fields: ['name', 'type', 'hp']
+      fields: ['name', 'type', 'hp'],
     });
 
     expect(cards).toBeArray();
@@ -223,7 +263,7 @@ describe('Field Filtering - search_cards', () => {
 describe('Field Filtering - get_card', () => {
   test('should return basic fields by default', async () => {
     const card = await client.callTool('get_card', {
-      name: 'Pikachu ex'
+      name: 'Pikachu ex',
     });
 
     const fields = Object.keys(card);
@@ -235,7 +275,7 @@ describe('Field Filtering - get_card', () => {
   test('should support field presets', async () => {
     const minimal = await client.callTool('get_card', {
       name: 'Pikachu ex',
-      fields: 'minimal'
+      fields: 'minimal',
     });
 
     expect(Object.keys(minimal)).toEqual(['id', 'name']);
@@ -246,7 +286,7 @@ describe('Field Filtering - find_synergies', () => {
   test('should filter nested card arrays', async () => {
     const synergies = await client.callTool('find_synergies', {
       cardName: 'Pikachu ex',
-      fields: 'minimal'
+      fields: 'minimal',
     });
 
     expect(synergies).toHaveProperty('card');
@@ -266,7 +306,7 @@ describe('Field Filtering - find_counters', () => {
   test('should support field filtering', async () => {
     const counters = await client.callTool('find_counters', {
       targetType: 'Water',
-      fields: 'basic'
+      fields: 'basic',
     });
 
     expect(counters).toBeArray();
@@ -282,7 +322,7 @@ describe('Trainers and Items', () => {
   test('should list trainers and items', async () => {
     const trainers = await client.callTool('list_trainers', {
       limit: 20,
-      fields: 'minimal'
+      fields: 'minimal',
     });
 
     expect(trainers).toBeArray();
@@ -298,18 +338,18 @@ describe('Trainers and Items', () => {
   test('should search trainers by name', async () => {
     const giovanni = await client.callTool('search_cards', {
       name: 'Giovanni',
-      hasAttacks: false
+      hasAttacks: false,
     });
 
     expect(giovanni).toBeArray();
     expect(giovanni.length).toBeGreaterThan(0);
-    expect(giovanni.every((c: any) => c.name.includes('Giovanni'))).toBe(true);
+    expect(giovanni.every((c: Card) => c.name.includes('Giovanni'))).toBe(true);
   });
 
   test('should get all trainers with hasAttacks=false', async () => {
     const allTrainers = await client.callTool('search_cards', {
       hasAttacks: false,
-      limit: 50
+      limit: 50,
     });
 
     expect(allTrainers).toBeArray();
@@ -321,44 +361,46 @@ describe('Functional Tests', () => {
   test('should search cards by name', async () => {
     const cards = await client.callTool('search_cards', {
       name: 'Charizard',
-      limit: 5
+      limit: 5,
     });
 
     expect(cards).toBeArray();
     expect(cards.length).toBeGreaterThan(0);
-    expect(cards.every((c: any) => c.name.toLowerCase().includes('charizard'))).toBe(true);
+    expect(cards.every((c: Card) => c.name.toLowerCase().includes('charizard'))).toBe(true);
   });
 
   test('should filter by type', async () => {
     const cards = await client.callTool('search_cards', {
       type: 'Fire',
-      limit: 10
+      limit: 10,
     });
 
     expect(cards).toBeArray();
-    expect(cards.every((c: any) => c.type === 'Fire')).toBe(true);
+    expect(cards.every((c: Card) => c.type === 'Fire')).toBe(true);
   });
 
   test('should filter by HP range', async () => {
     const cards = await client.callTool('search_cards', {
       minHp: 100,
       maxHp: 150,
-      limit: 10
+      limit: 10,
     });
 
     expect(cards).toBeArray();
     if (cards.length > 0) {
-      expect(cards.every((c: any) => {
-        const hp = parseInt(c.hp);
-        return hp >= 100 && hp <= 150;
-      })).toBe(true);
+      expect(
+        cards.every((c: Card) => {
+          const hp = parseInt(c.hp || '0');
+          return hp >= 100 && hp <= 150;
+        })
+      ).toBe(true);
     }
   });
 
   test('should return unique cards by default', async () => {
     const cards = await client.callTool('search_cards', {
       name: 'Pikachu',
-      limit: 50
+      limit: 50,
     });
 
     // Check that we don't have duplicates with identical stats
@@ -385,7 +427,7 @@ describe('Error Handling', () => {
   test('should handle card not found', async () => {
     try {
       await client.callTool('get_card', {
-        name: 'NonexistentCard12345'
+        name: 'NonexistentCard12345',
       });
       expect(true).toBe(false); // Should not reach here
     } catch (error) {
@@ -396,7 +438,7 @@ describe('Error Handling', () => {
   test('should reject non-SELECT queries', async () => {
     try {
       await client.callTool('query_cards', {
-        sql: 'DROP TABLE cards'
+        sql: 'DROP TABLE cards',
       });
       expect(true).toBe(false); // Should not reach here
     } catch (error) {

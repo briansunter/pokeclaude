@@ -46,10 +46,10 @@ Pokemon TCG Pocket uses a unique format:
 export const IMPORTANT_CARDS = {
   // Universal Staples
   STAPLES: [
-    'Professor\'s Research', // Draw 2
-    'Poké Ball',             // Search Basic
-    'Sabrina',               // Switch opponent
-    'Giovanni',              // +10 damage
+    "Professor's Research", // Draw 2
+    'Poké Ball', // Search Basic
+    'Sabrina', // Switch opponent
+    'Giovanni', // +10 damage
   ],
 
   // Key Items
@@ -57,7 +57,7 @@ export const IMPORTANT_CARDS = {
   EVOLUTION_SEARCH: 'Pokémon Communication',
 
   // Tools
-  HP_BOOST: 'Giant Cape',      // +20 HP
+  HP_BOOST: 'Giant Cape', // +20 HP
   GRASS_HP_BOOST: 'Leaf Cape', // +30 HP (Grass only)
   CHIP_DAMAGE: 'Rocky Helmet', // 20 damage to attacker
 } as const;
@@ -79,7 +79,11 @@ export const COMMON_MISTAKES = [
 /**
  * Check if a deck meets basic Pokemon TCG Pocket rules
  */
-export function validateDeckRules(deckSize: number, energyTypeCount: number, basicCount: number): {
+export function validateDeckRules(
+  deckSize: number,
+  energyTypeCount: number,
+  basicCount: number
+): {
   valid: boolean;
   errors: string[];
   warnings: string[];
@@ -94,11 +98,15 @@ export function validateDeckRules(deckSize: number, energyTypeCount: number, bas
 
   // Warnings
   if (energyTypeCount > GAME_RULES.RECOMMENDED_ENERGY_TYPES) {
-    warnings.push(`${energyTypeCount} Energy types detected. Recommend 1-2 for Energy Zone consistency`);
+    warnings.push(
+      `${energyTypeCount} Energy types detected. Recommend 1-2 for Energy Zone consistency`
+    );
   }
 
   if (basicCount < GAME_RULES.MIN_BASIC_POKEMON) {
-    warnings.push(`Only ${basicCount} Basic Pokemon. Recommend ${GAME_RULES.RECOMMENDED_MIN_BASIC} minimum`);
+    warnings.push(
+      `Only ${basicCount} Basic Pokemon. Recommend ${GAME_RULES.RECOMMENDED_MIN_BASIC} minimum`
+    );
   }
 
   return {
