@@ -38,6 +38,10 @@ jobs:
           bun-version: latest
         timeout-minutes: 3
 
+      - name: Kill stuck Bun processes
+        run: pkill -f "bun test" || true
+        continue-on-error: true
+
       - name: Install dependencies
         run: bun install
         timeout-minutes: 5
