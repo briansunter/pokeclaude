@@ -1,0 +1,14 @@
+{
+  "name": "pokemon-tcg-pocket",
+  "version": "1.0.0",
+  "description": "Pokemon TCG Pocket plugin with deck building, synergy analysis, card search, and AI-powered strategy tools",
+  "author": {
+    "name": "Brian Sunter",
+    "url": "https://github.com/briansunter/pokeclaude"
+  },
+  "license": "MIT",
+  "source": {
+    "type": "github",
+    "repo": "briansunter/pokeclaude"
+  }
+}

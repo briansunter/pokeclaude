@@ -219,9 +219,11 @@ class DuckDBClient {
   }
 
   async getCardByName(name: string): Promise<Card | null> {
+    // Escape single quotes to prevent SQL injection
+    const escapedName = name.replace(/'/g, "''");
     const results = await this.query(`
       SELECT * FROM cards
-      WHERE LOWER(name) = LOWER('${name}')
+      WHERE LOWER(name) = LOWER('${escapedName}')
       LIMIT 1
     `);
     return results[0] || null;
