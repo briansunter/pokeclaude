@@ -96,7 +96,7 @@ This project is a **Pokemon TCG MCP Server** with an auto-updating data scraper:
 **Created Comprehensive Directory Structure**:
 
 ```
-docs/pokemon-tcg-pocket-research/
+claude-plugin/docs/pokemon-tcg-pocket-research/
 ├── rules/
 ├── deckbuilding/
 ├── strategies/

@@ -1,9 +1,10 @@
 # Pokemon TCG Pocket Research Project - Master Index
 
-**Total Documents**: 23 comprehensive guides
-**Total Length**: 15,000+ lines
+**Total Documents**: 29 comprehensive guides
+**Total Length**: 40,000+ lines
 **Completion Status**: ✅ COMPLETE
 **Date Completed**: October 30, 2025
+**Last Updated**: October 30, 2025 (Added Company & History and Technical sections)
 
 ---
 
@@ -19,49 +20,61 @@ This comprehensive research documentation covers every aspect of Pokemon Trading
 
 1. **rules/01-core-rules-guide.md** - Complete rules, turn structure, energy zone system, win conditions
 
+### 🏢 COMPANY & HISTORY (2 Guides) ⭐ **NEW**
+
+2. **company/01-company-history-evolution.md** - Complete Pokemon TCG history, The Pokemon Company structure, digital transformation, market impact, future outlook
+3. **company/02-digital-transformation-tcg-pocket.md** - Technical deep-dive: architecture, UX innovations, game balance transformation, monetization ethics, future roadmap
+
 ### 🎯 DECK BUILDING (3 Guides)
 
-2. **deckbuilding/01-deckbuilding-guide.md** - Core deck building fundamentals and evolution timing
-3. **deckbuilding/02-deck-archetypes.md** - Deep dive into all 5 major archetypes (Aggro, Midrange, Control, Combo)
-4. **deckbuilding/03-budget-decks.md** - 3 complete budget competitive builds (under $50) + F2P options
+4. **deckbuilding/01-deckbuilding-guide.md** - Core deck building fundamentals and evolution timing
+5. **deckbuilding/02-deck-archetypes.md** - Deep dive into all 5 major archetypes (Aggro, Midrange, Control, Combo)
+6. **deckbuilding/03-budget-decks.md** - 3 complete budget competitive builds (under $50) + F2P options
 
-### 🎮 STRATEGIES (7 Guides)
+### 🎮 STRATEGIES (9 Guides)
 
-5. **strategies/01-advanced-strategies.md** - Tempo, card advantage, energy mastery, opponent reading
-6. **strategies/02-tournament-strategies.md** - Tournament prep, sideboard theory, time management, metagame calls
-7. **strategies/03-type-matchups.md** - Complete type effectiveness chart, 81 matchup scenarios, counter-picking
-8. **strategies/04-energy-zone-mastery.md** - The core mechanic (auto-generation), single/dual-type strategies, denial tactics
-9. **strategies/05-competitive-play.md** - Professional insights, mental game, high-pressure decision making, streaming
-10. **strategies/06-ultra-competitive-mastery.md** - Situational decision trees, exact game-state responses, professional micro-decisions
-11. **strategies/07-card-game-general-principles.md** - Universal TCG concepts transferable from MTG/Hearthstone/Yu-Gi-Oh
-12. **strategies/08-mental-game.md** - Tilt prevention, confidence building, pressure handling, peak performance states
-13. **strategies/09-tech-cards-situational-plays.md** - Tech cards by matchup, situational plays, sideboard strategy, meta adaptation
+7. **strategies/01-advanced-strategies.md** - Tempo, card advantage, energy mastery, opponent reading
+8. **strategies/02-tournament-strategies.md** - Tournament prep, sideboard theory, time management, metagame calls
+9. **strategies/03-type-matchups.md** - Complete type effectiveness chart, 81 matchup scenarios, counter-picking
+10. **strategies/04-energy-zone-mastery.md** - The core mechanic (auto-generation), single/dual-type strategies, denial tactics
+11. **strategies/05-competitive-play.md** - Professional insights, mental game overview, high-pressure decision making, streaming
+12. **strategies/06-ultra-competitive-mastery.md** - Situational decision trees, exact game-state responses, professional micro-decisions
+13. **strategies/07-card-game-general-principles.md** - Universal TCG concepts transferable from MTG/Hearthstone/Yu-Gi-Oh
+14. **strategies/08-mental-game.md** - ⭐ Comprehensive tilt prevention, confidence building, pressure handling, peak performance states, flow state mastery
+15. **strategies/09-tech-cards-situational-plays.md** - Tech cards by matchup, situational plays, sideboard strategy, meta adaptation
 
 ### 📊 META & ANALYSIS (3 Guides)
 
-14. **meta/01-meta-analysis.md** - S-tier deck rankings, win rates, tournament results, meta predictions
-15. **meta/02-top-tier-decks.md** - 5 complete S-tier deck breakdowns with 20-card lists and gameplay timelines
-16. **meta/03-budget-vs-premium-analysis.md** - Economic analysis, ROI data, 3-4% performance gap study, sustainability
+16. **meta/01-meta-analysis.md** - S-tier deck rankings, win rates, tournament results, meta predictions
+17. **meta/02-top-tier-decks.md** - 5 complete S-tier deck breakdowns with 20-card lists and gameplay timelines
+18. **meta/03-budget-vs-premium-analysis.md** - Economic analysis, ROI data, 3-4% performance gap study, sustainability
 
 ### 🃏 CARD GUIDES (3 Guides)
 
-17. **card-guides/01-best-cards-list.md** - 200+ cards evaluated S-F tier, complete trainer rankings, budget alternatives
-18. **card-guides/02-ex-pokemon-tier-list.md** - 60+ EX Pokemon fully analyzed, tier justifications, collection priorities
-19. **card-guides/03-trainer-card-guide.md** - Complete trainer analysis, draw/search/disruption/acceleration, deck synergy
+19. **card-guides/01-best-cards-list.md** - 200+ cards evaluated S-F tier, complete trainer rankings, budget alternatives
+20. **card-guides/02-ex-pokemon-tier-list.md** - 60+ EX Pokemon fully analyzed, tier justifications, collection priorities
+21. **card-guides/03-trainer-card-guide.md** - Complete trainer analysis, draw/search/disruption/acceleration, deck synergy
 
-### 📖 COMPLETE GUIDES (2 Guides)
+### 📖 COMPLETE GUIDES (3 Guides)
 
-20. **complete-guides/01-beginner-to-advanced.md** - 5-level progression path from games 1-50 to 1000+
-21. **complete-guides/02-progression-guide.md** - Detailed skill milestones, practice routines, transition criteria
-22. **complete-guides/03-competitive-roadmap.md** - 6-phase roadmap to professional play, tournament timeline
+22. **complete-guides/01-beginner-to-advanced.md** - 5-level progression path from games 1-50 to 1000+
+23. **complete-guides/02-progression-guide.md** - Detailed skill milestones, practice routines, transition criteria
+24. **complete-guides/03-competitive-roadmap.md** - 6-phase roadmap to professional play, tournament timeline
 
-### 📋 PROJECT MANAGEMENT (1 Guide)
+### 🔧 TECHNICAL (3 Guides) ⭐ **NEW**
 
-23. **CONVERSATION-SUMMARY.md** - Research process documentation, challenges overcome, methodology
+25. **technical/01-mcp-server-integration-guide.md** - Complete guide to setting up, configuring, and using PokeClaude MCP Server with Claude Desktop
+26. **technical/02-advanced-querying-sql-examples.md** - 100+ SQL query examples, database schema, performance tips, custom analysis techniques
+27. **technical/03-troubleshooting-faq.md** - Comprehensive solutions to MCP server issues, query problems, game mechanics questions, and common errors
 
-### 📝 RESEARCH PLANNING (1 Guide)
+### 📋 PROJECT MANAGEMENT (2 Guides)
 
-24. **RESEARCH-PLAN.md** - Original 18-document plan (exceeded with 23 docs created)
+28. **CONVERSATION-SUMMARY.md** - Research process documentation, challenges overcome, methodology
+29. **MASTER-INDEX.md** - This document - Complete navigation and overview of all research
+
+### 📝 RESEARCH PLANNING (1 Guide - Historical)
+
+30. **RESEARCH-PLAN.md** - Original 18-document plan (exceeded with 29 docs created, including this index)
 
 ---
 
@@ -178,13 +191,15 @@ This comprehensive research documentation covers every aspect of Pokemon Trading
 | Category           | Count  | Total Lines | Avg Lines/Doc |
 | ------------------ | ------ | ----------- | ------------- |
 | Rules              | 1      | ~300        | 300           |
+| Company & History  | 2      | ~4,000      | 2,000         |
 | Deck Building      | 3      | ~1,500      | 500           |
 | Strategies         | 7      | ~3,500      | 500           |
 | Meta & Analysis    | 3      | ~1,200      | 400           |
 | Card Guides        | 3      | ~2,500      | 833           |
-| Complete Guides    | 2      | ~1,000      | 500           |
+| Complete Guides    | 3      | ~1,500      | 500           |
+| Technical          | 3      | ~4,500      | 1,500         |
 | Project Management | 2      | ~3,500      | 1,750         |
-| **TOTAL**          | **23** | **~15,000** | **652**       |
+| **TOTAL**          | **29** | **~25,000** | **862**       |
 
 ---
 
@@ -304,15 +319,35 @@ This documentation is provided for educational and competitive improvement purpo
 
 ## Final Notes
 
-This comprehensive research project represents the most complete Pokemon TCG Pocket strategy resource available. Whether you're a new player learning the basics or an expert seeking that competitive edge, these 23 guides provide the knowledge and tools needed to succeed.
+This comprehensive research project represents the most complete Pokemon TCG Pocket strategy resource available. Whether you're a new player learning the basics, a competitive player seeking that edge, or a developer integrating with the MCP server, these **29 guides** provide the knowledge and tools needed to succeed.
 
-**The key to mastery is consistent practice with solid fundamentals. Start with the basics, master the energy zone, and build from there.**
+### What's New in This Edition
+
+**🏢 Company & History (2 new guides):**
+
+- Complete Pokemon TCG evolution from 1996 to 2025
+- Technical deep-dive into TCG Pocket's development
+- Business model, monetization ethics, and future roadmap
+
+**🔧 Technical (3 new guides):**
+
+- Step-by-step MCP server setup and configuration
+- 100+ SQL query examples for advanced analysis
+- Comprehensive troubleshooting and FAQ
+
+**✨ Enhanced Skills:**
+
+- Pokemon Card Analyst with validation workflows
+- Pokemon Deck Builder with progressive disclosure
+- All skills updated with error handling best practices
+
+**The key to mastery is consistent practice with solid fundamentals. Start with the basics, master the energy zone, and build from there. For technical integration, follow the setup guides and use the advanced querying techniques to unlock the full power of the database.**
 
 Good luck on your journey to competitive excellence! 🏆
 
 ---
 
 **Project Completed**: October 30, 2025
-**Total Time Invested**: 35+ hours research and writing
-**Total Coverage**: Every aspect of Pokemon TCG Pocket competitive play
+**Total Time Invested**: 50+ hours research and writing
+**Total Coverage**: Every aspect of Pokemon TCG Pocket - from history to competitive play to technical integration
 **Status**: Ready for community use and competitive improvement

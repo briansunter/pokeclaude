@@ -113,6 +113,59 @@ npx pokemon-pocket-mcp-server
 - Ensure you've restarted Claude Desktop after adding the configuration
 - Check Claude Desktop logs: `~/Library/Logs/Claude/` (macOS)
 
+## 🎮 Claude Code Plugin Marketplace
+
+This repository includes a comprehensive **Claude Code plugin** for Pokemon TCG Pocket with 4 commands and 4 auto-activating skills.
+
+### Plugin Components
+
+✨ **Commands:**
+
+- `/pokemon:build-deck` - Build competitive 20-card Pokemon TCG Pocket decks
+- `/pokemon:analyze` - Analyze Pokemon cards or decks with detailed statistics
+- `/pokemon:find-counters` - Find Pokemon and strategies that counter specific threats
+- `/pokemon:meta` - Get current Pokemon TCG Pocket meta analysis and tier lists
+
+🎯 **Skills:**
+
+- Pokemon Deck Builder Skill - Auto-activates for deck building tasks
+- Pokemon Card Analyst Skill - Auto-activates for card analysis
+- Pokemon Meta Analyst Skill - Auto-activates for meta discussions
+- Pokemon Skill Builder Skill - For building Claude Code skills for Pokemon
+
+### Installation (Full Plugin)
+
+**Install from Plugin Marketplace (Recommended)**
+
+In Claude Code:
+
+```
+/plugin marketplace add /path/to/pokeclaude
+/plugin install pokemon-tcg-pocket@pokemon-tcg-pocket-marketplace
+```
+
+**What You Get:**
+
+- 4 Slash Commands (`/pokemon:build-deck`, `/pokemon:analyze`, `/pokemon:find-counters`, `/pokemon:meta`)
+- 4 Auto-Activating Skills
+- Integrated MCP Server with 7 tools
+- Complete 2,077-card database
+
+See **[PLUGIN_MARKETPLACE.md](PLUGIN_MARKETPLACE.md)** for complete installation and usage instructions.
+
+### Quick Plugin Commands
+
+Once installed, use these commands in Claude:
+
+```
+/pokemon:build-deck Build a Pikachu ex deck
+/pokemon:analyze Analyze Charizard ex
+/pokemon:find-counters What counters Lightning?
+/pokemon:meta Current S-tier list
+```
+
+See **[PLUGIN_MARKETPLACE.md](PLUGIN_MARKETPLACE.md)** for complete documentation!
+
 ## 🛠️ Development Setup (For Contributors)
 
 > **Package Manager:** This project works with both **npm** and **bun**. Use whichever you prefer!
@@ -228,8 +281,24 @@ pokeclaude/
 │   └── src/              # Scraper source code
 ├── data/                 # Card database (CSV)
 │   └── pokemon_pocket_cards.csv
+├── claude-plugin/        # Claude Code Plugin
+│   ├── commands/         # Slash commands (4)
+│   ├── skills/           # Auto-activating skills (4)
+│   ├── docs/             # Comprehensive research docs (23 guides)
+│   │   └── pokemon-tcg-pocket-research/
+│   └── README.md         # Plugin documentation
 └── clawd.png            # Project logo
 ```
+
+### Claude Code Plugin
+
+The `claude-plugin/` directory contains a complete Claude Code plugin with:
+
+- **4 Slash Commands**: `/pokemon:build-deck`, `/pokemon:analyze`, `/pokemon:find-counters`, `/pokemon:meta`
+- **4 Auto-Activating Skills**: Deck building, card analysis, meta analysis, skill building
+- **23 Research Guides**: 15,000+ lines covering rules, strategies, meta, card guides, and progression paths
+
+See **[claude-plugin/README.md](./claude-plugin/README.md)** for complete plugin documentation!
 
 ## 🗄️ Database Schema
 

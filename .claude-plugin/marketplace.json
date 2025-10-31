@@ -1,0 +1,19 @@
+{
+  "name": "pokemon-tcg-pocket-marketplace",
+  "version": "1.0.0",
+  "description": "Pokemon TCG Pocket plugin marketplace",
+  "metadata": {
+    "description": "Pokemon TCG Pocket plugin marketplace with deck building, card analysis, and competitive strategy tools"
+  },
+  "owner": {
+    "name": "Brian Sunter",
+    "url": "https://github.com/briansunter/pokeclaude"
+  },
+  "plugins": [
+    {
+      "name": "pokemon-tcg-pocket",
+      "version": "1.0.0",
+      "source": "./claude-plugin"
+    }
+  ]
+}
