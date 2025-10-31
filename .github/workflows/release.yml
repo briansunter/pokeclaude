@@ -54,6 +54,10 @@ jobs:
         run: bun run typecheck
         timeout-minutes: 3
 
+      - name: Copy data file
+        run: cd mcp-server && mkdir -p data && cp ../data/pokemon_pocket_cards.csv data/
+        timeout-minutes: 1
+
       - name: Run tests
         run: bun run test
         timeout-minutes: 5
