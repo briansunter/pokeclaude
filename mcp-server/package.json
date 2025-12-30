@@ -1,6 +1,6 @@
 {
 	"name": "pokemon-pocket-mcp-server",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "MCP server and CLI for querying Pokemon Pocket TCG cards with DuckDB",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
