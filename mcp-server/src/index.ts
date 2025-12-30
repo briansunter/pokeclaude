@@ -7,6 +7,10 @@ import { DuckDBInstance, DuckDBConnection } from '@duckdb/node-api';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Export types and classes for CLI module
+export type { Card, TypeStats };
+export { DuckDBClient, FIELD_PRESETS, filterFields, safeJsonStringify };
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -286,14 +290,18 @@ class DuckDBClient {
 
   async findCounters(targetType: string): Promise<Card[]> {
     // Find cards that target type is weak to (unique cards only)
+    // Note: weakness field contains "Water Retreat: 1" so we extract just the type with SPLIT_PART
+    const escapedType = targetType.replace(/'/g, "''");
     return this.query(`
       SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
         name, type, hp, attacks, weakness
       FROM cards
       WHERE type = (
-        SELECT DISTINCT weakness
+        SELECT SPLIT_PART(weakness, ' ', 1)
         FROM cards
-        WHERE type = '${targetType}'
+        WHERE type = '${escapedType}'
+          AND weakness IS NOT NULL
+          AND weakness NOT LIKE 'none%'
         LIMIT 1
       )
       AND attacks IS NOT NULL
@@ -936,8 +944,68 @@ Please:
   })
 );
 
-// Start server
+// ============================================================================
+// CLI/MCP MODE DETECTION
+// ============================================================================
+
+function isCliMode(): boolean {
+  const args = process.argv.slice(2);
+
+  // Explicit CLI flags
+  if (
+    args.includes('--help') ||
+    args.includes('-h') ||
+    args.includes('--version') ||
+    args.includes('-v')
+  ) {
+    return true;
+  }
+
+  // Known CLI commands
+  const commands = [
+    'search',
+    'get',
+    'synergies',
+    'counters',
+    'stats',
+    'query',
+    'trainers',
+    'analyze',
+  ];
+  if (args.length > 0 && commands.includes(args[0])) {
+    return true;
+  }
+
+  // Environment variable override
+  if (process.env.POKEMON_POCKET_MODE === 'cli') {
+    return true;
+  }
+
+  // Check for CLI-specific options that suggest CLI mode
+  // (e.g., --output, --card-names, --sql, etc.)
+  const cliSpecificFlags = ['--output', '-o', '--card-names', '--card-name', '--sql'];
+  if (args.some(arg => cliSpecificFlags.some(flag => arg.startsWith(flag)))) {
+    return true;
+  }
+
+  // Default to MCP mode for backward compatibility
+  return false;
+}
+
+// ============================================================================
+// MAIN ENTRY POINT
+// ============================================================================
+
 async function main() {
+  // Check if we should run in CLI mode
+  if (isCliMode()) {
+    // Dynamic import to avoid circular dependency
+    const { runCli } = await import('./cli.js');
+    const exitCode = await runCli(process.argv.slice(2));
+    process.exit(exitCode);
+  }
+
+  // MCP mode (existing behavior)
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('Pokemon Pocket MCP Server running on stdio');

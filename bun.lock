@@ -27,13 +27,15 @@
     },
     "mcp-server": {
       "name": "pokemon-pocket-mcp-server",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "bin": {
         "pokemon-pocket-mcp": "./dist/index.js",
       },
       "dependencies": {
         "@duckdb/node-api": "^1.4.0-r.1",
         "@modelcontextprotocol/sdk": "^1.0.4",
+        "@robingenz/zli": "^0.2.0",
+        "cli-table3": "^0.6.5",
         "uuid": "^11.0.3",
         "zod": "^3.22.4",
       },
@@ -229,6 +231,8 @@
     "@pnpm/network.ca-file": ["@pnpm/network.ca-file@1.0.2", "", { "dependencies": { "graceful-fs": "4.2.10" } }, "sha512-YcPQ8a0jwYU9bTdJDpXjMi7Brhkr1mXsXrUJvjqM2mQDgkRiz8jFaQGOdaLxgjtUfQgZhKy/O3cG/YwmgKaxLA=="],
 
     "@pnpm/npm-conf": ["@pnpm/npm-conf@2.3.1", "", { "dependencies": { "@pnpm/config.env-replace": "^1.1.0", "@pnpm/network.ca-file": "^1.0.1", "config-chain": "^1.1.11" } }, "sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw=="],
+
+    "@robingenz/zli": ["@robingenz/zli@0.2.0", "", { "peerDependencies": { "zod": "^4.0.0" }, "bin": { "zli-example": "example.js" } }, "sha512-LME7G4xkEFuqyVg/MYTB3xoJnvWb955aEfZ7J7yRstzyULs3HBdxz0l5QiP8gmMMMZ434cb8Wn/DdHqeNTT2fA=="],
 
     "@sec-ant/readable-stream": ["@sec-ant/readable-stream@0.4.1", "", {}, "sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg=="],
 

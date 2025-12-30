@@ -29,6 +29,81 @@ MCP server that enables AI agents (like Claude Code) to query and analyze Pokemo
 2. **counter-deck** - Build a deck to counter a type/strategy
 3. **optimize-deck** - Analyze and improve an existing deck
 
+## 🖥️ CLI Mode
+
+The package also includes a full-featured CLI for direct terminal access to the card database.
+
+### Installation
+
+```bash
+# Install globally
+npm install -g pokemon-pocket-mcp-server
+
+# Or use via npx without installation
+npx pokemon-pocket-mcp-server --help
+```
+
+### Available Commands
+
+| Command     | Description               |
+| ----------- | ------------------------- |
+| `search`    | Search cards with filters |
+| `get`       | Get specific card by name |
+| `synergies` | Find synergies for a card |
+| `counters`  | Find counters for a type  |
+| `stats`     | Show type statistics      |
+| `query`     | Run custom SQL query      |
+| `trainers`  | List all trainer cards    |
+| `analyze`   | Analyze deck composition  |
+
+### CLI Usage Examples
+
+```bash
+# Search for Pikachu cards with table output
+pokemon-pocket-mcp search --name Pikachu --output table
+
+# Get specific card details
+pokemon-pocket-mcp get --name "Charizard ex"
+
+# Find synergies for a card
+pokemon-pocket-mcp synergies --card-name "Blastoise ex"
+
+# Show type statistics
+pokemon-pocket-mcp stats --output table
+
+# List trainer cards
+pokemon-pocket-mcp trainers --limit 20
+
+# Custom SQL query
+pokemon-pocket-mcp query --sql "SELECT name, hp FROM cards WHERE hp > 150 LIMIT 10"
+
+# Analyze a deck
+pokemon-pocket-mcp analyze --card-names Pikachu,"Pikachu ex","Rare Candy"
+```
+
+### Output Formats
+
+All commands support three output formats via `--output` (or `-o`):
+
+- `json` - Structured JSON output (default)
+- `table` - Human-readable table format
+- `compact` - Single-line per card format
+
+```bash
+pokemon-pocket-mcp stats --output table
+pokemon-pocket-mcp search --type Fire --output compact
+```
+
+### Getting Help
+
+```bash
+# Show all commands
+pokemon-pocket-mcp --help
+
+# Show command-specific help
+pokemon-pocket-mcp search --help
+```
+
 ## Duplicate Filtering
 
 The card database contains **2,077 total cards**, but many are duplicates with different art:
