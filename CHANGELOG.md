@@ -1,3 +1,14 @@
+## [1.4.0](https://github.com/briansunter/pokeclaude/compare/v1.3.0...v1.4.0) (2025-12-30)
+
+### Features
+
+* upgrade to zod v4 and convert project to bun ([b2dd2c1](https://github.com/briansunter/pokeclaude/commit/b2dd2c1096ad4a56b650646356be6dc5dcacc278))
+
+### Bug Fixes
+
+* update peerDependencies to zod v4 for CLI compatibility ([0377c4f](https://github.com/briansunter/pokeclaude/commit/0377c4f3d1b240bd43b9c2309d5c0b2a5601bdef))
+* upgrade root workspace to zod v4 ([9028c24](https://github.com/briansunter/pokeclaude/commit/9028c24903026c0c040d6e63467c8453fde4c3e2))
+
 ## [1.3.0](https://github.com/briansunter/pokeclaude/compare/v1.2.1...v1.3.0) (2025-12-30)
 
 ### Features
