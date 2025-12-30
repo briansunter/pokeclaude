@@ -18,6 +18,7 @@
 		"format": "biome check --write",
 		"format:check": "biome check",
 		"check:all": "bun run lint && bun run typecheck",
+		"test": "bun run mcp-server:test",
 		"mcp-server:build": "cd mcp-server && bun run build",
 		"mcp-server:typecheck": "cd mcp-server && bun run typecheck",
 		"mcp-server:dev": "cd mcp-server && bun run dev",
