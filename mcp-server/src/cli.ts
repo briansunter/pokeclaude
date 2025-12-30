@@ -9,12 +9,13 @@ import {
 	processConfig,
 } from '@robingenz/zli';
 import { z } from 'zod';
+import { DuckDBClient } from './db.js';
 import {
 	CardFormatter,
 	type DeckAnalysis,
 	type SynergyResult,
 } from './formatters.js';
-import { type Card, DuckDBClient } from './index.js';
+import type { Card } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -410,4 +411,10 @@ export async function runCli(args: string[]): Promise<number> {
 		}
 		return 1;
 	}
+}
+
+// Self-execute when run directly (e.g., node dist/cli.js)
+if (import.meta.url === `file://${process.argv[1]}`) {
+	const exitCode = await runCli(process.argv.slice(2));
+	process.exit(exitCode);
 }

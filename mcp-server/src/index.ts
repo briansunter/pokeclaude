@@ -2,12 +2,21 @@
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { type DuckDBConnection, DuckDBInstance } from '@duckdb/node-api';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import { runCli } from './cli.js';
+import {
+	FIELD_PRESETS,
+	type FieldSelection,
+	filterFields,
+	safeJsonStringify,
+} from './common.js';
+// Import from modularized files
+import { DuckDBClient } from './db.js';
+import type { Card, TypeStats } from './types.js';
 
-// Export types and classes for CLI module
+// Re-export for backward compatibility (CLI module imports from here)
 export type { Card, TypeStats };
 export { DuckDBClient, FIELD_PRESETS, filterFields, safeJsonStringify };
 
@@ -16,98 +25,6 @@ const __dirname = path.dirname(__filename);
 
 // CSV path - points to data directory in published package
 const CSV_PATH = path.join(__dirname, '../data/pokemon_pocket_cards.csv');
-
-// Field selection presets to reduce context usage
-// - minimal: Just id and name (smallest response)
-// - basic: Common fields without images/URLs (default for all tools)
-// - full: All 22 fields including set info, images, URLs, and evolution metadata
-//
-// Evolution metadata fields:
-// - evolution_stage: 'Basic', 'Stage 1', 'Stage 2', 'Mega Evolution'
-// - evolves_from: Name of the Pokemon this card evolves from (empty for base forms)
-// - evolves_to: Comma-separated list of evolution names
-// - evolution_type: 'Regular', 'Mega', 'Primal', etc.
-// - base_pokemon_id: UUID of the base form (for mega evolutions)
-// - is_evolution: 'true' for evolution cards, 'false' for base forms
-// - evolution_method: How the evolution occurs (e.g., 'Mega Evolution')
-const FIELD_PRESETS = {
-	minimal: ['id', 'name'] as const,
-	basic: [
-		'id',
-		'name',
-		'type',
-		'hp',
-		'attacks',
-		'weakness',
-		'retreat_cost',
-		'rarity',
-	] as const,
-	full: [
-		'id',
-		'set_code',
-		'set_name',
-		'card_number',
-		'name',
-		'type',
-		'hp',
-		'rarity',
-		'abilities',
-		'attacks',
-		'weakness',
-		'resistance',
-		'retreat_cost',
-		'image_url',
-		'card_url',
-		// Evolution metadata fields
-		'evolution_stage',
-		'evolves_from',
-		'evolves_to',
-		'evolution_type',
-		'base_pokemon_id',
-		'is_evolution',
-		'evolution_method',
-	] as const,
-};
-
-type FieldPreset = keyof typeof FIELD_PRESETS;
-type FieldArray = string[];
-type FieldSelection = FieldPreset | FieldArray;
-
-// Helper to filter fields from objects
-function filterFields<T extends Record<string, unknown>>(
-	data: T | T[],
-	fields?: FieldSelection
-): T | T[] {
-	if (!fields) {
-		return data; // full fields if not specified
-	}
-
-	const fieldList =
-		typeof fields === 'string'
-			? FIELD_PRESETS[fields as FieldPreset] || []
-			: fields;
-
-	const filterObject = (obj: T) => {
-		const filtered: Record<string, unknown> = {};
-		for (const field of fieldList) {
-			if (field in obj) {
-				filtered[field] = (obj as Record<string, unknown>)[field];
-			}
-		}
-		return filtered as T;
-	};
-
-	return Array.isArray(data) ? data.map(filterObject) : filterObject(data);
-}
-
-// Helper to serialize data with BigInt support
-function safeJsonStringify(data: unknown): string {
-	return JSON.stringify(
-		data,
-		(_key, value) => (typeof value === 'bigint' ? value.toString() : value),
-		2
-	);
-}
 
 // Field selection schema - runtime validated with looser type for zod v4 compatibility
 // The actual type is FieldSelection (FieldPreset | FieldArray) but we use any for type inference
@@ -229,253 +146,6 @@ const optimizeDeckArgsSchema = {
 		.string()
 		.describe('Current deck list (comma-separated card names)'),
 } as const;
-
-interface Card {
-	id: string;
-	set_code: string;
-	set_name: string;
-	card_number: string;
-	name: string;
-	type: string;
-	hp: string;
-	rarity: string;
-	abilities: string;
-	attacks: string;
-	weakness: string;
-	resistance: string;
-	retreat_cost: string;
-	image_url: string;
-	card_url: string;
-	// Evolution metadata fields
-	evolution_stage?: string;
-	evolves_from?: string;
-	evolves_to?: string;
-	evolution_type?: string;
-	base_pokemon_id?: string;
-	is_evolution?: string;
-	evolution_method?: string;
-	[key: string]: unknown;
-}
-
-interface TypeStats {
-	type: string;
-	count: number;
-	avg_hp: number;
-	avg_retreat_cost: number;
-}
-
-class DuckDBClient {
-	private instance!: DuckDBInstance;
-	private connection!: DuckDBConnection;
-	private ready: Promise<void>;
-
-	constructor(csvPath: string) {
-		this.ready = this.initialize(csvPath);
-	}
-
-	private async initialize(csvPath: string): Promise<void> {
-		this.instance = await DuckDBInstance.create(':memory:');
-		this.connection = await this.instance.connect();
-
-		await this.connection.run(`
-      CREATE TABLE cards AS
-      SELECT * FROM read_csv_auto('${csvPath}')
-    `);
-		console.error('DuckDB initialized with Pokemon cards');
-	}
-
-	async query(sql: string): Promise<Card[]> {
-		await this.ready;
-		const result = await this.connection.runAndReadAll(sql);
-		return result.getRowObjectsJson() as Card[];
-	}
-
-	async searchCards(filters: {
-		name?: string;
-		type?: string;
-		minHp?: number;
-		maxHp?: number;
-		set?: string;
-		hasAttacks?: boolean;
-		retreatCost?: number;
-		weakness?: string;
-		limit?: number;
-		uniqueOnly?: boolean;
-	}): Promise<Card[]> {
-		const conditions: string[] = [];
-
-		if (filters.name) {
-			conditions.push(`LOWER(name) LIKE LOWER('%${filters.name}%')`);
-		}
-		if (filters.type) {
-			conditions.push(`LOWER(type) = LOWER('${filters.type}')`);
-		}
-		if (filters.minHp !== undefined) {
-			conditions.push(`CAST(hp AS INTEGER) >= ${filters.minHp}`);
-		}
-		if (filters.maxHp !== undefined) {
-			conditions.push(`CAST(hp AS INTEGER) <= ${filters.maxHp}`);
-		}
-		if (filters.set) {
-			conditions.push(`set_code = '${filters.set}'`);
-		}
-		if (filters.hasAttacks !== undefined) {
-			conditions.push(
-				filters.hasAttacks ? `attacks IS NOT NULL` : `attacks IS NULL`
-			);
-		}
-		if (filters.retreatCost !== undefined) {
-			conditions.push(`retreat_cost = '${filters.retreatCost}'`);
-		}
-		if (filters.weakness) {
-			conditions.push(`LOWER(weakness) = LOWER('${filters.weakness}')`);
-		}
-
-		const whereClause =
-			conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-		const limit = filters.limit || 50;
-
-		// Default to filtering out duplicates (uniqueOnly defaults to true)
-		const uniqueOnly = filters.uniqueOnly !== false; // true unless explicitly set to false
-
-		const selectClause = uniqueOnly
-			? 'SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost) *'
-			: 'SELECT *';
-
-		const orderBy = uniqueOnly
-			? 'ORDER BY name, type, hp, attacks, weakness, retreat_cost, set_code, card_number'
-			: 'ORDER BY name';
-
-		const sql = `
-      ${selectClause}
-      FROM cards
-      ${whereClause}
-      ${orderBy}
-      LIMIT ${limit}
-    `;
-
-		return this.query(sql);
-	}
-
-	async getCardByName(name: string): Promise<Card | null> {
-		// Escape single quotes to prevent SQL injection
-		const escapedName = name.replace(/'/g, "''");
-		const results = await this.query(`
-      SELECT * FROM cards
-      WHERE LOWER(name) = LOWER('${escapedName}')
-      LIMIT 1
-    `);
-		return results[0] || null;
-	}
-
-	async getTypeStats(): Promise<TypeStats[]> {
-		const results = await this.query(`
-      SELECT
-        type,
-        COUNT(*) as count,
-        ROUND(AVG(TRY_CAST(hp AS INTEGER)), 1) as avg_hp,
-        ROUND(AVG(TRY_CAST(retreat_cost AS INTEGER)), 1) as avg_retreat_cost
-      FROM cards
-      WHERE type IS NOT NULL
-      GROUP BY type
-      ORDER BY count DESC
-    `);
-		return results as unknown as TypeStats[];
-	}
-
-	async findSynergies(cardName: string): Promise<{
-		card?: Card;
-		sameTypeCards?: Card[];
-		trainers?: Card[];
-	}> {
-		const card = await this.getCardByName(cardName);
-		if (!card || !card.type) {
-			throw new Error('Card not found or has no type');
-		}
-
-		// Find cards of same type with complementary roles (unique cards only)
-		const sameType = await this.query(`
-      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
-        name, hp, attacks, retreat_cost
-      FROM cards
-      WHERE type = '${card.type}'
-        AND name != '${cardName}'
-        AND attacks IS NOT NULL
-      ORDER BY name, type, hp, attacks, weakness, retreat_cost, CAST(hp AS INTEGER) DESC
-      LIMIT 10
-    `);
-
-		// Find supporting trainers/items (unique only)
-		const trainers = await this.query(`
-      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
-        name, attacks as description
-      FROM cards
-      WHERE type IS NULL
-        AND name NOT LIKE '%Energy%'
-      ORDER BY name, type, hp, attacks, weakness, retreat_cost
-      LIMIT 15
-    `);
-
-		return {
-			card: card,
-			sameTypeCards: sameType,
-			trainers: trainers.slice(0, 10),
-		};
-	}
-
-	async findCounters(targetType: string): Promise<Card[]> {
-		// Find cards that target type is weak to (unique cards only)
-		// Note: weakness field contains "Water Retreat: 1" so we extract just the type with SPLIT_PART
-		const escapedType = targetType.replace(/'/g, "''");
-		return this.query(`
-      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost)
-        name, type, hp, attacks, weakness
-      FROM cards
-      WHERE type = (
-        SELECT SPLIT_PART(weakness, ' ', 1)
-        FROM cards
-        WHERE type = '${escapedType}'
-          AND weakness IS NOT NULL
-          AND weakness NOT LIKE 'none%'
-        LIMIT 1
-      )
-      AND attacks IS NOT NULL
-      ORDER BY name, type, hp, attacks, weakness, retreat_cost, CAST(hp AS INTEGER) DESC
-      LIMIT 20
-    `);
-	}
-
-	async getUniqueCards(): Promise<Card[]> {
-		return this.query(`
-      SELECT DISTINCT ON (name, type, hp, attacks, weakness, retreat_cost) *
-      FROM cards
-      WHERE attacks IS NOT NULL
-      ORDER BY name, type, hp, attacks, weakness, retreat_cost, set_code, card_number
-    `);
-	}
-
-	async analyzeEnergyCost(
-		attacks: string
-	): Promise<{ total: number; types: Record<string, number> }> {
-		// Parse attacks string to count energy symbols
-		const energyTypes: Record<string, number> = {};
-		let total = 0;
-
-		// Simple parsing - count capital letters before attack names
-		const matches = attacks.match(/([A-Z]+)\s/g);
-		if (matches) {
-			for (const match of matches) {
-				const symbols = match.trim();
-				total += symbols.length;
-				for (const symbol of symbols) {
-					energyTypes[symbol] = (energyTypes[symbol] || 0) + 1;
-				}
-			}
-		}
-
-		return { total, types: energyTypes };
-	}
-}
 
 // Initialize DuckDB client
 const dbClient = new DuckDBClient(CSV_PATH);
@@ -1010,75 +680,19 @@ Please:
 );
 
 // ============================================================================
-// CLI/MCP MODE DETECTION
-// ============================================================================
-
-function isCliMode(): boolean {
-	const args = process.argv.slice(2);
-
-	// Explicit CLI flags
-	if (
-		args.includes('--help') ||
-		args.includes('-h') ||
-		args.includes('--version') ||
-		args.includes('-v')
-	) {
-		return true;
-	}
-
-	// Known CLI commands
-	const commands = [
-		'search',
-		'get',
-		'synergies',
-		'counters',
-		'stats',
-		'query',
-		'trainers',
-		'analyze',
-	];
-	if (args.length > 0 && commands.includes(args[0])) {
-		return true;
-	}
-
-	// Environment variable override
-	if (process.env.POKEMON_POCKET_MODE === 'cli') {
-		return true;
-	}
-
-	// Check for CLI-specific options that suggest CLI mode
-	// (e.g., --output, --card-names, --sql, etc.)
-	const cliSpecificFlags = [
-		'--output',
-		'-o',
-		'--card-names',
-		'--card-name',
-		'--sql',
-	];
-	if (
-		args.some((arg) => cliSpecificFlags.some((flag) => arg.startsWith(flag)))
-	) {
-		return true;
-	}
-
-	// Default to MCP mode for backward compatibility
-	return false;
-}
-
-// ============================================================================
 // MAIN ENTRY POINT
 // ============================================================================
 
 async function main() {
-	// Check if we should run in CLI mode
-	if (isCliMode()) {
-		// Dynamic import to avoid circular dependency
-		const { runCli } = await import('./cli.js');
-		const exitCode = await runCli(process.argv.slice(2));
-		process.exit(exitCode);
+	const args = process.argv.slice(2);
+
+	// If args provided, run CLI mode (static import - no dynamic import needed!)
+	if (args.length > 0) {
+		const exitCode = await runCli(args);
+		process.exit(exitCode ?? 0);
 	}
 
-	// MCP mode (existing behavior)
+	// Otherwise run MCP mode - connect to stdio for Claude Desktop
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
 	console.error('Pokemon Pocket MCP Server running on stdio');
