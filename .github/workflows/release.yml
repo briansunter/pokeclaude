@@ -102,5 +102,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ steps.bws.outputs.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+          NPM_CONFIG_LEGACY_PEER_DEPS: true
         run: bunx semantic-release
         timeout-minutes: 10
