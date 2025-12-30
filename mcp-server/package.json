@@ -8,9 +8,10 @@
 	"license": "MIT",
 	"author": "Pokemon Pocket MCP Contributors",
 	"bin": {
-		"pokemon-pocket-mcp": "./dist/index.js"
+		"pokemon-pocket-mcp": "./bin/cli.js"
 	},
 	"files": [
+		"bin",
 		"dist",
 		"data",
 		"README.md"
