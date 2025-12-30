@@ -94,6 +94,7 @@ jobs:
           registry=https://registry.npmjs.org
           //registry.npmjs.org/:_authToken=\${NPM_TOKEN}
           access=public
+          legacy-peer-deps=true
           EOF
 
       - name: Run semantic-release
