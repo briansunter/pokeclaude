@@ -1,3 +1,16 @@
+## [1.3.0](https://github.com/briansunter/pokeclaude/compare/v1.2.1...v1.3.0) (2025-12-30)
+
+### Features
+
+- add CLI mode and fix findCounters bug ([0db9da0](https://github.com/briansunter/pokeclaude/commit/0db9da00c17b6324f1ae004a4cc172cae769b244))
+
+### Bug Fixes
+
+- add legacy-peer-deps to npmrc for semantic-release ([ac39051](https://github.com/briansunter/pokeclaude/commit/ac39051f2cea9fa7a58045e8d9a72dced4e19d3f))
+- add NPM_CONFIG_LEGACY_PEER_DEPS env var for semantic-release ([84f67a0](https://github.com/briansunter/pokeclaude/commit/84f67a0cad8f1557eca49a36c10a368cc0d8b905))
+- add npmVersionArgs to semantic-release for legacy-peer-deps ([d8ceeb6](https://github.com/briansunter/pokeclaude/commit/d8ceeb6bcc22d662767aecea2062deb109d4f339))
+- move zod to peerDependencies to resolve npm pack issue ([3bd442c](https://github.com/briansunter/pokeclaude/commit/3bd442cbf8611bb1cf23bfba710c00f0ec5e4dd1))
+
 ## [1.2.1](https://github.com/briansunter/pokeclaude/compare/v1.2.0...v1.2.1) (2025-12-30)
 
 ### Bug Fixes
