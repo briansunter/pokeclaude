@@ -28,7 +28,7 @@ jobs:
         timeout-minutes: 3
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
         timeout-minutes: 5
 
       - name: Run linting
@@ -73,7 +73,7 @@ jobs:
         timeout-minutes: 3
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
         timeout-minutes: 5
 
       - name: Build package
