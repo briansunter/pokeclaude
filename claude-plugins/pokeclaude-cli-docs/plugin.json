@@ -1,0 +1,11 @@
+{
+  "name": "pokeclaude-cli-docs",
+  "version": "1.0.0",
+  "description": "Complete user documentation for PokeClaude CLI commands and skills - guides for deck building, card analysis, counters, and meta",
+  "author": {
+    "name": "Brian Sunter"
+  },
+  "license": "MIT",
+  "commands": ["./commands/"],
+  "skills": ["./skills/"]
+}
