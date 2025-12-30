@@ -35,8 +35,7 @@
       "@semantic-release/npm",
       {
         "pkgRoot": "mcp-server",
-        "npmPublish": true,
-        "npmVersionArgs": ["--legacy-peer-deps"]
+        "npmPublish": true
       }
     ],
     ["@semantic-release/github"],
