@@ -428,7 +428,13 @@ After building, update your Claude Desktop config to point to your local build:
 ```
 pokeclaude/
 ├── mcp-server/           # MCP Server (Claude Desktop integration)
-│   ├── src/              # Server source code
+│   ├── src/
+│   │   ├── types.ts      # Shared type definitions
+│   │   ├── common.ts     # Field presets, helper functions
+│   │   ├── db.ts         # DuckDB client (database queries)
+│   │   ├── index.ts      # MCP server (stdio transport)
+│   │   ├── cli.ts        # CLI commands
+│   │   └── formatters.ts # Output formatting
 │   ├── dist/             # Built output
 │   └── README.md         # Detailed API documentation
 ├── scraper/              # Data scraper
@@ -443,6 +449,18 @@ pokeclaude/
 │   └── README.md         # Plugin documentation
 └── clawd.png            # Project logo
 ```
+
+### Architecture Notes
+
+The MCP server uses a **modular architecture** with zero circular dependencies:
+
+- **types.ts** - Card and TypeStats interfaces shared across modules
+- **common.ts** - Field presets and utility functions
+- **db.ts** - DuckDB client for SQL queries
+- **index.ts** - MCP server (static import of CLI for mode detection)
+- **cli.ts** - CLI commands (imports from db.ts, types.ts - no circular dependency!)
+
+This design eliminates dynamic imports and provides clean separation of concerns.
 
 ### Claude Code Plugin
 
