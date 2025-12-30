@@ -1,3 +1,29 @@
+## [2.0.0](https://github.com/briansunter/pokeclaude/compare/v1.4.1...v2.0.0) (2025-12-30)
+
+### ⚠ BREAKING CHANGES
+
+* Refactored MCP server to use modular architecture
+that eliminates circular dependencies. All imports are now static.
+
+- New modules: types.ts, common.ts, db.ts
+- No dynamic imports
+- Better separation of concerns
+
+This is a minor version bump (1.4.1 → 1.5.0) as it's an
+internal refactoring with no API changes.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+### Features
+
+* add zero-circular-dependency architecture ([a5fb4d6](https://github.com/briansunter/pokeclaude/commit/a5fb4d6b109a7cf0a320326ecf0ea21fff80ff3f))
+
+### Refactorings
+
+* eliminate circular dependency with static imports ([ff906b0](https://github.com/briansunter/pokeclaude/commit/ff906b04c43ec302c860aa475ea084daf5166a97))
+
 ## [1.4.1](https://github.com/briansunter/pokeclaude/compare/v1.4.0...v1.4.1) (2025-12-30)
 
 ### Bug Fixes
