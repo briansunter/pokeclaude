@@ -35,23 +35,10 @@
       "@semantic-release/npm",
       {
         "pkgRoot": "mcp-server",
-        "npmPublish": true,
-        "tarballDir": "dist"
+        "npmPublish": true
       }
     ],
-    [
-      "@semantic-release/github",
-      {
-        "successComment": false,
-        "failComment": false,
-        "assets": [
-          {
-            "path": "mcp-server/dist/*.tgz",
-            "label": "npm package"
-          }
-        ]
-      }
-    ],
+    ["@semantic-release/github"],
     [
       "@semantic-release/git",
       {
