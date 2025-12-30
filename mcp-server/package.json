@@ -47,8 +47,10 @@
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@robingenz/zli": "^0.2.0",
     "cli-table3": "^0.6.5",
-    "uuid": "^11.0.3",
-    "zod": "^3.22.4"
+    "uuid": "^11.0.3"
+  },
+  "peerDependencies": {
+    "zod": "^3.22.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
