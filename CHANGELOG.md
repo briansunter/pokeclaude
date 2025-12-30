@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/briansunter/pokeclaude/compare/v1.2.0...v1.2.1) (2025-12-30)
+
+### Bug Fixes
+
+- pin bun version and move .npmrc creation to CI step ([366752a](https://github.com/briansunter/pokeclaude/commit/366752aacc2a47974dc8a1a5ebb01df69d0084b2))
+- remove --frozen-lockfile to allow platform differences ([6461308](https://github.com/briansunter/pokeclaude/commit/6461308b9b3395cbf01cfa81149a64255083867b))
+
 ## [1.2.0](https://github.com/briansunter/pokeclaude/compare/v1.1.0...v1.2.0) (2025-10-31)
 
 ### Features
