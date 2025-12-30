@@ -1,7 +1,5 @@
 {
-  "*.ts": ["eslint --fix", "prettier --write"],
-  "*.js": ["eslint --fix", "prettier --write"],
-  "*.json": ["prettier --write"],
-  "*.md": ["prettier --write"],
-  "*.{yml,yaml}": ["prettier --write"]
+	"*.{ts,js}": ["biome check --write --no-errors-on-unmatched"],
+	"*.json": ["biome check --write --no-errors-on-unmatched"],
+	"*.{yml,yaml}": ["biome check --write --no-errors-on-unmatched"]
 }

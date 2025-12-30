@@ -1,10 +1,10 @@
 {
-  "name": "pokeclaude-repo-mgr",
-  "version": "1.0.0",
-  "description": "Repository management commands for PokeClaude development - test, build, lint, format, scrape, typecheck",
-  "author": {
-    "name": "Brian Sunter"
-  },
-  "license": "MIT",
-  "commands": ["./commands/"]
+	"name": "pokeclaude-repo-mgr",
+	"version": "1.0.0",
+	"description": "Repository management commands for PokeClaude development - test, build, lint, format, scrape, typecheck",
+	"author": {
+		"name": "Brian Sunter"
+	},
+	"license": "MIT",
+	"commands": ["./commands/"]
 }

@@ -6,31 +6,31 @@
  */
 
 export const GAME_RULES = {
-  // Deck Construction
-  DECK_SIZE: 20,
-  MAX_COPIES_PER_CARD: 2,
-  MIN_BASIC_POKEMON: 5,
-  RECOMMENDED_MIN_BASIC: 6,
+	// Deck Construction
+	DECK_SIZE: 20,
+	MAX_COPIES_PER_CARD: 2,
+	MIN_BASIC_POKEMON: 5,
+	RECOMMENDED_MIN_BASIC: 6,
 
-  // Gameplay
-  MAX_BENCH_SLOTS: 3,
-  POINTS_TO_WIN: 3,
-  STARTING_HAND_SIZE: 5,
+	// Gameplay
+	MAX_BENCH_SLOTS: 3,
+	POINTS_TO_WIN: 3,
+	STARTING_HAND_SIZE: 5,
 
-  // Energy System
-  MAX_ENERGY_TYPES: 3,
-  RECOMMENDED_ENERGY_TYPES: 2,
-  ENERGY_PER_TURN: 1, // Auto-generated
+	// Energy System
+	MAX_ENERGY_TYPES: 3,
+	RECOMMENDED_ENERGY_TYPES: 2,
+	ENERGY_PER_TURN: 1, // Auto-generated
 
-  // Card Ratios (Recommended)
-  RECOMMENDED_POKEMON_MIN: 12,
-  RECOMMENDED_POKEMON_MAX: 15,
-  RECOMMENDED_TRAINERS_MIN: 5,
-  RECOMMENDED_TRAINERS_MAX: 8,
+	// Card Ratios (Recommended)
+	RECOMMENDED_POKEMON_MIN: 12,
+	RECOMMENDED_POKEMON_MAX: 15,
+	RECOMMENDED_TRAINERS_MIN: 5,
+	RECOMMENDED_TRAINERS_MAX: 8,
 
-  // Points
-  REGULAR_POKEMON_POINTS: 1,
-  EX_POKEMON_POINTS: 2,
+	// Points
+	REGULAR_POKEMON_POINTS: 1,
+	EX_POKEMON_POINTS: 2,
 } as const;
 
 export const GAME_CONTEXT = `
@@ -44,74 +44,76 @@ Pokemon TCG Pocket uses a unique format:
 `;
 
 export const IMPORTANT_CARDS = {
-  // Universal Staples
-  STAPLES: [
-    "Professor's Research", // Draw 2
-    'Poké Ball', // Search Basic
-    'Sabrina', // Switch opponent
-    'Giovanni', // +10 damage
-  ],
+	// Universal Staples
+	STAPLES: [
+		"Professor's Research", // Draw 2
+		'Poké Ball', // Search Basic
+		'Sabrina', // Switch opponent
+		'Giovanni', // +10 damage
+	],
 
-  // Key Items
-  STAGE_2_ACCELERATION: 'Rare Candy', // Skip Stage 1
-  EVOLUTION_SEARCH: 'Pokémon Communication',
+	// Key Items
+	STAGE_2_ACCELERATION: 'Rare Candy', // Skip Stage 1
+	EVOLUTION_SEARCH: 'Pokémon Communication',
 
-  // Tools
-  HP_BOOST: 'Giant Cape', // +20 HP
-  GRASS_HP_BOOST: 'Leaf Cape', // +30 HP (Grass only)
-  CHIP_DAMAGE: 'Rocky Helmet', // 20 damage to attacker
+	// Tools
+	HP_BOOST: 'Giant Cape', // +20 HP
+	GRASS_HP_BOOST: 'Leaf Cape', // +30 HP (Grass only)
+	CHIP_DAMAGE: 'Rocky Helmet', // 20 damage to attacker
 } as const;
 
 export const ENERGY_CONSISTENCY = {
-  ONE_TYPE: 'Always generates that type (100% consistent)',
-  TWO_TYPES: 'Random 50/50 split (good flexibility)',
-  THREE_TYPES: 'Random 33/33/33 split (too inconsistent - avoid)',
+	ONE_TYPE: 'Always generates that type (100% consistent)',
+	TWO_TYPES: 'Random 50/50 split (good flexibility)',
+	THREE_TYPES: 'Random 33/33/33 split (too inconsistent - avoid)',
 } as const;
 
 export const COMMON_MISTAKES = [
-  'Running 3 Energy types (too inconsistent)',
-  'Not including enough Basics (5-6 minimum)',
-  'Over-benching (leaves vulnerable to Sabrina/Cyrus)',
-  'Forgetting +10 damage from Giovanni for KO math',
-  'Not including Rare Candy in Stage 2 decks',
+	'Running 3 Energy types (too inconsistent)',
+	'Not including enough Basics (5-6 minimum)',
+	'Over-benching (leaves vulnerable to Sabrina/Cyrus)',
+	'Forgetting +10 damage from Giovanni for KO math',
+	'Not including Rare Candy in Stage 2 decks',
 ] as const;
 
 /**
  * Check if a deck meets basic Pokemon TCG Pocket rules
  */
 export function validateDeckRules(
-  deckSize: number,
-  energyTypeCount: number,
-  basicCount: number
+	deckSize: number,
+	energyTypeCount: number,
+	basicCount: number
 ): {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
+	valid: boolean;
+	errors: string[];
+	warnings: string[];
 } {
-  const errors: string[] = [];
-  const warnings: string[] = [];
+	const errors: string[] = [];
+	const warnings: string[] = [];
 
-  // Critical errors
-  if (deckSize !== GAME_RULES.DECK_SIZE) {
-    errors.push(`Deck must be exactly ${GAME_RULES.DECK_SIZE} cards (current: ${deckSize})`);
-  }
+	// Critical errors
+	if (deckSize !== GAME_RULES.DECK_SIZE) {
+		errors.push(
+			`Deck must be exactly ${GAME_RULES.DECK_SIZE} cards (current: ${deckSize})`
+		);
+	}
 
-  // Warnings
-  if (energyTypeCount > GAME_RULES.RECOMMENDED_ENERGY_TYPES) {
-    warnings.push(
-      `${energyTypeCount} Energy types detected. Recommend 1-2 for Energy Zone consistency`
-    );
-  }
+	// Warnings
+	if (energyTypeCount > GAME_RULES.RECOMMENDED_ENERGY_TYPES) {
+		warnings.push(
+			`${energyTypeCount} Energy types detected. Recommend 1-2 for Energy Zone consistency`
+		);
+	}
 
-  if (basicCount < GAME_RULES.MIN_BASIC_POKEMON) {
-    warnings.push(
-      `Only ${basicCount} Basic Pokemon. Recommend ${GAME_RULES.RECOMMENDED_MIN_BASIC} minimum`
-    );
-  }
+	if (basicCount < GAME_RULES.MIN_BASIC_POKEMON) {
+		warnings.push(
+			`Only ${basicCount} Basic Pokemon. Recommend ${GAME_RULES.RECOMMENDED_MIN_BASIC} minimum`
+		);
+	}
 
-  return {
-    valid: errors.length === 0,
-    errors,
-    warnings,
-  };
+	return {
+		valid: errors.length === 0,
+		errors,
+		warnings,
+	};
 }
