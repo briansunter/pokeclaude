@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 const CSV_PATH = path.join(__dirname, '../data/pokemon_pocket_cards.csv');
 
 // Read package version
-const VERSION = '1.2.1';
+const VERSION = '2.0.0';
 
 // Output format option
 const outputOption = z
@@ -373,7 +373,7 @@ const analyzeCommand = defineCommand({
 
 export const cliConfig = defineConfig({
 	meta: {
-		name: 'pokemon-pocket-mcp',
+		name: 'pokeclaude',
 		version: VERSION,
 		description: 'Pokemon TCG Pocket card database CLI',
 	},

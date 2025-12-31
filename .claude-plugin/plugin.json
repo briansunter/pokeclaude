@@ -1,0 +1,23 @@
+{
+  "name": "pokeclaude",
+  "version": "2.0.0",
+  "description": "Pokemon TCG Pocket deck building, card analysis, meta insights, and AI-powered competitive strategy guidance. Integrates with 2000+ cards across 12 sets via MCP server.",
+  "author": {
+    "name": "Brian Sunter"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pokemon",
+    "tcg",
+    "pocket",
+    "deck-building",
+    "card-games",
+    "meta-analysis",
+    "gaming",
+    "mcp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/briansunter/pokeclaude"
+  }
+}

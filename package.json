@@ -1,52 +1,76 @@
 {
-	"name": "pokeclaude",
-	"version": "1.0.0",
-	"description": "Pokemon Pocket TCG MCP Server and Data Scraper",
-	"private": true,
-	"type": "module",
-	"workspaces": [
-		"mcp-server",
-		"scraper"
-	],
-	"scripts": {
-		"scrape": "bun run scraper:scrape",
-		"scrape:full": "bun run scraper:scrape:full",
-		"build": "bun run mcp-server:build",
-		"typecheck": "bun run mcp-server:typecheck && bun run scraper:typecheck",
-		"lint": "biome check",
-		"lint:fix": "biome check --write",
-		"format": "biome check --write",
-		"format:check": "biome check",
-		"check:all": "bun run lint && bun run typecheck",
-		"test": "bun run mcp-server:test",
-		"mcp-server:build": "cd mcp-server && bun run build",
-		"mcp-server:typecheck": "cd mcp-server && bun run typecheck",
-		"mcp-server:dev": "cd mcp-server && bun run dev",
-		"mcp-server:test": "cd mcp-server && bun run test",
-		"scraper:scrape": "cd scraper && bun run scrape",
-		"scraper:scrape:full": "cd scraper && bun run scrape:full",
-		"scraper:typecheck": "cd scraper && bun run typecheck",
-		"prepare": "husky"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.3.10",
-		"@commitlint/cli": "^19.0.0",
-		"@commitlint/config-conventional": "^19.0.0",
-		"@semantic-release/changelog": "^6.0.3",
-		"@semantic-release/git": "^10.0.1",
-		"@semantic-release/github": "^10.0.0",
-		"@semantic-release/npm": "^12.0.0",
-		"conventional-changelog-conventionalcommits": "^9.1.0",
-		"husky": "^9.1.7",
-		"lint-staged": "^16.2.6",
-		"semantic-release": "^24.0.0",
-		"typescript": "^5.7.2"
-	},
-	"dependencies": {
-		"zod": "^4.2.1"
-	},
-	"trustedDependencies": [
-		"@biomejs/biome",
-		"husky"
-	]
+  "name": "pokeclaude",
+  "version": "2.0.0",
+  "description": "Pokemon TCG Pocket MCP server and CLI for deck building, card analysis, and competitive strategy",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "license": "MIT",
+  "author": "Brian Sunter",
+  "bin": {
+    "pokeclaude": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "data",
+    "skills",
+    "commands",
+    "references",
+    ".claude-plugin",
+    ".mcp.json",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/briansunter/pokeclaude.git"
+  },
+  "keywords": [
+    "mcp",
+    "pokemon",
+    "pokemon-pocket",
+    "tcg",
+    "duckdb",
+    "model-context-protocol",
+    "claude",
+    "deck-builder",
+    "card-games"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepack": "bun run build",
+    "start": "bun dist/cli.js",
+    "dev": "bun cli.ts",
+    "mcp": "bun cli.ts mcp",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test --timeout 120000",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome check --write",
+    "scrape": "cd scraper && bun run scrape",
+    "scrape:full": "cd scraper && bun run scrape:full"
+  },
+  "dependencies": {
+    "@duckdb/node-api": "^1.4.0-r.1",
+    "@modelcontextprotocol/sdk": "^1.25.1",
+    "@robingenz/zli": "^0.2.0",
+    "cli-table3": "^0.6.5",
+    "uuid": "^11.0.3",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.10",
+    "@types/node": "^22.10.2",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }

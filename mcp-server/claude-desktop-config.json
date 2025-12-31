@@ -1,8 +1,0 @@
-{
-	"mcpServers": {
-		"pokemon-pocket": {
-			"command": "node",
-			"args": ["/Users/bsunter/code/pokeclaude/mcp-server/dist/index.js"]
-		}
-	}
-}
