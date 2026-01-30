@@ -1,5 +1,38 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+# [3.0.0](https://github.com/briansunter/pokeclaude/compare/v2.0.0...v3.0.0) (2026-01-30)
+
+
+### Bug Fixes
+
+* correct data file copy path in CI workflow ([3ec2035](https://github.com/briansunter/pokeclaude/commit/3ec2035706cc9bd5082372c23a942a3f692c4ef7))
+* disable npm publishing due to invalid NPM_TOKEN ([29557cf](https://github.com/briansunter/pokeclaude/commit/29557cf4ff30fced84d569673c830263fcaa99c1))
+* setup Node.js 22 for semantic-release compatibility ([beb86fa](https://github.com/briansunter/pokeclaude/commit/beb86fab7d59cfdcdbae396724a3f68ba2b41f92))
+* update CI workflow for root-level package structure ([0cd1509](https://github.com/briansunter/pokeclaude/commit/0cd1509c325126155315988dccfa1da365eda0d3))
+
+
+### Code Refactoring
+
+* unify to single remote plugin with mcp subcommand ([f252544](https://github.com/briansunter/pokeclaude/commit/f2525445426e4205afe57094963467b9864899d7))
+
+
+### Features
+
+* add latest cards, infrastructure improvements, and quality enhancements ([e80f636](https://github.com/briansunter/pokeclaude/commit/e80f63654b995e3f665d9c0e3e0bc6881b653a9b))
+
+
+### BREAKING CHANGES
+
+* package renamed from pokemon-pocket-mcp-server to pokeclaude
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+# Changelog
+
 All notable changes to the Pokemon TCG Pocket card database and MCP server will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
