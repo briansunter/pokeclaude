@@ -98,7 +98,7 @@ async function fetchWithRetry<T>(
 			}
 
 			// Exponential backoff: 1s, 2s, 4s
-			const backoffMs = Math.pow(2, attempt - 1) * 1000;
+			const backoffMs = 2 ** (attempt - 1) * 1000;
 			console.warn(
 				`⚠️  ${context} failed (attempt ${attempt}/${maxRetries}): ${lastError.message}`
 			);
@@ -616,7 +616,9 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
 		const wrr = sanitizeText($('.card-text-wrr').text());
 
 		// Weakness format: "Weakness: Type" (capture only the type, stop at Retreat or end)
-		const weaknessMatch = wrr.match(/Weakness:\s*([A-Za-z]+?)(?:\s+Retreat:|$)/);
+		const weaknessMatch = wrr.match(
+			/Weakness:\s*([A-Za-z]+?)(?:\s+Retreat:|$)/
+		);
 		if (weaknessMatch) card.weakness = sanitizeText(weaknessMatch[1]);
 
 		// Retreat format: "Retreat: N"

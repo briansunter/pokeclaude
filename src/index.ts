@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
@@ -15,8 +15,8 @@ import {
 } from './common.js';
 // Import from modularized files
 import { DuckDBClient } from './db.js';
-import type { Card, TypeStats } from './types.js';
 import logger from './logger.js';
+import type { Card, TypeStats } from './types.js';
 
 // Re-export for backward compatibility (CLI module imports from here)
 export type { Card, TypeStats };

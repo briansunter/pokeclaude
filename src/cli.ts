@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
 import {
 	defineCommand,
 	defineConfig,
@@ -16,8 +16,8 @@ import {
 	type DeckAnalysis,
 	type SynergyResult,
 } from './formatters.js';
-import type { Card } from './types.js';
 import logger from './logger.js';
+import type { Card } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -40,17 +40,34 @@ const fieldSelectionSchema = z
 
 // Tool input schemas
 const searchCardsInputSchema = {
-	name: z.string().optional().describe('Card name to search for (partial match)'),
-	type: z.string().optional().describe('Pokemon type (Fire, Water, Grass, etc.)'),
+	name: z
+		.string()
+		.optional()
+		.describe('Card name to search for (partial match)'),
+	type: z
+		.string()
+		.optional()
+		.describe('Pokemon type (Fire, Water, Grass, etc.)'),
 	minHp: z.number().optional().describe('Minimum HP'),
 	maxHp: z.number().optional().describe('Maximum HP'),
 	set: z.string().optional().describe('Set code (A1, A2, A3, etc.)'),
-	hasAttacks: z.boolean().optional().describe('Filter by whether card has attacks'),
+	hasAttacks: z
+		.boolean()
+		.optional()
+		.describe('Filter by whether card has attacks'),
 	retreatCost: z.number().optional().describe('Retreat cost (0-4)'),
 	weakness: z.string().optional().describe('Weakness type'),
-	limit: z.number().optional().describe('Maximum results to return (default 50)'),
-	uniqueOnly: z.boolean().optional().describe('Return only unique cards (default: true)'),
-	fields: fieldSelectionSchema.describe('Field selection: minimal, basic (default), full, or custom array'),
+	limit: z
+		.number()
+		.optional()
+		.describe('Maximum results to return (default 50)'),
+	uniqueOnly: z
+		.boolean()
+		.optional()
+		.describe('Return only unique cards (default: true)'),
+	fields: fieldSelectionSchema.describe(
+		'Field selection: minimal, basic (default), full, or custom array'
+	),
 } as const;
 
 const getCardInputSchema = {
@@ -64,7 +81,9 @@ const findSynergiesInputSchema = {
 } as const;
 
 const findCountersInputSchema = {
-	targetType: z.string().describe('Pokemon type to counter (Fire, Water, Grass, etc.)'),
+	targetType: z
+		.string()
+		.describe('Pokemon type to counter (Fire, Water, Grass, etc.)'),
 	fields: fieldSelectionSchema.describe('Field selection'),
 } as const;
 
@@ -74,17 +93,25 @@ const queryCardsInputSchema = {
 } as const;
 
 const listTrainersInputSchema = {
-	limit: z.number().optional().describe('Maximum results to return (default 50)'),
+	limit: z
+		.number()
+		.optional()
+		.describe('Maximum results to return (default 50)'),
 	fields: fieldSelectionSchema.describe('Field selection'),
 } as const;
 
 const analyzeDeckInputSchema = {
-	cardNames: z.array(z.string()).describe('Array of card names in the deck (20 cards max)'),
+	cardNames: z
+		.array(z.string())
+		.describe('Array of card names in the deck (20 cards max)'),
 } as const;
 
 const buildDeckArgsSchema = {
 	mainCard: z.string().describe('Main card to build deck around'),
-	strategy: z.enum(['aggro', 'control', 'midrange']).optional().describe('Deck strategy type'),
+	strategy: z
+		.enum(['aggro', 'control', 'midrange'])
+		.optional()
+		.describe('Deck strategy type'),
 } as const;
 
 const counterDeckArgsSchema = {
@@ -93,7 +120,9 @@ const counterDeckArgsSchema = {
 } as const;
 
 const optimizeDeckArgsSchema = {
-	deckList: z.string().describe('Current deck list (comma-separated card names)'),
+	deckList: z
+		.string()
+		.describe('Current deck list (comma-separated card names)'),
 } as const;
 
 // Initialize DuckDB client
@@ -103,7 +132,8 @@ const dbClient = new DuckDBClient(CSV_PATH);
 const server = new McpServer({
 	name: 'pokeclaude',
 	version: '2.0.0',
-	description: 'Pokemon TCG Pocket deck builder (20-card format, Energy Zone system, 3-point win). Includes 2000+ cards.',
+	description:
+		'Pokemon TCG Pocket deck builder (20-card format, Energy Zone system, 3-point win). Includes 2000+ cards.',
 });
 
 // Register tools
@@ -126,13 +156,17 @@ server.registerTool(
 	'get_card',
 	{
 		title: 'Get Card Details',
-		description: 'Get detailed information about a specific card by exact name.',
+		description:
+			'Get detailed information about a specific card by exact name.',
 		inputSchema: getCardInputSchema,
 	},
 	async ({ name, fields }: { name: string; fields?: FieldSelection }) => {
 		const card = await dbClient.getCardByName(name);
 		if (!card) {
-			return { content: [{ type: 'text', text: `Card "${name}" not found` }], isError: true };
+			return {
+				content: [{ type: 'text', text: `Card "${name}" not found` }],
+				isError: true,
+			};
 		}
 		const filtered = filterFields(card, fields || 'basic');
 		return { content: [{ type: 'text', text: safeJsonStringify(filtered) }] };
@@ -146,12 +180,23 @@ server.registerTool(
 		description: 'Find cards that synergize well with a given Pokemon.',
 		inputSchema: findSynergiesInputSchema,
 	},
-	async ({ cardName, fields }: { cardName: string; fields?: FieldSelection }) => {
+	async ({
+		cardName,
+		fields,
+	}: {
+		cardName: string;
+		fields?: FieldSelection;
+	}) => {
 		const synergies = await dbClient.findSynergies(cardName);
 		const fieldSelection = fields || 'basic';
 		const filtered = {
-			card: synergies.card ? filterFields(synergies.card, fieldSelection) : synergies.card,
-			sameTypeCards: filterFields(synergies.sameTypeCards || [], fieldSelection),
+			card: synergies.card
+				? filterFields(synergies.card, fieldSelection)
+				: synergies.card,
+			sameTypeCards: filterFields(
+				synergies.sameTypeCards || [],
+				fieldSelection
+			),
 			trainers: filterFields(synergies.trainers || [], fieldSelection),
 		};
 		return { content: [{ type: 'text', text: safeJsonStringify(filtered) }] };
@@ -165,7 +210,13 @@ server.registerTool(
 		description: 'Find cards that counter a specific type.',
 		inputSchema: findCountersInputSchema,
 	},
-	async ({ targetType, fields }: { targetType: string; fields?: FieldSelection }) => {
+	async ({
+		targetType,
+		fields,
+	}: {
+		targetType: string;
+		fields?: FieldSelection;
+	}) => {
 		const counters = await dbClient.findCounters(targetType);
 		const filtered = filterFields(counters, fields || 'basic');
 		return { content: [{ type: 'text', text: safeJsonStringify(filtered) }] };
@@ -195,14 +246,20 @@ server.registerTool(
 	async ({ sql, fields }: { sql: string; fields?: FieldSelection }) => {
 		try {
 			if (!sql.trim().toUpperCase().startsWith('SELECT')) {
-				return { content: [{ type: 'text', text: 'Only SELECT queries are allowed' }], isError: true };
+				return {
+					content: [{ type: 'text', text: 'Only SELECT queries are allowed' }],
+					isError: true,
+				};
 			}
 			const results = await dbClient.query(sql);
 			const filtered = filterFields(results, fields || 'basic');
 			return { content: [{ type: 'text', text: safeJsonStringify(filtered) }] };
 		} catch (err: unknown) {
 			const error = err as Error;
-			return { content: [{ type: 'text', text: `Query error: ${error.message}` }], isError: true };
+			return {
+				content: [{ type: 'text', text: `Query error: ${error.message}` }],
+				isError: true,
+			};
 		}
 	}
 );
@@ -235,7 +292,9 @@ server.registerTool(
 		inputSchema: analyzeDeckInputSchema,
 	},
 	async ({ cardNames }: { cardNames: string[] }) => {
-		const cards = await Promise.all(cardNames.map((name) => dbClient.getCardByName(name)));
+		const cards = await Promise.all(
+			cardNames.map((name) => dbClient.getCardByName(name))
+		);
 		const validCards = cards.filter((c) => c !== null) as Card[];
 
 		const typeCount: Record<string, number> = {};
@@ -266,93 +325,169 @@ server.registerTool(
 		}
 
 		const warnings = [];
-		if (cardNames.length !== 20) warnings.push(`Deck must be exactly 20 cards (current: ${cardNames.length})`);
-		if (uniqueEnergyTypes.size > 2) warnings.push(`3+ Energy types detected. Recommend 1-2 types`);
-		if (basicCount < 5) warnings.push(`Only ${basicCount} Basic Pokemon. Recommend 5-6 minimum`);
-		if (pokemonCount < 12 || pokemonCount > 15) warnings.push(`Pokemon count (${pokemonCount}) outside recommended range`);
+		if (cardNames.length !== 20)
+			warnings.push(
+				`Deck must be exactly 20 cards (current: ${cardNames.length})`
+			);
+		if (uniqueEnergyTypes.size > 2)
+			warnings.push(`3+ Energy types detected. Recommend 1-2 types`);
+		if (basicCount < 5)
+			warnings.push(`Only ${basicCount} Basic Pokemon. Recommend 5-6 minimum`);
+		if (pokemonCount < 12 || pokemonCount > 15)
+			warnings.push(
+				`Pokemon count (${pokemonCount}) outside recommended range`
+			);
 
 		return {
-			content: [{
-				type: 'text',
-				text: safeJsonStringify({
-					deckSize: cardNames.length,
-					validCards: validCards.length,
-					pokemonCount,
-					trainerCount,
-					basicPokemonCount: basicCount,
-					exPokemonCount: exCount,
-					energyTypeCount: uniqueEnergyTypes.size,
-					energyTypes: Array.from(uniqueEnergyTypes),
-					typeDistribution: typeCount,
-					warnings,
-					rulesCompliant: warnings.length === 0,
-				}),
-			}],
+			content: [
+				{
+					type: 'text',
+					text: safeJsonStringify({
+						deckSize: cardNames.length,
+						validCards: validCards.length,
+						pokemonCount,
+						trainerCount,
+						basicPokemonCount: basicCount,
+						exPokemonCount: exCount,
+						energyTypeCount: uniqueEnergyTypes.size,
+						energyTypes: Array.from(uniqueEnergyTypes),
+						typeDistribution: typeCount,
+						warnings,
+						rulesCompliant: warnings.length === 0,
+					}),
+				},
+			],
 		};
 	}
 );
 
 // Register resources
-server.registerResource('all-cards', 'pokemon://cards/all', {
-	title: 'All Pokemon Cards',
-	description: 'Complete Pokemon Pocket card database',
-	mimeType: 'application/json',
-}, async (uri) => {
-	const cards = await dbClient.query('SELECT * FROM cards LIMIT 100');
-	return { contents: [{ uri: uri.href, text: safeJsonStringify(cards), mimeType: 'application/json' }] };
-});
+server.registerResource(
+	'all-cards',
+	'pokemon://cards/all',
+	{
+		title: 'All Pokemon Cards',
+		description: 'Complete Pokemon Pocket card database',
+		mimeType: 'application/json',
+	},
+	async (uri) => {
+		const cards = await dbClient.query('SELECT * FROM cards LIMIT 100');
+		return {
+			contents: [
+				{
+					uri: uri.href,
+					text: safeJsonStringify(cards),
+					mimeType: 'application/json',
+				},
+			],
+		};
+	}
+);
 
-server.registerResource('unique-cards', 'pokemon://cards/unique', {
-	title: 'Unique Pokemon Cards',
-	description: 'One version of each unique card',
-	mimeType: 'application/json',
-}, async (uri) => {
-	const cards = await dbClient.getUniqueCards();
-	return { contents: [{ uri: uri.href, text: safeJsonStringify(cards), mimeType: 'application/json' }] };
-});
+server.registerResource(
+	'unique-cards',
+	'pokemon://cards/unique',
+	{
+		title: 'Unique Pokemon Cards',
+		description: 'One version of each unique card',
+		mimeType: 'application/json',
+	},
+	async (uri) => {
+		const cards = await dbClient.getUniqueCards();
+		return {
+			contents: [
+				{
+					uri: uri.href,
+					text: safeJsonStringify(cards),
+					mimeType: 'application/json',
+				},
+			],
+		};
+	}
+);
 
-server.registerResource('type-stats', 'pokemon://stats/types', {
-	title: 'Type Statistics',
-	description: 'Statistical breakdown by Pokemon type',
-	mimeType: 'application/json',
-}, async (uri) => {
-	const stats = await dbClient.getTypeStats();
-	return { contents: [{ uri: uri.href, text: safeJsonStringify(stats), mimeType: 'application/json' }] };
-});
+server.registerResource(
+	'type-stats',
+	'pokemon://stats/types',
+	{
+		title: 'Type Statistics',
+		description: 'Statistical breakdown by Pokemon type',
+		mimeType: 'application/json',
+	},
+	async (uri) => {
+		const stats = await dbClient.getTypeStats();
+		return {
+			contents: [
+				{
+					uri: uri.href,
+					text: safeJsonStringify(stats),
+					mimeType: 'application/json',
+				},
+			],
+		};
+	}
+);
 
 // Register prompts
-server.registerPrompt('build-deck', {
-	title: 'Build Deck Around Card',
-	description: 'Generate a Pokemon TCG Pocket deck strategy',
-	argsSchema: buildDeckArgsSchema,
-}, ({ mainCard, strategy }) => ({
-	messages: [{
-		role: 'user',
-		content: { type: 'text', text: `Build a ${strategy || 'competitive'} Pokemon TCG Pocket deck centered around ${mainCard}.` },
-	}],
-}));
+server.registerPrompt(
+	'build-deck',
+	{
+		title: 'Build Deck Around Card',
+		description: 'Generate a Pokemon TCG Pocket deck strategy',
+		argsSchema: buildDeckArgsSchema,
+	},
+	({ mainCard, strategy }) => ({
+		messages: [
+			{
+				role: 'user',
+				content: {
+					type: 'text',
+					text: `Build a ${strategy || 'competitive'} Pokemon TCG Pocket deck centered around ${mainCard}.`,
+				},
+			},
+		],
+	})
+);
 
-server.registerPrompt('counter-deck', {
-	title: 'Build Counter Deck',
-	description: 'Build a deck to counter a specific type or strategy',
-	argsSchema: counterDeckArgsSchema,
-}, ({ targetType, sets }) => ({
-	messages: [{
-		role: 'user',
-		content: { type: 'text', text: `Build a Pokemon TCG Pocket deck that counters ${targetType} decks${sets ? ` using cards from sets: ${sets}` : ''}.` },
-	}],
-}));
+server.registerPrompt(
+	'counter-deck',
+	{
+		title: 'Build Counter Deck',
+		description: 'Build a deck to counter a specific type or strategy',
+		argsSchema: counterDeckArgsSchema,
+	},
+	({ targetType, sets }) => ({
+		messages: [
+			{
+				role: 'user',
+				content: {
+					type: 'text',
+					text: `Build a Pokemon TCG Pocket deck that counters ${targetType} decks${sets ? ` using cards from sets: ${sets}` : ''}.`,
+				},
+			},
+		],
+	})
+);
 
-server.registerPrompt('optimize-deck', {
-	title: 'Optimize Deck',
-	description: 'Analyze and suggest improvements for an existing deck',
-	argsSchema: optimizeDeckArgsSchema,
-}, ({ deckList }) => ({
-	messages: [{
-		role: 'user',
-		content: { type: 'text', text: `Analyze and optimize this Pokemon TCG Pocket deck: ${deckList}` },
-	}],
-}));
+server.registerPrompt(
+	'optimize-deck',
+	{
+		title: 'Optimize Deck',
+		description: 'Analyze and suggest improvements for an existing deck',
+		argsSchema: optimizeDeckArgsSchema,
+	},
+	({ deckList }) => ({
+		messages: [
+			{
+				role: 'user',
+				content: {
+					type: 'text',
+					text: `Analyze and optimize this Pokemon TCG Pocket deck: ${deckList}`,
+				},
+			},
+		],
+	})
+);
 
 // Export serve function for CLI integration
 export async function serveMcp(): Promise<void> {

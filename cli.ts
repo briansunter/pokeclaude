@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { serveMcp, runCli } from './index';
+import { runCli, serveMcp } from './index';
 
 // ============================================================================
 // HELP
@@ -55,7 +55,12 @@ For more information, see: https://github.com/briansunter/pokeclaude
 async function main(): Promise<void> {
 	const args = process.argv.slice(2);
 
-	if (args.length === 0 || args[0] === 'help' || args[0] === '--help' || args[0] === '-h') {
+	if (
+		args.length === 0 ||
+		args[0] === 'help' ||
+		args[0] === '--help' ||
+		args[0] === '-h'
+	) {
 		showHelp();
 		process.exit(0);
 	}
@@ -72,6 +77,9 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-	console.error('Error:', error instanceof Error ? error.message : String(error));
+	console.error(
+		'Error:',
+		error instanceof Error ? error.message : String(error)
+	);
 	process.exit(1);
 });
