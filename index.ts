@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -21,8 +22,28 @@ export { DuckDBClient, FIELD_PRESETS, filterFields, safeJsonStringify };
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CSV path - points to data directory in published package
-const CSV_PATH = path.join(__dirname, './data/pokemon_pocket_cards.csv');
+// Find data directory by searching upward from current location
+function findDataDirectory(): string {
+	// When running from source (index.ts at root), data is in ./data
+	// When running from compiled (dist/index.js), data is in ../data
+	// When running from installed package, data is in ./data
+
+	const possiblePaths = [
+		path.join(__dirname, '../data/pokemon_pocket_cards.csv'), // dist/index.js -> project root
+		path.join(__dirname, './data/pokemon_pocket_cards.csv'), // installed package or source
+	];
+
+	for (const dataPath of possiblePaths) {
+		if (existsSync(dataPath)) {
+			return dataPath;
+		}
+	}
+
+	// Fallback to relative path (will fail if file doesn't exist)
+	return path.join(__dirname, './data/pokemon_pocket_cards.csv');
+}
+
+const CSV_PATH = findDataDirectory();
 
 // Field selection schema
 const fieldSelectionSchema = z
