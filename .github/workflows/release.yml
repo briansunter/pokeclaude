@@ -80,34 +80,32 @@ jobs:
         run: bun run build
         timeout-minutes: 3
 
-      # NOTE: semantic-release disabled after refactor to unified package
-      # TODO: Re-enable when publishing strategy is decided
-      # - name: Setup Node.js for semantic-release
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '22'
-      #   timeout-minutes: 2
-      #
-      # - name: Get NPM token from Bitwarden Secrets Manager
-      #   id: bws
-      #   uses: bitwarden/sm-action@v2
-      #   with:
-      #     access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
-      #     secrets: |
-      #       ${{ secrets.BWS_NPM_TOKEN_SECRET_ID }} > NPM_TOKEN
-      #
-      # - name: Create .npmrc for publishing
-      #   run: |
-      #     cat > .npmrc << 'EOF'
-      #     registry=https://registry.npmjs.org
-      #     //registry.npmjs.org/:_authToken=\${NPM_TOKEN}
-      #     access=public
-      #     EOF
-      #
-      # - name: Run semantic-release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NPM_TOKEN: ${{ steps.bws.outputs.NPM_TOKEN }}
-      #     NPM_CONFIG_PROVENANCE: true
-      #   run: bunx semantic-release
-      #   timeout-minutes: 10
+      - name: Setup Node.js for semantic-release
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+        timeout-minutes: 2
+
+      - name: Get NPM token from Bitwarden Secrets Manager
+        id: bws
+        uses: bitwarden/sm-action@v2
+        with:
+          access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
+          secrets: |
+            ${{ secrets.BWS_NPM_TOKEN_SECRET_ID }} > NPM_TOKEN
+
+      - name: Create .npmrc for publishing
+        run: |
+          cat > .npmrc << 'EOF'
+          registry=https://registry.npmjs.org
+          //registry.npmjs.org/:_authToken=\${NPM_TOKEN}
+          access=public
+          EOF
+
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ steps.bws.outputs.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+        run: bunx semantic-release
+        timeout-minutes: 10

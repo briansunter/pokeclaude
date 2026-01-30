@@ -1,54 +1,14 @@
 {
 	"branches": ["master"],
 	"plugins": [
-		[
-			"@semantic-release/commit-analyzer",
-			{
-				"preset": "conventionalcommits"
-			}
-		],
-		[
-			"@semantic-release/release-notes-generator",
-			{
-				"preset": "conventionalcommits",
-				"presetConfig": {
-					"types": [
-						{ "type": "feat", "section": "Features" },
-						{ "type": "fix", "section": "Bug Fixes" },
-						{
-							"type": "refactor",
-							"section": "Refactorings",
-							"release": "minor"
-						},
-						{ "type": "perf", "section": "Performance Improvements" },
-						{ "type": "chore", "hidden": true },
-						{ "type": "docs", "hidden": true },
-						{ "type": "style", "hidden": true },
-						{ "type": "test", "hidden": true }
-					]
-				}
-			}
-		],
-		[
-			"@semantic-release/changelog",
-			{
-				"changelogFile": "CHANGELOG.md"
-			}
-		],
-		[
-			"@semantic-release/npm",
-			{
-				"pkgRoot": "mcp-server",
-				"npmPublish": true
-			}
-		],
-		["@semantic-release/github"],
-		[
-			"@semantic-release/git",
-			{
-				"assets": ["mcp-server/package.json", "CHANGELOG.md"],
-				"message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-			}
-		]
-	]
+		"@semantic-release/commit-analyzer",
+		"@semantic-release/release-notes-generator",
+		"@semantic-release/changelog",
+		"@semantic-release/npm",
+		"@semantic-release/git",
+		"@semantic-release/github"
+	],
+	"changelogFile": "CHANGELOG.md",
+	"changelogTitle": "# Changelog\n\nAll notable changes to this project will be documented in this file.",
+	"npmPublish": true
 }
