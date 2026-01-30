@@ -40,7 +40,7 @@ jobs:
         timeout-minutes: 3
 
       - name: Copy data file
-        run: cd mcp-server && mkdir -p data && cp ../data/pokemon_pocket_cards.csv data/
+        run: mkdir -p dist/data && cp data/pokemon_pocket_cards.csv dist/data/
         timeout-minutes: 1
 
       - name: Run tests
