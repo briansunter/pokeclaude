@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1](https://github.com/briansunter/pokeclaude/compare/v3.0.0...v3.0.1) (2026-01-30)
+
+
+### Bug Fixes
+
+* add smart data directory path finding to root index.ts ([7ce1808](https://github.com/briansunter/pokeclaude/commit/7ce1808c1e6b72dbf95474c3b97d699ee87ef74f))
+
 # [3.0.0](https://github.com/briansunter/pokeclaude/compare/v2.0.0...v3.0.0) (2026-01-30)
 
 
