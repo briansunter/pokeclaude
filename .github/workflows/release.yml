@@ -90,7 +90,7 @@ jobs:
 
       - name: Create .npmrc for publishing
         run: |
-          cat > mcp-server/.npmrc << 'EOF'
+          cat > .npmrc << 'EOF'
           registry=https://registry.npmjs.org
           //registry.npmjs.org/:_authToken=\${NPM_TOKEN}
           access=public
