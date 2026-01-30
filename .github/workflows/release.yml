@@ -80,6 +80,12 @@ jobs:
         run: bun run build
         timeout-minutes: 3
 
+      - name: Setup Node.js for semantic-release
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+        timeout-minutes: 2
+
       - name: Get NPM token from Bitwarden Secrets Manager
         id: bws
         uses: bitwarden/sm-action@v2
