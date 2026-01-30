@@ -97,7 +97,7 @@ jobs:
       - name: Get NPM token from BWS
         id: bws
         run: |
-          NPM_TOKEN=$(bws secret get "${{ secrets.BWS_NPM_SECRET_ID }}" --access-token "${{ secrets.BWS_ACCESS_TOKEN }}" | jq -r '.value')
+          NPM_TOKEN=$(bws secret get "${{ secrets.BWS_NPM_TOKEN_SECRET_ID }}" --access-token "${{ secrets.BWS_ACCESS_TOKEN }}" | jq -r '.value')
           echo "::add-mask::$NPM_TOKEN"
           echo "npm_token=$NPM_TOKEN" >> $GITHUB_OUTPUT
 
