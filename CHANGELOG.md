@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.2](https://github.com/briansunter/pokeclaude/compare/v3.0.1...v3.0.2) (2026-01-30)
+
+
+### Bug Fixes
+
+* use correct BWS secret name (BWS_NPM_TOKEN_SECRET_ID) ([ab3f991](https://github.com/briansunter/pokeclaude/commit/ab3f99174151cd93097c27d8b66d97aeddc8492e))
+
 ## [3.0.1](https://github.com/briansunter/pokeclaude/compare/v3.0.0...v3.0.1) (2026-01-30)
 
 
