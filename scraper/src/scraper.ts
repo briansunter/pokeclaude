@@ -37,7 +37,7 @@ const PokemonCardSchema = z.object({
 	rarity: z.string().max(50).optional(),
 	abilities: z.array(z.string()).optional(),
 	attacks: z.array(AttackSchema).optional(),
-	weakness: z.string().max(50).optional(),
+	weakness: z.string().max(100).optional(),
 	resistance: z.string().max(50).optional(),
 	retreat_cost: z.string().max(5).optional(),
 	image_url: z.string().url(),
@@ -74,6 +74,43 @@ function sanitizeText(text: string): string {
 	return text
 		.replace(/\s+/g, ' ') // Replace all whitespace (including newlines) with single space
 		.trim();
+}
+
+/**
+ * Retry helper for network requests with exponential backoff
+ */
+async function fetchWithRetry<T>(
+	fn: () => Promise<T>,
+	maxRetries: number = 3,
+	context: string = 'request'
+): Promise<T> {
+	let lastError: Error | undefined;
+
+	for (let attempt = 1; attempt <= maxRetries; attempt++) {
+		try {
+			return await fn();
+		} catch (error) {
+			lastError = error instanceof Error ? error : new Error(String(error));
+
+			// If it's the last attempt, throw the error
+			if (attempt === maxRetries) {
+				throw lastError;
+			}
+
+			// Exponential backoff: 1s, 2s, 4s
+			const backoffMs = Math.pow(2, attempt - 1) * 1000;
+			console.warn(
+				`⚠️  ${context} failed (attempt ${attempt}/${maxRetries}): ${lastError.message}`
+			);
+			console.warn(`   Retrying in ${backoffMs}ms...`);
+
+			// Wait before retrying
+			await new Promise((resolve) => setTimeout(resolve, backoffMs));
+		}
+	}
+
+	// This should never be reached, but TypeScript needs it
+	throw lastError || new Error('Unknown error in fetchWithRetry');
 }
 
 /**
@@ -217,13 +254,18 @@ async function discoverSets(): Promise<SetInfo[]> {
 
 	try {
 		// Scrape the main cards page to find all available sets
-		const response = await axios.get('https://pocket.limitlesstcg.com/cards', {
-			headers: {
-				'User-Agent':
-					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-			},
-			timeout: 30000,
-		});
+		const response = await fetchWithRetry(
+			async () =>
+				await axios.get('https://pocket.limitlesstcg.com/cards', {
+					headers: {
+						'User-Agent':
+							'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+					},
+					timeout: 30000,
+				}),
+			3,
+			'set discovery'
+		);
 
 		const $ = cheerio.load(response.data);
 		const sets: SetInfo[] = [];
@@ -367,13 +409,18 @@ async function scrapeSet(
 	console.log(`Scraping set: ${setInfo.name} (${setInfo.code})...`);
 
 	try {
-		const response = await axios.get(url, {
-			headers: {
-				'User-Agent':
-					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-			},
-			timeout: 30000,
-		});
+		const response = await fetchWithRetry(
+			async () =>
+				await axios.get(url, {
+					headers: {
+						'User-Agent':
+							'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+					},
+					timeout: 30000,
+				}),
+			3,
+			`set ${setInfo.code}`
+		);
 
 		const $ = cheerio.load(response.data);
 
@@ -497,13 +544,18 @@ async function scrapeCardsInBatches(
 
 async function scrapeCardDetails(card: PokemonCard): Promise<void> {
 	try {
-		const response = await axios.get(card.card_url, {
-			headers: {
-				'User-Agent':
-					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-			},
-			timeout: 10000,
-		});
+		const response = await fetchWithRetry(
+			async () =>
+				await axios.get(card.card_url, {
+					headers: {
+						'User-Agent':
+							'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+					},
+					timeout: 10000,
+				}),
+			2, // Fewer retries for individual cards to avoid slowing down
+			`card ${card.set_code}:${card.card_number}`
+		);
 
 		const $ = cheerio.load(response.data);
 
@@ -562,9 +614,12 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
 
 		// Extract weakness, resistance, and retreat
 		const wrr = sanitizeText($('.card-text-wrr').text());
-		const weaknessMatch = wrr.match(/Weakness:\s*([^\n]+)/);
+
+		// Weakness format: "Weakness: Type" (capture only the type, stop at Retreat or end)
+		const weaknessMatch = wrr.match(/Weakness:\s*([A-Za-z]+?)(?:\s+Retreat:|$)/);
 		if (weaknessMatch) card.weakness = sanitizeText(weaknessMatch[1]);
 
+		// Retreat format: "Retreat: N"
 		const retreatMatch = wrr.match(/Retreat:\s*(\d+)/);
 		if (retreatMatch) card.retreat_cost = retreatMatch[1];
 	} catch {
@@ -675,6 +730,7 @@ function parseExistingCsv(filename: string): PokemonCard[] {
 		const lines = csvContent.split('\n');
 		const cards: PokemonCard[] = [];
 		let errors = 0;
+		const errorExamples: string[] = [];
 
 		// Skip header line
 		for (let i = 1; i < lines.length; i++) {
@@ -731,15 +787,26 @@ function parseExistingCsv(filename: string): PokemonCard[] {
 					});
 
 					cards.push(card);
-				} catch {
+				} catch (err) {
 					errors++;
-					// Skip invalid cards
+					// Store first 10 error examples
+					if (errorExamples.length < 10) {
+						const cardId = parts[3] || 'unknown';
+						const error = err instanceof Error ? err.message : 'Unknown error';
+						errorExamples.push(`Line ${i + 1}: ${cardId} - ${error}`);
+					}
 				}
 			}
 		}
 
 		if (errors > 0) {
 			console.log(`⚠️  Skipped ${errors} invalid cards during parsing`);
+			if (errorExamples.length > 0) {
+				console.log('   First few errors:');
+				errorExamples.forEach((example) => {
+					console.log(`   - ${example}`);
+				});
+			}
 		}
 		console.log(`✅ Loaded ${cards.length} existing cards\n`);
 		return cards;

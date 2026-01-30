@@ -2,6 +2,7 @@
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import {
 	defineCommand,
 	defineConfig,
@@ -16,10 +17,37 @@ import {
 	type SynergyResult,
 } from './formatters.js';
 import type { Card } from './types.js';
+import logger from './logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const CSV_PATH = path.join(__dirname, '../data/pokemon_pocket_cards.csv');
+
+// Find data directory by searching upward from current location
+function findDataDirectory(): string {
+	// When running from source (src/cli.ts), data is in ../data
+	// When running from compiled (dist/src/cli.js), data is in ../../data
+	// When running from installed package, data is in ./data
+
+	const possiblePaths = [
+		path.join(__dirname, '../../data/pokemon_pocket_cards.csv'), // dist/src/cli.js -> project root
+		path.join(__dirname, '../data/pokemon_pocket_cards.csv'), // src/cli.ts -> project root
+		path.join(__dirname, './data/pokemon_pocket_cards.csv'), // installed package
+	];
+
+	for (const dataPath of possiblePaths) {
+		if (existsSync(dataPath)) {
+			return dataPath;
+		}
+	}
+
+	// Fallback to relative path (will fail if file doesn't exist)
+	return path.join(__dirname, '../../data/pokemon_pocket_cards.csv');
+}
+
+const CSV_PATH = findDataDirectory();
+
+// Initialize DuckDB client
+const db = new DuckDBClient(CSV_PATH);
 
 // Read package version
 const VERSION = '2.0.0';
@@ -29,9 +57,6 @@ const outputOption = z
 	.enum(['json', 'table', 'compact'])
 	.default('json')
 	.describe('Output format: json, table, or compact');
-
-// Initialize database client
-const db = new DuckDBClient(CSV_PATH);
 
 // Helper to extract output option and return rest
 function separateOutput<T extends { output?: string }>(
@@ -91,14 +116,14 @@ const getCommand = defineCommand({
 		const { output, rest } = separateOutput(options);
 
 		if (!rest.name) {
-			console.error('Error: --name is required');
+			logger.error('--name is required');
 			process.exit(1);
 		}
 
 		const card = await db.getCardByName(rest.name);
 
 		if (!card) {
-			console.error(`Card not found: ${rest.name}`);
+			logger.error({ card: rest.name }, 'Card not found');
 			process.exit(1);
 		}
 
@@ -120,7 +145,7 @@ const synergiesCommand = defineCommand({
 		const { output, rest } = separateOutput(options);
 
 		if (!rest.cardName) {
-			console.error('Error: --card-name is required');
+			logger.error('--card-name is required');
 			process.exit(1);
 		}
 
@@ -153,7 +178,7 @@ const countersCommand = defineCommand({
 		const { output, rest } = separateOutput(options);
 
 		if (!rest.targetType) {
-			console.error('Error: --target-type is required');
+			logger.error('--target-type is required');
 			process.exit(1);
 		}
 
@@ -194,14 +219,14 @@ const queryCommand = defineCommand({
 		const { output, rest } = separateOutput(options);
 
 		if (!rest.sql) {
-			console.error('Error: --sql is required');
+			logger.error('--sql is required');
 			process.exit(1);
 		}
 
 		// Safety check: only SELECT queries
 		const sql = rest.sql.trim();
 		if (!sql.toLowerCase().startsWith('select')) {
-			console.error('Error: Only SELECT queries are allowed');
+			logger.error('Only SELECT queries are allowed');
 			process.exit(1);
 		}
 
@@ -259,7 +284,7 @@ const analyzeCommand = defineCommand({
 		const { output, rest } = separateOutput(options);
 
 		if (!rest.cardNames || rest.cardNames.length === 0) {
-			console.error('Error: --card-names is required');
+			logger.error('--card-names is required');
 			process.exit(1);
 		}
 
@@ -404,10 +429,10 @@ export async function runCli(args: string[]): Promise<number> {
 		if (error instanceof Error) {
 			// Zli handles help/version, so we only need to handle other errors
 			if (error.message && !error.message.includes('Unknown command')) {
-				console.error(`Error: ${error.message}`);
+				logger.error(error);
 			}
 		} else {
-			console.error('Error:', String(error));
+			logger.error(String(error));
 		}
 		return 1;
 	}

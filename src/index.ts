@@ -2,6 +2,7 @@
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
@@ -15,6 +16,7 @@ import {
 // Import from modularized files
 import { DuckDBClient } from './db.js';
 import type { Card, TypeStats } from './types.js';
+import logger from './logger.js';
 
 // Re-export for backward compatibility (CLI module imports from here)
 export type { Card, TypeStats };
@@ -23,8 +25,29 @@ export { DuckDBClient, FIELD_PRESETS, filterFields, safeJsonStringify };
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CSV path - points to data directory in published package
-const CSV_PATH = path.join(__dirname, '../data/pokemon_pocket_cards.csv');
+// Find data directory by searching upward from current location
+function findDataDirectory(): string {
+	// When running from source (src/index.ts), data is in ../data
+	// When running from compiled (dist/src/index.js), data is in ../../data
+	// When running from installed package, data is in ./data
+
+	const possiblePaths = [
+		path.join(__dirname, '../../data/pokemon_pocket_cards.csv'), // dist/src/index.js -> project root
+		path.join(__dirname, '../data/pokemon_pocket_cards.csv'), // src/index.ts -> project root
+		path.join(__dirname, './data/pokemon_pocket_cards.csv'), // installed package
+	];
+
+	for (const dataPath of possiblePaths) {
+		if (existsSync(dataPath)) {
+			return dataPath;
+		}
+	}
+
+	// Fallback to relative path (will fail if file doesn't exist)
+	return path.join(__dirname, '../../data/pokemon_pocket_cards.csv');
+}
+
+const CSV_PATH = findDataDirectory();
 
 // Field selection schema - runtime validated with looser type for zod v4 compatibility
 // The actual type is FieldSelection (FieldPreset | FieldArray) but we use any for type inference
@@ -695,10 +718,10 @@ async function main() {
 	// Otherwise run MCP mode - connect to stdio for Claude Desktop
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
-	console.error('Pokemon Pocket MCP Server running on stdio');
+	logger.info('Pokemon Pocket MCP Server starting on stdio');
 }
 
 main().catch((error) => {
-	console.error('Server error:', error);
+	logger.error(error, 'MCP Server error');
 	process.exit(1);
 });

@@ -79,8 +79,8 @@ class MCPClient {
 			console.error('SERVER PROCESS ERROR:', err);
 		});
 
-		// Wait for server initialization
-		await new Promise((resolve) => setTimeout(resolve, 3000));
+		// Wait for server initialization (increased from 3s to 5s for slower systems)
+		await new Promise((resolve) => setTimeout(resolve, 5000));
 
 		// Check if process is still running
 		if (this.process.killed || this.process.exitCode !== null) {
@@ -130,7 +130,7 @@ class MCPClient {
 			setTimeout(() => {
 				if (this.pendingRequests.has(id)) {
 					this.pendingRequests.delete(id);
-					reject(new Error(`Request ${id} timed out`));
+					reject(new Error(`Request ${id} (${method}) timed out after 120s`));
 				}
 			}, 120000);
 		});

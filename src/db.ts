@@ -20,7 +20,6 @@ export class DuckDBClient {
       CREATE TABLE cards AS
       SELECT * FROM read_csv_auto('${csvPath}')
     `);
-		console.error('DuckDB initialized with Pokemon cards');
 	}
 
 	async query(sql: string): Promise<Card[]> {

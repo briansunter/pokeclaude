@@ -1,117 +1,76 @@
-## [2.0.0](https://github.com/briansunter/pokeclaude/compare/v1.4.1...v2.0.0) (2025-12-30)
+# Changelog
 
-### ⚠ BREAKING CHANGES
+All notable changes to the Pokemon TCG Pocket card database and MCP server will be documented in this file.
 
-* Refactored MCP server to use modular architecture
-that eliminates circular dependencies. All imports are now static.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-- New modules: types.ts, common.ts, db.ts
-- No dynamic imports
-- Better separation of concerns
+## [Unreleased]
 
-This is a minor version bump (1.4.1 → 1.5.0) as it's an
-internal refactoring with no API changes.
+### Added
+- Attack format validation to CSV validation script
+- Detailed error reporting for skipped cards during scraping
+- Improved path resolution in full_update.sh script
+- Evolution data validation
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+### Changed
+- Increased server initialization timeout from 3s to 5s for better reliability
+- Improved weakness field parsing (fixed bug including retreat cost and ex rules)
+- Increased weakness field max length from 50 to 100 characters in schema
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+### Fixed
+- **Critical**: Weakness field parsing bug - now correctly extracts only type weakness (e.g., "Fire") instead of including retreat cost and ex rules
+- Test timeout issue - increased initialization wait time
+- Script path resolution - full_update.sh now works from any directory
 
-### Features
+## [2.0.0] - 2026-01-30
 
-* add zero-circular-dependency architecture ([a5fb4d6](https://github.com/briansunter/pokeclaude/commit/a5fb4d6b109a7cf0a320326ecf0ea21fff80ff3f))
+### Added
+- **B2: Fantastical Parade** (234 cards) - Latest expansion set
+- **B1a: Crimson Blaze** (103 cards)
+- **B1: Mega Rising** (331 cards)
+- **P-B: Promo-B** (32 cards)
+- Evolution metadata fields for all 2,777 cards:
+  - `evolution_stage` - Basic/Stage 1/Mega Evolution
+  - `evolves_from`, `evolves_to` - Evolution chain
+  - `evolution_type` - Regular/Mega
+  - `base_pokemon_id` - Base Pokemon UUID
+  - `is_evolution` - true/false
+  - `evolution_method` - Evolution method description
+- CSV validation script with comprehensive checks:
+  - Required fields validation
+  - Data type validation (UUIDs, URLs, HP, retreat cost)
+  - Duplicate detection
+  - Attack format validation
+  - Statistics generation
+  - Sample verification against website
+- Automated workflow script (full_update.sh) for end-to-end updates
 
-### Refactorings
+### Changed
+- Total card count: **2,777 cards** across 16 sets
+- Auto-discovery now detects 16 sets (previously 12)
+- Improved parallel scraping performance
 
-* eliminate circular dependency with static imports ([ff906b0](https://github.com/briansunter/pokeclaude/commit/ff906b04c43ec302c860aa475ea084daf5166a97))
+### Fixed
+- CSV parsing now properly handles quoted strings with commas and newlines
+- Text sanitization removes extra whitespace and newlines
+- Zod validation ensures data integrity during scraping
 
-## [1.4.1](https://github.com/briansunter/pokeclaude/compare/v1.4.0...v1.4.1) (2025-12-30)
+## [1.0.0] - 2025-10-04
 
-### Bug Fixes
+### Added
+- Initial release of Pokemon TCG Pocket MCP server
+- Support for A1-A4 sets (Genetic Apex, Space-Time Smackdown, Celestial Guardians, Wisdom of Sea and Sky)
+- 7 MCP tools: search_cards, get_card, find_synergies, find_counters, get_type_stats, query_cards, analyze_deck
+- 3 MCP resources: full cards database, unique cards, type statistics
+- 3 MCP prompts: build-deck, counter-deck, optimize-deck
+- DuckDB integration for fast SQL queries
+- Pokemon TCG Pocket game rules integration (20-card decks, 3-point win condition, energy zone mechanics)
 
-* add dedicated bin wrapper for bunx compatibility ([931d4fb](https://github.com/briansunter/pokeclaude/commit/931d4fb9692ca396e9d149447b726e12e512b491))
+### Database
+- **1,068 unique cards** (2,077 total with art variants)
+- 12 sets: A1, A1a, A2, A2a, A2b, A3, A3a, A3b, A4, A4a, A4b, P-A
 
-## [1.4.0](https://github.com/briansunter/pokeclaude/compare/v1.3.0...v1.4.0) (2025-12-30)
-
-### Features
-
-* upgrade to zod v4 and convert project to bun ([b2dd2c1](https://github.com/briansunter/pokeclaude/commit/b2dd2c1096ad4a56b650646356be6dc5dcacc278))
-
-### Bug Fixes
-
-* update peerDependencies to zod v4 for CLI compatibility ([0377c4f](https://github.com/briansunter/pokeclaude/commit/0377c4f3d1b240bd43b9c2309d5c0b2a5601bdef))
-* upgrade root workspace to zod v4 ([9028c24](https://github.com/briansunter/pokeclaude/commit/9028c24903026c0c040d6e63467c8453fde4c3e2))
-
-## [1.3.0](https://github.com/briansunter/pokeclaude/compare/v1.2.1...v1.3.0) (2025-12-30)
-
-### Features
-
-- add CLI mode and fix findCounters bug ([0db9da0](https://github.com/briansunter/pokeclaude/commit/0db9da00c17b6324f1ae004a4cc172cae769b244))
-
-### Bug Fixes
-
-- add legacy-peer-deps to npmrc for semantic-release ([ac39051](https://github.com/briansunter/pokeclaude/commit/ac39051f2cea9fa7a58045e8d9a72dced4e19d3f))
-- add NPM_CONFIG_LEGACY_PEER_DEPS env var for semantic-release ([84f67a0](https://github.com/briansunter/pokeclaude/commit/84f67a0cad8f1557eca49a36c10a368cc0d8b905))
-- add npmVersionArgs to semantic-release for legacy-peer-deps ([d8ceeb6](https://github.com/briansunter/pokeclaude/commit/d8ceeb6bcc22d662767aecea2062deb109d4f339))
-- move zod to peerDependencies to resolve npm pack issue ([3bd442c](https://github.com/briansunter/pokeclaude/commit/3bd442cbf8611bb1cf23bfba710c00f0ec5e4dd1))
-
-## [1.2.1](https://github.com/briansunter/pokeclaude/compare/v1.2.0...v1.2.1) (2025-12-30)
-
-### Bug Fixes
-
-- pin bun version and move .npmrc creation to CI step ([366752a](https://github.com/briansunter/pokeclaude/commit/366752aacc2a47974dc8a1a5ebb01df69d0084b2))
-- remove --frozen-lockfile to allow platform differences ([6461308](https://github.com/briansunter/pokeclaude/commit/6461308b9b3395cbf01cfa81149a64255083867b))
-
-## [1.2.0](https://github.com/briansunter/pokeclaude/compare/v1.1.0...v1.2.0) (2025-10-31)
-
-### Features
-
-- Add Pokemon TCG Pocket comprehensive research documentation ([0ec3ab3](https://github.com/briansunter/pokeclaude/commit/0ec3ab37a4c7fe8be4b113192620f740e43353eb))
-- enhance docs and claude skills with company history and technical guides ([038cdb1](https://github.com/briansunter/pokeclaude/commit/038cdb18374f2a615ff9691cf24a3c0040c07c4d))
-- Update for b1 mega evolutions ([dad3c05](https://github.com/briansunter/pokeclaude/commit/dad3c052780603f6eb118fe5ed293fd3cb4142f2))
-
-### Bug Fixes
-
-- Add --timeout flag to bun test command ([cfb4726](https://github.com/briansunter/pokeclaude/commit/cfb47264f6e4155001487b4d8c30b5e7fb194655))
-- Add .bunfig.toml to increase test timeout to 60s ([4b6554f](https://github.com/briansunter/pokeclaude/commit/4b6554fa97a69d5c5ae61a319f4b2c0dd6679c8d))
-- add build step before tests in CI to copy CSV data ([f3fd5a2](https://github.com/briansunter/pokeclaude/commit/f3fd5a24b803d23a918f7d49a7051c6175d9625d))
-- Add cleanup step to kill stuck Bun processes in CI ([bf57d23](https://github.com/briansunter/pokeclaude/commit/bf57d23b246aa38d39bf7652133dc4d8a6d74235))
-- Add cleanup step to release workflow too ([5fd58b5](https://github.com/briansunter/pokeclaude/commit/5fd58b57a241aed839e0aaa84b866d3a6d78e331))
-- Add missing @eslint/js dependency for ESLint 9 ([b0cccb3](https://github.com/briansunter/pokeclaude/commit/b0cccb3f5badc8d94950007d74cca725673c072e))
-- Add test script to scraper for CI/CD ([e4fdf23](https://github.com/briansunter/pokeclaude/commit/e4fdf23626cd8da8dee8bcb65a2995fe59cd9fa2))
-- Add zod dependency and properly type MCP tool parameters ([23c012d](https://github.com/briansunter/pokeclaude/commit/23c012d7495700f4f45687849ddf057d2c69b42c))
-- ensure data file is available before running tests ([824b2c1](https://github.com/briansunter/pokeclaude/commit/824b2c13b16054b059a49a33f1570428fe487ab7))
-- Increase MCP request timeout from 5s to 60s ([da712e7](https://github.com/briansunter/pokeclaude/commit/da712e78fae2a33deee67339dfefd0dbd50c178e))
-- Increase server wait to 4.5s to fit under 5s timeout ([0c58e53](https://github.com/briansunter/pokeclaude/commit/0c58e532d1a80a7db9a95a83b0f140361615729e))
-- Increase timeouts to 120 seconds for CI ([f489c63](https://github.com/briansunter/pokeclaude/commit/f489c6313ae7e67629ec0e6db5126259235f8792))
-- linting ([8da702c](https://github.com/briansunter/pokeclaude/commit/8da702c9059d67961f4546d551560b6ed0ea2e19))
-- resolve integration test timeout in CI ([b577d08](https://github.com/briansunter/pokeclaude/commit/b577d0870c083a3f506e6dc3307ee7c01716c786))
-- Simplify test timeout - only increase server startup wait time ([3415ae7](https://github.com/briansunter/pokeclaude/commit/3415ae7272d6b373b388bd485a4687ce81edd971))
-
-## [1.1.0](https://github.com/briansunter/pokeclaude/compare/v1.0.0...v1.1.0) (2025-10-04)
-
-### Features
-
-- integrate Pokemon TCG Pocket game rules into MCP server ([ee05331](https://github.com/briansunter/pokeclaude/commit/ee053311f6dda3520f6668dd8908496d4ea41f32))
-
-## 1.0.0 (2025-10-04)
-
-### Bug Fixes
-
-- add bun support with conventionalcommits preset and update README for both npm and bun ([422079e](https://github.com/briansunter/pokeclaude/commit/422079ebcdf71dfbc1419219740438b4948d6d9b))
-- add timeouts to all GitHub Actions workflow jobs and steps ([d15e98b](https://github.com/briansunter/pokeclaude/commit/d15e98b60059db5a8b92b5248b0d84506b5b3a6a))
-- exclude test files from typecheck to avoid bun:test module errors ([e0f81e0](https://github.com/briansunter/pokeclaude/commit/e0f81e085f7795d0d2f1f94b7cfbfb1b1087809e))
-- publishing ([0c0b27c](https://github.com/briansunter/pokeclaude/commit/0c0b27c533667d854e66fd14ed33d6a769b1a59e))
-- publishing ([07e9a7d](https://github.com/briansunter/pokeclaude/commit/07e9a7da88e9ddff373403a9cf61c37b4bc1b9c0))
-- set up publish ([8bf3d68](https://github.com/briansunter/pokeclaude/commit/8bf3d689394c9d0fcd03b93dc3dff41896a5e0a2))
-- update readme ([38b4dfa](https://github.com/briansunter/pokeclaude/commit/38b4dfa54706795baa43f5868462f4e852dfb127))
-
-# 1.0.0 (2025-10-04)
-
-### Bug Fixes
-
-- add timeouts to all GitHub Actions workflow jobs and steps ([d15e98b](https://github.com/briansunter/pokeclaude/commit/d15e98b60059db5a8b92b5248b0d84506b5b3a6a))
-- exclude test files from typecheck to avoid bun:test module errors ([e0f81e0](https://github.com/briansunter/pokeclaude/commit/e0f81e085f7795d0d2f1f94b7cfbfb1b1087809e))
-- publishing ([0c0b27c](https://github.com/briansunter/pokeclaude/commit/0c0b27c533667d854e66fd14ed33d6a769b1a59e))
-- publishing ([07e9a7d](https://github.com/briansunter/pokeclaude/commit/07e9a7da88e9ddff373403a9cf61c37b4bc1b9c0))
-- set up publish ([8bf3d68](https://github.com/briansunter/pokeclaude/commit/8bf3d689394c9d0fcd03b93dc3dff41896a5e0a2))
-- update readme ([38b4dfa](https://github.com/briansunter/pokeclaude/commit/38b4dfa54706795baa43f5868462f4e852dfb127))
+[Unreleased]: https://github.com/briansunter/pokeclaude/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/briansunter/pokeclaude/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/briansunter/pokeclaude/releases/tag/v1.0.0
