@@ -145,10 +145,11 @@ Pikachu ex vs Raichu:
 
 **Database Coverage:**
 
-- 2077 total cards
-- 1068 unique cards (art variants removed)
-- 12 sets (A1 through P-A)
+- 2908 total cards
+- ~1400 unique cards (art variants removed)
+- 17 sets (A1-A4b, B1-B2a, P-A, P-B)
 - All rarities and types
+- Latest: Paldean Wonders (B2a), Fantastical Parade (B2)
 
 ## Card Evaluation Framework
 

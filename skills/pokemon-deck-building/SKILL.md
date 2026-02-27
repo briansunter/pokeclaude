@@ -73,38 +73,63 @@ Access 2000+ Pokemon cards via integrated MCP server:
 - Type diversity and coverage
 - Trainer card efficiency
 
-### 5. Sample Deck Building Session
+### 5. Sample Deck Building Session (Current Meta)
+
+**Example: Build S-Tier Mega Altaria ex + Greninja**
 
 ```
-Step 1: "Build a deck around Charizard ex"
-→ Search for Charizard ex cards
-→ Find Fire-type synergies
-→ Identify energy requirements
+Step 1: "Build a deck around Mega Altaria ex"
+→ Search for Mega Altaria ex cards
+→ Find Dragon/Flying synergies
+→ Identify need for Greninja partner
 
-Step 2: "Add support cards"
-→ Search for Fire trainers
-→ Find energy acceleration
-→ Check for complementary Pokemon
+Step 2: "Add Stage 2 setup"
+→ Add Froakie ×2, Greninja ×2 (Water Shuriken)
+→ Add Swablu ×2, Mega Altaria ex ×2
+→ Include Chingling for disruption
 
-Step 3: "Analyze the deck"
-→ Calculate average HP/attack
-→ Verify energy curve
-→ Check for weaknesses
+Step 3: "Add Trainer support"
+→ Cyrus ×2 (deck search)
+→ Rare Candy ×2 (evolution acceleration)
+→ Poke Ball ×2 (Pokemon search)
+→ Professor ×2 (draw power)
+→ Copycat, Lisia (consistency)
+→ Training Area (damage boost)
 
-Step 4: "Find counters"
-→ Identify deck's weaknesses
-→ Suggest counter-strategies
-→ Recommend improvements
+Step 4: "Analyze the deck"
+→ 20 cards total ✓
+→ Energy curve: 1-2 cost focus ✓
+→ Mega + Stage 2 synergy ✓
+→ Check for Greninja weakness ✓
 ```
+
+**Complete S-Tier Deck Lists (Fantastical Parade + Paldean Wonders Meta):**
+
+| Deck | 20-Card List |
+|------|--------------|
+| **Mega Altaria + Greninja** | 2 Froakie, 2 Greninja, 2 Mega Altaria ex, 2 Swablu, Chingling, 2 Cyrus, 2 Rare Candy, 2 Poke Ball, 2 Professor, Copycat, Lisia, Training Area |
+| **Greninja ex + Suicune ex** | 2 Greninja, 2 Suicune ex, 2 Froakie, Greninja ex, Indeedee ex, 2 Cyrus, 2 Rare Candy, 2 Poke Ball, 2 Professor, Mars, Irida, Lucky Ice Pop, Starting Plains |
+| **Mega Absol ex + Hydreigon** | 2 Deino, 2 Hydreigon, Nihilego, Absol, Mega Absol ex, 2 Rare Candy, 2 Poison Barb, 2 Copycat, 2 Lucky Ice Pop, 2 Poke Ball, 2 Professor, Cyrus |
+| **Bellibolt ex + CB Magnezone** | 2 Magneton, 2 Magnemite, 2 Magnezone, 2 Tadbulb, 2 Bellibolt ex, Cyrus, Copycat, Lisia, Clemont, Training Area, 2 Electric Generator, Poke Ball, 2 Professor, 2 Lightning Energy |
+| **Meowscarada ex** | 2 Sprigatito, Floragato, Meowscarada, 2 Meowscarada ex, Pheromosa, Cyrus, Mars, 2 Rare Candy, 2 Leaf Cape, Lillie, 2 Copycat, Lucky Ice Pop, Poke Ball, 2 Professor's Research |
 
 ## Best Practices
 
-### Deck Composition
+### Deck Composition (Current Meta)
 
-- **Core Pokemon**: 8-10 Pokemon (mix of ex and regular)
-- **Trainers**: 4-6 cards (support, items, stadium)
-- **Energy**: 0 (handled by energy zone)
-- **Curve Balance**: Mix of 1-3 energy costs
+- **Core Pokemon**: 7-11 Pokemon (mix of ex, Mega ex, and Stage 2 lines)
+- **Trainers**: 6-10 cards (evolution support, draw, disruption)
+- **Energy**: 0-2 (energy zone auto-generates; some decks run 1-2 special energy)
+- **Curve Balance**: Focus on 1-2 energy costs (avoid 3+ unless accelerated)
+
+**Meta-Specific Composition:**
+
+| Archetype | Pokemon | Trainers | Key Cards |
+|-----------|---------|----------|-----------|
+| Mega + Stage 2 | 8-9 | 11-12 | Rare Candy, Poke Ball, Cyrus |
+| Disruption | 7-8 | 12-13 | Copycat, Poison Barb, disruption items |
+| Snipe/Spread | 8-10 | 10-12 | Energy acceleration supporters |
+| Aggro | 9-11 | 9-11 | Low-cost attackers, minimal setup |
 
 ### Type Synergies
 
@@ -387,10 +412,11 @@ Suggestions:
 
 The Pokemon MCP server is automatically integrated:
 
-- Database: 2077 cards across 12 sets
-- Unique Cards: 1068 (auto-deduplicated art variants)
+- Database: 2908 cards across 17 sets (A1-A4b, B1-B2a, P-A, P-B)
+- Unique Cards: ~1400 (auto-deduplicated art variants)
 - Search: Advanced filters and SQL queries
 - Analysis: Deck stats, type breakdowns, synergy matching
+- Latest Sets: Paldean Wonders (B2a), Fantastical Parade (B2)
 
 ## Usage Examples
 
