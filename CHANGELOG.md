@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [3.1.0](https://github.com/briansunter/pokeclaude/compare/v3.0.2...v3.1.0) (2026-02-27)
+
+
+### Features
+
+* **data:** add B2a Paldean Wonders set (131 new cards) ([360c375](https://github.com/briansunter/pokeclaude/commit/360c3758940301acebaed8a9662b1a94b5d4fb08))
+
 ## [3.0.2](https://github.com/briansunter/pokeclaude/compare/v3.0.1...v3.0.2) (2026-01-30)
 
 

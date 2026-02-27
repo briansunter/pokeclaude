@@ -1,6 +1,6 @@
 {
 	"name": "pokeclaude",
-	"version": "3.0.2",
+	"version": "3.1.0",
 	"description": "Pokemon TCG Pocket MCP server and CLI for deck building, card analysis, and competitive strategy",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
