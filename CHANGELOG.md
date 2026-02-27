@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [3.2.0](https://github.com/briansunter/pokeclaude/compare/v3.1.0...v3.2.0) (2026-02-27)
+
+
+### Features
+
+* **skills:** update with latest Feb 2026 meta (B2/B2a) ([281f1bc](https://github.com/briansunter/pokeclaude/commit/281f1bc24a26eb0c0f06f339b9b964e98ca26a2e))
+
 # [3.1.0](https://github.com/briansunter/pokeclaude/compare/v3.0.2...v3.1.0) (2026-02-27)
 
 
