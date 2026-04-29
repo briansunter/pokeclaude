@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+# [4.0.0](https://github.com/briansunter/pokeclaude/compare/v3.2.0...v4.0.0) (2026-04-29)
+
+
+### Bug Fixes
+
+* resolve lint errors for CI ([c86fff4](https://github.com/briansunter/pokeclaude/commit/c86fff4c5cf63caa31f2bd2a047dc6630ccc76ba))
+
+
+### Features
+
+* add rarity scraping, remove unused resistance field ([4c47674](https://github.com/briansunter/pokeclaude/commit/4c47674ee93b7dfa559e2292a7b5f15ad01c898a))
+
+
+### BREAKING CHANGES
+
+* removes resistance field from CSV schema and API
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
 # [3.2.0](https://github.com/briansunter/pokeclaude/compare/v3.1.0...v3.2.0) (2026-02-27)
 
 
