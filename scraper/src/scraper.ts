@@ -775,7 +775,6 @@ function parseExistingCsv(filename: string): PokemonCard[] {
 							? parts[8].split(';').filter((a) => a)
 							: undefined,
 						attacks: attacks,
-						
 						retreat_cost: parts[11] || undefined,
 						image_url: parts[12] || '',
 						card_url: parts[13] || '',
