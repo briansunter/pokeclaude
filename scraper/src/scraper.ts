@@ -38,7 +38,6 @@ const PokemonCardSchema = z.object({
 	abilities: z.array(z.string()).optional(),
 	attacks: z.array(AttackSchema).optional(),
 	weakness: z.string().max(100).optional(),
-	resistance: z.string().max(50).optional(),
 	retreat_cost: z.string().max(5).optional(),
 	image_url: z.string().url(),
 	card_url: z.string().url(),
@@ -612,7 +611,7 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
 		});
 		if (attacks.length > 0) card.attacks = attacks;
 
-		// Extract weakness, resistance, and retreat
+		// Extract weakness and retreat
 		const wrr = sanitizeText($('.card-text-wrr').text());
 
 		// Weakness format: "Weakness: Type" (capture only the type, stop at Retreat or end)
@@ -624,6 +623,11 @@ async function scrapeCardDetails(card: PokemonCard): Promise<void> {
 		// Retreat format: "Retreat: N"
 		const retreatMatch = wrr.match(/Retreat:\s*(\d+)/);
 		if (retreatMatch) card.retreat_cost = retreatMatch[1];
+
+		// Extract rarity from .prints-current-details span (format: "#N · ◊" or "#N · ☆☆☆")
+		const detailsText = sanitizeText($('.prints-current-details').text());
+		const rarityMatch = detailsText.match(/[◊☆]+/);
+		if (rarityMatch) card.rarity = rarityMatch[0];
 	} catch {
 		// Silently fail for individual cards
 	}
@@ -658,7 +662,6 @@ function exportToCSV(cards: PokemonCard[], filename: string): void {
 		'abilities',
 		'attacks',
 		'weakness',
-		'resistance',
 		'retreat_cost',
 		'image_url',
 		'card_url',
@@ -696,7 +699,6 @@ function exportToCSV(cards: PokemonCard[], filename: string): void {
 			escapeCsv(card.abilities ? card.abilities.join('; ') : ''),
 			escapeCsv(attacksStr),
 			escapeCsv(card.weakness || ''),
-			escapeCsv(card.resistance || ''),
 			escapeCsv(card.retreat_cost || ''),
 			escapeCsv(card.image_url),
 			escapeCsv(card.card_url),
@@ -773,19 +775,18 @@ function parseExistingCsv(filename: string): PokemonCard[] {
 							? parts[8].split(';').filter((a) => a)
 							: undefined,
 						attacks: attacks,
-						weakness: parts[10] || undefined,
-						resistance: parts[11] || undefined,
-						retreat_cost: parts[12] || undefined,
-						image_url: parts[13] || '',
-						card_url: parts[14] || '',
+						
+						retreat_cost: parts[11] || undefined,
+						image_url: parts[12] || '',
+						card_url: parts[13] || '',
 						// Evolution metadata fields (may not exist in old CSV)
-						evolution_stage: parts[15] || undefined,
-						evolves_from: parts[16] || undefined,
-						evolves_to: parts[17] || undefined,
-						evolution_type: parts[18] || undefined,
-						base_pokemon_id: parts[19] || undefined,
-						is_evolution: parts[20] || undefined,
-						evolution_method: parts[21] || undefined,
+						evolution_stage: parts[14] || undefined,
+						evolves_from: parts[15] || undefined,
+						evolves_to: parts[16] || undefined,
+						evolution_type: parts[17] || undefined,
+						base_pokemon_id: parts[18] || undefined,
+						is_evolution: parts[19] || undefined,
+						evolution_method: parts[20] || undefined,
 					});
 
 					cards.push(card);

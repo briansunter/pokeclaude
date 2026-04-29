@@ -194,7 +194,7 @@ const server = new McpServer({
 // FIELD SELECTION GUIDELINES:
 // ✅ DO: Use "minimal" for listings and "basic" for queries (default)
 // ❌ DON'T: Use "full" unless user specifically needs image_url or card_url
-// 💡 TIP: "basic" excludes image_url, card_url, set_name, set_code, card_number, abilities, resistance
+// 💡 TIP: "basic" excludes image_url, card_url, set_name, set_code, card_number, abilities
 //
 // HOW TO SEARCH FOR TRAINERS/ITEMS:
 // 1. search_cards with hasAttacks=false - Returns all Trainers and Items (187 cards)

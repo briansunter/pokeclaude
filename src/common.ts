@@ -3,7 +3,7 @@
 // Field selection presets to reduce context usage
 // - minimal: Just id and name (smallest response)
 // - basic: Common fields without images/URLs (default for all tools)
-// - full: All 22 fields including set info, images, URLs, and evolution metadata
+// - full: All 21 fields including set info, images, URLs, and evolution metadata
 export const FIELD_PRESETS = {
 	minimal: ['id', 'name'] as const,
 	basic: [
@@ -28,7 +28,6 @@ export const FIELD_PRESETS = {
 		'abilities',
 		'attacks',
 		'weakness',
-		'resistance',
 		'retreat_cost',
 		'image_url',
 		'card_url',

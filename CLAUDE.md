@@ -70,7 +70,6 @@ cards (
   abilities: VARCHAR,       -- Pokemon abilities
   attacks: VARCHAR,         -- Attack details
   weakness: VARCHAR,        -- Weakness type
-  resistance: VARCHAR,      -- Resistance type
   retreat_cost: VARCHAR,    -- 0-4
   image_url: VARCHAR,       -- Card image
   card_url: VARCHAR         -- limitlesstcg.com link

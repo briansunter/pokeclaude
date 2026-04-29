@@ -12,7 +12,6 @@ export interface Card {
 	abilities: string;
 	attacks: string;
 	weakness: string;
-	resistance: string;
 	retreat_cost: string;
 	image_url: string;
 	card_url: string;

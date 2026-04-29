@@ -245,7 +245,7 @@ describe('Field Filtering - search_cards', () => {
 		expect(fields).toContain('card_url');
 		expect(fields).toContain('set_name');
 		expect(fields).toContain('set_code');
-		expect(fields.length).toBe(22); // Updated from 15 to 22 (7 new evolution metadata fields)
+		expect(fields.length).toBe(21); // 21 fields with evolution metadata, no resistance
 	});
 
 	test('should return custom field array', async () => {

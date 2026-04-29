@@ -219,7 +219,6 @@ export class CardFormatter {
 			['HP', card.hp || '-'],
 			['Rarity', card.rarity || '-'],
 			['Weakness', card.weakness || '-'],
-			['Resistance', card.resistance || '-'],
 			['Retreat Cost', card.retreat_cost || '-']
 		);
 
