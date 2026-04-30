@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [4.1.0](https://github.com/briansunter/pokeclaude/compare/v4.0.0...v4.1.0) (2026-04-30)
+
+
+### Features
+
+* update all skills and game rules to Pulsing Aura (B3) meta ([78b2224](https://github.com/briansunter/pokeclaude/commit/78b22240a3c578d9f0ff3bdc8c3d8f5cd99c717b))
+
 # [4.0.0](https://github.com/briansunter/pokeclaude/compare/v3.2.0...v4.0.0) (2026-04-29)
 
 
