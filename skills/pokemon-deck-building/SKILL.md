@@ -10,9 +10,9 @@ description: |
   - Optimization ("improve my deck", "fix my deck")
   - Energy calculations ("energy curve", "energy needs")
 
-  **Provides:** Complete deck construction with validation, energy curve analysis, synergy recommendations, and optimization suggestions. References proven deck archetypes and meta strategies from comprehensive research.
+  **Provides:** Complete deck construction with validation, energy curve analysis, synergy recommendations, and optimization suggestions. References proven deck archetypes and meta strategies.
 
-  **Key benefit:** Legal, optimized, competitive-ready 20-card decks with detailed strategy explanations and improvement recommendations.
+  **Key benefit:** Legal, optimized, competitive-ready 20-card decks with detailed strategy explanations.
 ---
 
 # Pokemon TCG Pocket Deck Builder
@@ -23,8 +23,8 @@ Build competitive Pokemon TCG Pocket decks with AI-powered analysis and strategy
 
 ### 1. Deck Construction Workflow
 
-- **Initial Deck Build**: Start with a Pokemon ex or core strategy card
-- **Synergy Analysis**: Find cards that work well together (same type + trainers)
+- **Initial Deck Build**: Start with a Mega ex or core strategy card
+- **Synergy Analysis**: Find cards that work well together (type + trainers)
 - **Energy Optimization**: Calculate energy requirements (1-2 types recommended)
 - **Coverage Analysis**: Ensure diverse Pokemon types for matchup flexibility
 
@@ -32,14 +32,15 @@ Build competitive Pokemon TCG Pocket decks with AI-powered analysis and strategy
 
 - **Deck Size**: 20 cards (standard format)
 - **Energy Zone**: Auto-generates 1 Energy/turn (NOT from deck)
-- **Win Conditions**: 3 points (ex Pokemon = 2 pts, regular = 1 pt)
+- **Win Conditions**: 3 points (ex Pokemon = 2 pts, regular = 1 pt; losing Mega ex = instant loss)
 - **Bench Limit**: Max 3 Pokemon on bench (not 5 like standard TCG)
 - **Turn 1**: No draw, no energy, no attack
 - **Card Copies**: Max 2 copies per card
+- **Point Mapping**: Optimal 1-1-3 (send cheap Pokemon first, Mega last)
 
 ### 3. MCP Server Integration
 
-Access 2000+ Pokemon cards via integrated MCP server:
+Access 2900+ Pokemon cards via integrated MCP server:
 
 **Tools Available:**
 
@@ -49,399 +50,205 @@ Access 2000+ Pokemon cards via integrated MCP server:
 - `get_type_stats`: Analyze type distributions and averages
 - `analyze_deck`: Get detailed deck composition analysis
 
-**Example Queries:**
-
-```
-"Find synergies for Pikachu ex deck"
-"Calculate energy needs for Grass/Poison deck"
-"What counters a Water-type deck?"
-"Show me all Fire Pokemon with high HP"
-```
-
 ### 4. Strategic Analysis
 
-**Deck Archetypes:**
+**Deck Archetypes (Current Meta):**
 
-- **Aggro**: Fast ex Pokemon, low energy costs
-- **Control**: High HP Pokemon, defensive strategies
-- **Tempo**: Early game pressure, mid-game finish
+| Archetype           | Description                     | Example Decks              |
+| ------------------- | ------------------------------- | -------------------------- |
+| Mega + Partner      | Mega ex power + utility partner | Mega Altaria ex + Greninja |
+| Disruption          | Hand/board control + damage     | Mega Absol ex + Hydreigon  |
+| Snipe/Spread        | Bench damage → Cyrus finish     | Chien-Pao ex, Greninja     |
+| Energy Acceleration | Ramp faster than 1/turn         | Baxcalibur → Chien-Pao ex  |
+| Self-Sufficient     | Powers itself, attacks on curve | Magnezone                  |
+| Switch Combo        | Must switch for full damage     | Mega Scizor ex + Revavroom |
 
-**Key Metrics:**
+## Complete Top-Tier Deck Lists (Pulsing Aura B3 Meta, April 2026)
 
-- Average HP and attack power
-- Energy curve (cost distribution)
-- Type diversity and coverage
-- Trainer card efficiency
+### Top Tier
 
-### 5. Sample Deck Building Session (Current Meta)
-
-**Example: Build S-Tier Mega Altaria ex + Greninja**
+**Chien-Pao ex + Suicune ex + Baxcalibur**
 
 ```
-Step 1: "Build a deck around Mega Altaria ex"
-→ Search for Mega Altaria ex cards
-→ Find Dragon/Flying synergies
-→ Identify need for Greninja partner
-
-Step 2: "Add Stage 2 setup"
-→ Add Froakie ×2, Greninja ×2 (Water Shuriken)
-→ Add Swablu ×2, Mega Altaria ex ×2
-→ Include Chingling for disruption
-
-Step 3: "Add Trainer support"
-→ Cyrus ×2 (deck search)
-→ Rare Candy ×2 (evolution acceleration)
-→ Poke Ball ×2 (Pokemon search)
-→ Professor ×2 (draw power)
-→ Copycat, Lisia (consistency)
-→ Training Area (damage boost)
-
-Step 4: "Analyze the deck"
-→ 20 cards total ✓
-→ Energy curve: 1-2 cost focus ✓
-→ Mega + Stage 2 synergy ✓
-→ Check for Greninja weakness ✓
+2 Frigibax, 2 Baxcalibur, 2 Suicune ex, Chien-Pao ex,
+2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Inflatable Boat, Starting Plains, Lucky Ice Pop,
+Irida, Copycat, Mars, Poke Ball
+Strategy: Baxcalibur Ice Maker loads Chien-Pao ex with energy for
+130 dmg to ANY Pokemon. Suicune ex as primary attacker + Legendary
+Pulse consistency. 1-1-3 point map.
 ```
 
-**Complete S-Tier Deck Lists (Fantastical Parade + Paldean Wonders Meta):**
+**Mega Altaria ex + Greninja + Chingling (Lisia build)**
 
-| Deck | 20-Card List |
-|------|--------------|
-| **Mega Altaria + Greninja** | 2 Froakie, 2 Greninja, 2 Mega Altaria ex, 2 Swablu, Chingling, 2 Cyrus, 2 Rare Candy, 2 Poke Ball, 2 Professor, Copycat, Lisia, Training Area |
-| **Greninja ex + Suicune ex** | 2 Greninja, 2 Suicune ex, 2 Froakie, Greninja ex, Indeedee ex, 2 Cyrus, 2 Rare Candy, 2 Poke Ball, 2 Professor, Mars, Irida, Lucky Ice Pop, Starting Plains |
-| **Mega Absol ex + Hydreigon** | 2 Deino, 2 Hydreigon, Nihilego, Absol, Mega Absol ex, 2 Rare Candy, 2 Poison Barb, 2 Copycat, 2 Lucky Ice Pop, 2 Poke Ball, 2 Professor, Cyrus |
-| **Bellibolt ex + CB Magnezone** | 2 Magneton, 2 Magnemite, 2 Magnezone, 2 Tadbulb, 2 Bellibolt ex, Cyrus, Copycat, Lisia, Clemont, Training Area, 2 Electric Generator, Poke Ball, 2 Professor, 2 Lightning Energy |
-| **Meowscarada ex** | 2 Sprigatito, Floragato, Meowscarada, 2 Meowscarada ex, Pheromosa, Cyrus, Mars, 2 Rare Candy, 2 Leaf Cape, Lillie, 2 Copycat, Lucky Ice Pop, Poke Ball, 2 Professor's Research |
+```
+2 Froakie, 2 Greninja, 2 Swablu, 2 Mega Altaria ex, Chingling,
+2 Cyrus, 2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+Copycat, Lisia, Training Area, 2 Lucky Ice Pop (or similar)
+Strategy: Greninja Water Shuriken chips 20 dmg/turn free. Mega Altaria
+ex's Mega Harmony hits 130 for 2 energy. Chingling disrupts Items.
+Lisia fills bench + searches Swablu. Energy: Psychic.
+```
+
+**Mega Altaria ex + Darkrai + Igglybuff (Sleep variant)**
+
+```
+2 Swablu, 2 Mega Altaria ex, Darkrai, Igglybuff, Pichu,
+2 Cyrus, 2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Copycat, Poison Barb (or support item), Lisia, Starting Plains
+Strategy: Igglybuff/Darkrai puts Active to Sleep → Darkrai Dark Dreams
+deals 20 free dmg. Build up Mega Altaria ex as finisher.
+```
+
+**Mega Absol ex + Hydreigon + Nihilego**
+
+```
+2 Deino, 2 Hydreigon, Nihilego, Absol, Mega Absol ex,
+2 Rare Candy, 2 Poison Barb, 2 Copycat, 2 Lucky Ice Pop,
+2 Poke Ball, 2 Professor's Research, Cyrus
+Strategy: Mega Absol ex discards Supporters (hand disruption).
+Hydreigon Hyper Ray hits 130 (1-point Pokemon). Nihilego + Poison
+Barb raises poison to 20 dmg. Aggressive 1-1-3 point map.
+```
+
+### High Tier
+
+**Mega Manectric ex + Zeraora**
+
+```
+2 Electrike, Mega Manectric ex, Pichu, Zeraora, Pom-Pom Oricorio,
+2 Electric Generator, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Copycat, Lisia, Training Area, Rare Candy, Sabrina
+Strategy: Fastest deck in format. Pichu + Electric Generator ramp.
+Lightning Accelerator: 80 + 30 per point taken (up to 140).
+```
+
+**Magnezone + Heliolisk (Clemont build)**
+
+```
+2 Magnemite, 2 Magneton, 2 Magnezone, Heliolisk,
+Clemont, Clemont's Backpack, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Copycat, Poke Ball, Sabrina, Training Area, Rare Candy
+Strategy: Magneton Volt Charge self-powers. Clemont searches combo
+pieces. Magnezone attacks on curve (reliable going 1st or 2nd).
+Mirror Shot can lock opponent out of attacking.
+```
+
+**Greninja centerpiece**
+
+```
+2 Froakie, 2 Frogadier, 2 Greninja, Suicune ex, Greninja ex,
+2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Misty, Irida, Lucky Ice Pop, Starting Plains, Copycat
+Strategy: Greninja Water Shuriken every turn (free 20 dmg to any).
+Paired with Water attackers. Misty for energy acceleration.
+Cyrus picks off damaged benched Pokemon.
+```
+
+**Mega Charizard X ex + Entei ex**
+
+```
+2 Charmander, Charmeleon, Mega Charizard X ex, Entei ex,
+2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Flame Patch, Copycat, Sabrina, Training Area
+Strategy: Raging Blaze starts at 100, jumps to 180 when below
+half HP (110). Entei ex Legendary Pulse draws + attacks as backup.
+```
+
+### Middle Tier
+
+**Bellibolt ex + Magnezone**
+
+```
+2 Magnemite, 2 Magneton, 2 Magnezone, 2 Tadbulb, 2 Bellibolt ex,
+2 Electric Generator, Clemont, Cyrus, Copycat, Lisia,
+Training Area, Poke Ball, 2 Professor's Research
+Strategy: Magnezone self-powers + counts toward Bellibolt's 4-energy
+threshold. High-Voltage Cannon: 70→140 dmg. Fragile Tadbulb setup.
+```
+
+**Mega Scizor ex + Revavroom**
+
+```
+2 Scyther (or Skarmory), Mega Scizor ex, 2 Revavroom, Orthworm,
+2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Metal support items, Copycat, Training Area
+Strategy: Revavroom Metal Transport switches Active each turn →
+Mega Scizor ex Bullet Slugger hits 150. 3-cost attack is slow.
+```
+
+### New (Pulsing Aura B3)
+
+**Mega Lucario ex + Hitmonchan ex**
+
+```
+2 Riolu, Mega Lucario ex, 2 Hitmonchan ex, Lucario, Bonsly/Tyrogue,
+2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Korrina, Arena of Antiquity, Copycat
+Strategy: Fighting Pulse 90/140 dmg. Hitmonchan ex cheap 50 dmg
+opener. Lucario Fighting Coach +10 buff. Korrina searches Fighting.
+Weak to Mega Altaria ex (Psychic).
+```
+
+**Mega Sceptile ex + Pheromosa**
+
+```
+2 Treecko, 2 Grovyle, Mega Sceptile ex, Pheromosa, Nihilego,
+2 Rare Candy, 2 Poke Ball, 2 Professor's Research,
+2 Cyrus, Poison Barb, Fragrant Forest, Copycat
+Strategy: Terminating Tail 130 + Poison (effective 140). Pheromosa
+enables Cyrus plays. Fragrant Forest searches Treecko. Poison Barb
++ Nihilego stacks poison damage.
+```
 
 ## Best Practices
 
 ### Deck Composition (Current Meta)
 
-- **Core Pokemon**: 7-11 Pokemon (mix of ex, Mega ex, and Stage 2 lines)
-- **Trainers**: 6-10 cards (evolution support, draw, disruption)
-- **Energy**: 0-2 (energy zone auto-generates; some decks run 1-2 special energy)
-- **Curve Balance**: Focus on 1-2 energy costs (avoid 3+ unless accelerated)
+| Archetype           | Pokemon | Trainers | Key Cards                               |
+| ------------------- | ------- | -------- | --------------------------------------- |
+| Mega + Partner      | 8-10    | 10-12    | Rare Candy, Poke Ball, Cyrus, Professor |
+| Disruption          | 7-8     | 12-13    | Copycat, Poison Barb, Lucky Ice Pop     |
+| Snipe/Spread        | 8-10    | 10-12    | Free-damage abilities, Cyrus            |
+| Energy Acceleration | 8-10    | 10-12    | Rare Candy, energy ramp cards           |
+| Self-Sufficient     | 8-10    | 10-12    | Evolution search, draw power            |
 
-**Meta-Specific Composition:**
+### Universal Staples (Include in Nearly Every Deck)
 
-| Archetype | Pokemon | Trainers | Key Cards |
-|-----------|---------|----------|-----------|
-| Mega + Stage 2 | 8-9 | 11-12 | Rare Candy, Poke Ball, Cyrus |
-| Disruption | 7-8 | 12-13 | Copycat, Poison Barb, disruption items |
-| Snipe/Spread | 8-10 | 10-12 | Energy acceleration supporters |
-| Aggro | 9-11 | 9-11 | Low-cost attackers, minimal setup |
-
-### Type Synergies
-
-- **Mono-type**: Consistent strategy, easier energy
-- **Dual-type**: More flexibility, higher synergy potential
-- **Avoid**: 3+ types (too inconsistent in 20-card format)
+- **Professor's Research** (2x) - Draw 2 cards
+- **Poke Ball** (2x) - Search Basic Pokemon
+- **Cyrus** (1-2x) - Gust damaged benched Pokemon to Active
+- **Rare Candy** (2x in any Stage 2 deck) - Skip Stage 1 evolution
+- **Copycat** (1-2x) - Hand manipulation, especially against disruption
 
 ### Common Mistakes to Avoid
 
-- Too many high-energy Pokemon (4+ cost)
-- Inconsistent type spread
-- Missing basic Pokemon for early game
-- Overloading on trainer cards
-- Not accounting for bench limits
+- Running 3+ energy types (too inconsistent with Energy Zone)
+- Missing Rare Candy in Stage 2 decks (required for on-curve attacks)
+- Not including Cyrus (the most important gust effect in the format)
+- Overloading on high-energy attackers without acceleration
+- Ignoring bench size (must fill bench for Mega Altaria ex, plan bench carefully)
+- Not planning point maps (1-1-3 is optimal for Mega decks)
 
-## Documentation Resources
-
-**Core References (in `docs/pokemon-tcg-pocket-research/`):**
-
-- **rules/01-core-rules-guide.md** - Complete rules, turn structure, energy zone system
-- **deckbuilding/01-deckbuilding-guide.md** - Deck building fundamentals and evolution timing
-- **deckbuilding/02-deck-archetypes.md** - All 5 major archetypes (Aggro, Midrange, Control, Combo)
-- **deckbuilding/03-budget-decks.md** - Budget competitive builds (under $50) + F2P options
-- **strategies/04-energy-zone-mastery.md** - Energy zone mastery (THE most important mechanic)
-- **meta/02-top-tier-decks.md** - 5 complete S-tier deck breakdowns with 20-card lists
-
-**Advanced Resources (for competitive play):**
-
-- **strategies/06-ultra-competitive-mastery.md** - Situational decision trees and exact responses
-- **strategies/03-type-matchups.md** - Complete type effectiveness chart with 81 matchup scenarios
-- **card-guides/01-best-cards-list.md** - 200+ cards evaluated S-F tier with budget alternatives
-
-**Use these resources:** When building decks, reference these comprehensive guides for detailed strategies, complete tier lists, and proven deck compositions. These are located at `../../docs/pokemon-tcg-pocket-research/` relative to this skill.
-
-## Workflow & Validation
-
-### Deck Building Workflow
-
-**Phase 1: Define Strategy**
-
-```
-1. Identify core Pokemon (typically 1-2 ex Pokemon)
-2. Choose archetype (Aggro, Midrange, Control, Tempo)
-3. Determine type strategy (mono-type vs dual-type)
-4. Set budget constraints (budget vs premium)
-```
-
-**Phase 2: Build Core**
-
-```
-1. Search for core Pokemon: search_cards({name: "Pikachu ex"})
-2. Find synergies: find_synergies({cardName: "Pikachu ex"})
-3. Identify supporting Pokemon (8-10 total)
-4. Select Trainer cards (4-6 cards)
-```
-
-**Phase 3: Validation**
-
-```
-Use analyze_deck tool to validate:
-✅ Exactly 20 cards
-✅ Max 2 copies per card
-✅ At least 5-6 basic Pokemon
-✅ 0 energy cards (auto-generated)
-✅ Reasonable type distribution
-```
-
-**Phase 4: Optimization**
-
-```
-1. Analyze energy curve (1-3 energy costs)
-2. Check for anti-synergies
-3. Validate against meta
-4. Test matchup spread
-```
-
-### Deck Validation Checklist
+## Deck Validation Checklist
 
 **Legal Compliance:**
 
 - [ ] Exactly 20 cards
 - [ ] Max 2 copies per card
-- [ ] No energy cards (energy zone auto-generates)
-- [ ] All card names match database
-- [ ] Valid set codes (A1, A2, A3, A4b, P-A)
+- [ ] At least 5-6 basic Pokemon
+- [ ] Energy Zone handles energy (0-2 special energy cards max)
 
 **Strategic Balance:**
 
-- [ ] 5-6 basic Pokemon (early game)
-- [ ] 2-3 ex Pokemon (win condition)
-- [ ] 1-2 stage 2 evolution Pokemon (mid game)
-- [ ] 4-6 Trainer cards (support)
-- [ ] Type diversity: 1-2 types (consistency)
+- [ ] Clear win condition (Mega ex, ex attacker, or combo)
+- [ ] Point map planned (which Pokemon to send first)
+- [ ] Consistency tools (draw, search, evolution acceleration)
+- [ ] 1-2 energy types maximum
+- [ ] Answer to common meta threats
 
 **Energy Curve:**
 
-- [ ] 30% low-cost attackers (1 energy)
-- [ ] 40% mid-cost attackers (2 energy)
-- [ ] 20% high-cost attackers (3 energy)
-- [ ] 10% utility/support
-
-### Error Handling
-
-**Invalid Card Names:**
-
-```
-Error: "Card 'X' not found in database"
-
-Response:
-- Suggest spellings (ILIKE matching)
-- Show available cards with similar names
-- Ask for clarification (ex vs regular)
-- Provide query examples
-```
-
-**Illegal Deck Composition:**
-
-```
-Error: "Deck has 25 cards (max 20)"
-
-Response:
-- List which cards exceed limit
-- Suggest cards to remove
-- Recommend prioritization
-- Show complete analysis
-```
-
-**Too Many Copies:**
-
-```
-Error: "3 copies of Pikachu ex (max 2)"
-
-Response:
-- Identify duplicate cards
-- Suggest alternatives
-- Maintain energy curve
-- Validate remaining 18 cards
-```
-
-**Missing Basics:**
-
-```
-Warning: "Only 3 basic Pokemon (recommend 5-6)"
-
-Response:
-- List current basics
-- Suggest additional basics
-- Explain importance (early game)
-- Show revised composition
-```
-
-**Energy Zone Confusion:**
-
-```
-Error: "10 energy cards in deck"
-
-Response:
-- Clarify: No energy cards in TCG Pocket
-- Explain energy zone system
-- Reference: strategies/04-energy-zone-mastery.md
-- Provide corrected deck list
-```
-
-### Common Deck Problems & Solutions
-
-**Problem: Inconsistent Energy**
-
-```
-Symptoms: Multiple types (3+), high energy costs
-
-Solution:
-- Reduce to 1-2 types maximum
-- Lower average energy cost
-- Reference: strategies/04-energy-zone-mastery.md
-```
-
-**Problem: No Win Condition**
-
-```
-Symptoms: No ex Pokemon, only basics
-
-Solution:
-- Add 2-3 ex Pokemon
-- Build around ex as focal point
-- Reference: meta/02-top-tier-decks.md
-```
-
-**Problem: Bench Overflow**
-
-```
-Symptoms: More than 3 benched Pokemon
-
-Solution:
-- Reduce bench Pokemon
-- Focus on active Pokemon
-- Reference: rules/01-core-rules-guide.md
-```
-
-**Problem: No Synergy**
-
-```
-Symptoms: Random card collection, no theme
-
-Solution:
-- Find card synergies: find_synergies
-- Choose type-based strategy
-- Reference: deckbuilding/02-deck-archetypes.md
-```
-
-### Progressive Disclosure
-
-**Level 1: Basic Deck**
-
-```
-Provide: 20-card list, simple validation
-Good for: Beginners, casual play
-```
-
-**Level 2: Optimized Deck**
-
-```
-Add: Energy curve analysis, synergy explanations
-Good for: Intermediate players
-```
-
-**Level 3: Competitive Deck**
-
-```
-Add: Meta positioning, matchup analysis, tech cards
-Good for: Tournament play
-```
-
-**Level 4: Expert Build**
-
-```
-Add: Advanced tech, sideboard options, meta adaptation
-Good for: High-level competition
-```
-
-### Quality Standards
-
-**Deck Lists Must Include:**
-
-1. Card names (exact database match)
-2. Card counts (e.g., "2x Pikachu ex")
-3. Validation summary (legal/compliant)
-4. Strategy explanation
-5. Matchup notes
-6. Improvement suggestions
-
-**Validation Report Format:**
-
-```
-=== DECK VALIDATION REPORT ===
-
-Legal Status: ✅ VALID
-- Card Count: 20/20
-- Max Copies: ✅ All cards ≤2 copies
-- Basic Pokemon: 6 (recommended: 5-6)
-- EX Pokemon: 2 (recommended: 2-3)
-
-Composition:
-- Pokemon: 14 (70%)
-- Trainers: 6 (30%)
-- Types: Lightning (14), Colorless (6)
-
-Energy Curve:
-- 1-energy: 8 cards
-- 2-energy: 6 cards
-- 3-energy: 0 cards
-
-Warnings: None
-
-Suggestions:
-- Consider adding tech card for Fighting matchup
-- See meta/02-top-tier-decks.md for optimization
-```
-
-## MCP Server Configuration
-
-The Pokemon MCP server is automatically integrated:
-
-- Database: 2908 cards across 17 sets (A1-A4b, B1-B2a, P-A, P-B)
-- Unique Cards: ~1400 (auto-deduplicated art variants)
-- Search: Advanced filters and SQL queries
-- Analysis: Deck stats, type breakdowns, synergy matching
-- Latest Sets: Paldean Wonders (B2a), Fantastical Parade (B2)
-
-## Usage Examples
-
-**Deck Building:**
-
-```
-"Build an ultra-competitive Mewtwo ex deck"
-"Optimize my current Grass deck"
-"Find the best cards for a Water-type strategy"
-```
-
-**Analysis:**
-
-```
-"Analyze my deck's energy curve"
-"What Pokemon should I add to counter Fire decks?"
-"Show me all Psychic Pokemon with good attacks"
-"Calculate average HP of my current deck"
-```
-
-**Strategy:**
-"What's the current meta for competitive play?"
-"How do I beat ex Pokemon heavy decks?"
-"What trainers work best with Pikachu ex?"
-
-```
-
-```
+- [ ] Primary attacker at 2-3 energy cost
+- [ ] Early game options at 1 energy
+- [ ] Acceleration if needed (Rare Candy, abilities, items)

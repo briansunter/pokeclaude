@@ -1,6 +1,6 @@
 ---
 name: Pokemon Meta Analyst
-description: Use when analyzing Pokemon TCG Pocket meta trends, competitive tier lists, deck archetypes, or strategic matchups. Activates when user asks about meta analysis, tier lists, competitive play, or strategic advice. Provides data-driven insights from 2000+ card database.
+description: Use when analyzing Pokemon TCG Pocket meta trends, competitive tier lists, deck archetypes, or strategic matchups. Activates when user asks about meta analysis, tier lists, competitive play, or strategic advice. Provides data-driven insights from 2900+ card database.
 ---
 
 # Pokemon TCG Pocket Meta Analyst
@@ -9,396 +9,283 @@ Analyze competitive Pokemon TCG Pocket meta with data-driven insights and strate
 
 ## Meta Analysis Framework
 
-### 1. Tier System (S-C Ranking) - CURRENT META (Feb 2026)
+### 1. Tier System - CURRENT META (April 2026, Pulsing Aura B3)
 
-**S-Tier (Dominant):**
+Tier list sources: Pokemon Zone (top player polling + tournament data), PokemonMeta (automated power rankings from 400+ tournament topping decklists), Limitless tournament platform.
 
-- Define the current meta
-- Highly adaptable strategies
-- Consistent tournament results
+**Top Tier (Meta-Defining):**
 
-| Deck | Core Strategy |
-|------|---------------|
-| Mega Altaria ex & Greninja | Mega Harmony (130 dmg for 2 Energy) + Water Shuriken snipes |
-| Greninja ex & Suicune ex | Shifting Stream mobility + Aqua Edge 2HKO |
-| Mega Absol ex & Hydreigon | Darkness Claw disruption + massive Hydreigon damage |
+| Deck            | Core Strategy                                         | Key Cards                                    |
+| --------------- | ----------------------------------------------------- | -------------------------------------------- |
+| Chien-Pao ex    | Energy acceleration → 130 dmg snipe any Pokemon       | Baxcalibur Ice Maker, Suicune ex, Rare Candy |
+| Mega Altaria ex | 2-cost 130 dmg (bench-dependent) + versatile partners | Swablu, Lisia, Greninja/Darkrai/Gourgeist    |
+| Mega Absol ex   | 80 dmg + hand disruption (discard Supporters)         | Hydreigon/Nihilego/Poison Barb, Darkrai ex   |
 
-**A+ Tier (Elite):**
+**High Tier (Strong Competitive):**
 
-- Strong meta contenders
-- Favorable matchup spreads
+| Deck                | Core Strategy                                 | Key Cards                          |
+| ------------------- | --------------------------------------------- | ---------------------------------- |
+| Mega Manectric ex   | Scaling 80→140 dmg based on points taken      | Pichu, Electric Generator, Zeraora |
+| Magnezone           | Self-sufficient attacker via Volt Charge      | Magneton, Clemont, Heliolisk       |
+| Greninja            | Water Shuriken bench snipe (20 dmg/turn free) | Froakie line, Misty, Cyrus         |
+| Mega Charizard X ex | 100→180 dmg when below half HP                | Entei ex, Charmander line          |
 
-| Deck | Core Strategy |
-|------|---------------|
-| Mega Absol ex & Greninja | Disruption + sniping combo |
-| Mega Altaria ex & Gourgeist | Training Area OHKO potential |
-| CB Magnezone & Pom-Pom Oricorio | Mirror Shot protection + ex immunity |
+**Middle Tier (Viable):**
 
-**A-Tier (Competitive):**
+| Deck                | Core Strategy                                   | Key Cards                                      |
+| ------------------- | ----------------------------------------------- | ---------------------------------------------- |
+| Bellibolt ex        | 70→140 dmg based on field Energy count          | Tadbulb, Magnezone/Zeraora, Electric Generator |
+| Jolteon ex          | 20 dmg when opponent attaches Energy + 80 atk   | Eevee (Boosted Evolution), Pikachu ex          |
+| Mega Scizor ex      | 150 dmg if switched from Bench that turn        | Revavroom Metal Transport, Skarmory            |
+| Mega Charizard Y ex | 250 dmg (strongest in game) but 4-cost + recoil | Entei ex, Charmeleon, Flame Patch              |
 
-- Viable in tournament play
-- Strong with proper piloting
+**New / Being Evaluated (Pulsing Aura B3, April 29 2026):**
 
-| Deck | Core Strategy |
-|------|---------------|
-| Bellibolt ex & CB Magnezone | Volt Charge acceleration + reliable 140 dmg |
-| Mega Kangaskhan ex & Greninja | Power + sniping flexibility |
-| Teal Mask Ogerpon ex & Leafeon ex | Grass synergy + Energized Leaves |
-| Mega Charizard Y ex & Entei ex | Fire power + energy efficiency |
-| Decidueye ex | Evolution-based damage scaling |
-| Mega Blaziken ex & Heatmor | Aggressive Fire pressure |
+| Deck             | Core Strategy                                | Key Cards                                          |
+| ---------------- | -------------------------------------------- | -------------------------------------------------- |
+| Mega Lucario ex  | 90/140 dmg Fighting Pulse + Fighting support | Riolu, Hitmonchan ex, Korrina, Arena of Antiquity  |
+| Mega Sceptile ex | 130 dmg + Poison (effective 140)             | Treecko line, Pheromosa, Fragrant Forest, Nihilego |
 
-**B-Tier (Viable):**
+### 2. PokemonMeta Power Rankings (Tournament Data)
 
-- Good in specific matchups
-- Niche but powerful
+Automated rankings from 400 topping community tournament decklists:
 
-| Deck | Core Strategy |
-|------|---------------|
-| Gholdengo ex & Dialga ex | Metal acceleration + Rush attacks |
-| Meowscarada ex & Pheromosa | Grass aggro + chip damage |
-| Mega Gardevoir ex & Mewtwo ex | Psychic power combo |
-| Chandelure | Status effect control |
-| Mega Kangaskhan ex & Darkrai ex | Dark pressure + disruption |
+**Tier 2 (Power 25-50):**
 
-**C-Tier (Niche):**
+- Suicune ex Baxcalibur: 42.5
+- Mega Absol ex Hydreigon: 41.0
+- Mega Manectric ex Zeraora: 38.5
+- Mega Altaria ex Darkrai: 35.0
+- Mega Absol ex Darkrai ex: 32.0
 
-- Fun to play, situational success
-- Requires specific meta conditions
+**Tier 3 (Power 10-25):**
 
-| Deck | Notes |
-|------|-------|
-| Chien-Pao ex variants | High skill ceiling, punished by mistakes |
-| Mimikyu ex & Greninja | Disruption focus |
-| Mega Swampert ex & Mantyke | Water acceleration |
-| Galarian Obstagoon & Darkrai ex | Dark toolbox |
-| Alolan Ninetales ex & Crawdaunt | Water/Dark hybrid |
-| Mega Venusaur ex | Defensive Grass |
-| Jolteon ex variants | Lightning speed |
-| Giratina ex & Darkrai ex | Dragon/Dark combo |
-| Buzzwole ex & Pheromosa | Ultra Beast aggro |
+- Mega Blaziken ex: 24.0
+- Mega Charizard X and Y ex: 16.0
+- Mega Steelix ex: 15.0
+- Mega Altaria ex Greninja: 10.0
 
-### 2. Deck Archetypes (Current Meta)
+**Trending (Power 4-10):**
 
-**Mega Evolution + Stage 2 Combo:**
+- Magnezone ex: 9.0
+- Mega Sceptile ex Pheromosa: 8.5
+- Mega Lucario ex Hitmonchan ex: 8.0
+- Mega Lucario ex: 7.0
+- Decidueye ex Greninja: 6.5
+- Guzzlord ex / Mega Scizor ex Revavroom: 5.5
+- Suicune ex Greninja ex: 5.0
+- Mega Altaria ex / Melmetal ex: 4.5
+- Mega Charizard Y ex / Alolan Ninetales ex / Bellibolt ex Zeraora: 4.0
 
-The dominant archetype in B2/B2a meta. Combines Mega ex power with Stage 2 utility.
+### 3. Deck Archetypes (Current Meta)
 
-- Mega Altaria ex + Greninja (S-tier)
-- Mega Absol ex + Greninja (A+ tier)
-- Mega Kangaskhan ex + Greninja (A-tier)
+**Mega Evolution + Partner Combo:**
+The dominant archetype. Mega ex provides raw power, partner provides utility/consistency.
 
-_Key Strategy:_ Use Mega ex for efficient damage while Stage 2 provides bench pressure.
+- Mega Altaria ex + Greninja/Darkrai/Gourgeist/Furfrou/Indeedee+Giratina
+- Mega Absol ex + Hydreigon/Nihilego/Darkrai/Greninja
+- Mega Manectric ex + Zeraora
+- Mega Charizard X/Y ex + Entei ex
+- Mega Scizor ex + Revavroom
+- Mega Lucario ex + Hitmonchan ex
+- Mega Sceptile ex + Pheromosa
 
 **Disruption + Damage:**
+Hand/board disruption combined with steady damage.
 
-Combines direct damage with hand/board disruption.
+- Mega Absol ex (Darkness Claw discards Supporters) + Hydreigon/Nihilego/Poison Barb
 
-- Mega Absol ex + Hydreigon (S-tier)
-- Mega Absol ex + Greninja (A+ tier)
+**Snipe/Spread:**
+Damage benched Pokemon to enable Cyrus pick-offs.
 
-_Key Strategy:_ Darkness Claw discards Supporters while building damage threats.
-
-**Snipe/Spread Decks:**
-
-Focus on damaging multiple Pokemon to set up KOs.
-
-- Greninja ex + Suicune ex (S-tier)
-- Chien-Pao ex + Greninja (C-tier)
-- Chien-Pao ex + Baxcalibur (C-tier)
-
-_Key Strategy:_ Use abilities to damage benched Pokemon, clean up with main attackers.
+- Greninja (Water Shuriken - free 20 dmg/turn to any Pokemon)
+- Chien-Pao ex (Diving Icicles - 130 to any, discard all energy)
+- Jolteon ex (Electromagnetic Wall - 20 when opponent attaches energy)
 
 **Energy Acceleration:**
+Ramp energy faster than 1/turn to power big attacks.
 
-Uses abilities/items to attach extra energy.
+- Baxcalibur (Ice Maker) → Chien-Pao ex
+- Magneton (Volt Charge) → Magnezone
+- Electric Generator / Tadbulb → Bellibolt ex
+- Charmeleon / Flame Patch → Mega Charizard Y ex
 
-- Bellibolt ex + CB Magnezone (A-tier)
-- Chien-Pao ex + Baxcalibur (C-tier)
+**Self-Sufficient Midrange:**
+Pokemon that power themselves without dedicated acceleration.
 
-_Key Strategy:_ Accelerate energy to power up attacks faster than normal curve.
+- Magnezone (Volt Charge from Magneton, attacks on curve going 1st or 2nd)
+- Mega Manectric ex (scales with points, no external ramp needed)
 
-**Immunity/Protection:**
+### 4. Key Meta Concepts
 
-Uses abilities to avoid damage or effects.
+**Point Mapping:**
 
-- CB Magnezone + Pom-Pom Oricorio (A+ tier)
+- Ex Pokemon = 2 points when KO'd, regular = 1 point
+- Losing Mega ex = losing the game (3-point penalty)
+- Optimal point maps: 1-1-3 (send cheap Pokemon first, Mega last)
+- Mega Absol ex + Hydreigon uses 1-1-3 efficiently (Hydreigon is 1 pt)
 
-_Key Strategy:_ Oricorio's immunity to ex attacks forces suboptimal plays from opponents.
+**Bench-Dependent Damage:**
 
-**Aggro/Rush:**
+- Mega Altaria ex's Mega Harmony deals 40 + 30 per benched Pokemon (max 130 at full bench)
+- Constrains deckbuilding - must fill bench quickly
+- Vulnerable to bench disruption (Cyrus)
 
-Fast damage with low energy costs.
+**Hand Disruption:**
 
-- Meowscarada ex + Pheromosa (B-tier)
-- Mega Blaziken ex + Heatmor (A-tier)
+- Mega Absol ex's Darkness Claw: reveals opponent's hand, discard 1 Supporter
+- Supporters are the strongest cards (draw, gusting, search)
+- Removing Cyrus/Sabrina/Professor can lock opponents out
 
-_Key Strategy:_ Apply early pressure before opponent sets up complex boards.
+**Free Damage Abilities:**
 
-### 3. Type Meta Distribution
+- Greninja Water Shuriken: 20 dmg to any Pokemon, once/turn, no energy
+- Darkrai ex Nightmare Aura: 20 dmg to sleeping Active Pokemon
+- Jolteon ex Electromagnetic Wall: 20 dmg when opponent attaches energy
+- These stack and enable KO math + Cyrus plays
 
-**Lightning (Tier: S)**
+**Switch Effects for Damage Triggers:**
 
-- Strong attackers (Pikachu ex, Zapdos)
-- Energy-efficient attacks
-- Fast deck potential
-- Weakness: Fighting
+- Mega Scizor ex needs to move from Bench to Active for 150 dmg
+- Revavroom's Metal Transport enables this every turn
+- Similar to old Buzzwole ex decks
 
-**Psychic (Tier: A)**
+### 5. Type Meta Distribution
 
-- High HP options (Mewtwo ex)
-- Versatile attacks
-- Strong bench presence
-- Weakness: Darkness
+**Darkness/Psychic (Tier: S):**
 
-**Fire (Tier: A)**
+- Mega Absol ex + Hydreigon/Darkrai (disruption + damage)
+- Nihilego Poison synergy
+- Weakness: Fighting (new Mega Lucario ex)
 
-- Aggressive strategies
-- Energy acceleration
-- Multiple ex options
-- Weakness: Water
+**Water (Tier: S):**
 
-**Water (Tier: B)**
-
-- Defensive options
-- Stall tactics
-- Energy synergy
+- Greninja in 50%+ of top decks as partner
+- Chien-Pao ex + Baxcalibur energy acceleration
+- Suicune ex consistency
 - Weakness: Lightning
 
-**Grass (Tier: B)**
+**Dragon/Flying (Tier: A+):**
 
-- Healing abilities
-- Status effects
-- Sustainability
+- Mega Altaria ex variants (most versatile deck in format)
+- Multiple viable partners for different matchups
+- Weakness: self-weak to Dragon (rare), Fairy
+
+**Lightning (Tier: A):**
+
+- Mega Manectric ex, Bellibolt ex, Jolteon ex, Magnezone
+- Electric Generator acceleration
+- Pichu as universal energy battery
+- Weakness: Fighting
+
+**Fire (Tier: B+):**
+
+- Mega Charizard X/Y ex, Entei ex
+- Flame Patch energy acceleration
+- Charmeleon evolution support
+- Weakness: Water
+
+**Metal/Steel (Tier: B):**
+
+- Mega Scizor ex + Revavroom
+- Tanky with Metal support
 - Weakness: Fire
 
-**Fighting (Tier: B)**
+**Grass (Tier: B):**
 
-- Counter Lightning
-- High damage output
-- Slow setup
+- Mega Sceptile ex (new, being evaluated)
+- Fragrant Forest consistency
+- Weakness: Fire (very common)
+
+**Fighting (Tier: B):**
+
+- Mega Lucario ex (new, being evaluated)
+- Arena of Antiquity, Korrina support
+- Lucario Fighting Coach damage buff
 - Weakness: Psychic
 
-### 4. Matchup Matrix
+### 6. Matchup Matrix
 
-**Favorable Matchups:**
-
-```
-Lightning → Water (Zapdos melts Water Pokemon)
-Psychic → Fighting (Mewtwo ex crushes Fighting-types)
-Fire → Grass (Charizard burns Grass types)
-Water → Fire (Blastoise extinguishes flames)
-```
-
-**Difficult Matchups:**
+**Key Favorable Matchups:**
 
 ```
-Lightning ← Fighting (LucarioSM beats Pikachu)
-Psychic ← Darkness (YveltalEX overcomes Mewtwo)
-Fire ← Water (Water neutralizes fire strategies)
-Colorless ← Anything (No resistances = vulnerable)
+Water (Greninja/Chien-Pao) → Fire (Charizard variants)
+Lightning (Manectric/Bellibolt) → Water (Suicune/Greninja)
+Darkness (Absol/Hydreigon) → Psychic (various)
+Fighting (Mega Lucario) → Darkness (Absol)
+Fire (Charizard) → Grass (Sceptile)/Metal (Scizor)
 ```
 
-### 5. Strategic Considerations
+**Key Difficult Matchups:**
 
-**Energy Zone Impact:**
+```
+Fire ← Water (dominant Water meta)
+Water ← Lightning (multiple viable Lightning decks)
+Darkness ← Fighting (new Mega Lucario counters Absol)
+Mega Altaria ex ← Fighting-weak (but also resists many types)
+```
 
-- No energy in deck (unique to Pocket format)
-- 1 Energy/turn auto-generation
-- Focus on low-energy cost attacks
-- 1-2 type decks recommended
-- Avoid 3+ energy attackers
+### 7. Current Meta Trends (Pulsing Aura B3, April 2026)
 
-**20-Card Format:**
+**Meta Shift (B2b → B3):**
 
-- High consistency required
-- Limited bench (3 Pokemon max)
-- Every card must have purpose
-- No "bricks" (unusable cards)
-
-**Ex Pokemon Rules:**
-
-- Worth 2 points when knocked out
-- High reward, high risk
-- Attack first or be attacked first
-- Bench protection limited
-
-### 6. Current Meta Trends (Fantastical Parade B2 + Paldean Wonders B2a)
-
-**Meta Shift (February 2026):**
-
-The B2 and B2a sets introduced powerful new Pokemon ex and Mega Evolutions that have reshaped the meta:
+The Pulsing Aura (B3) set released April 29, 2026 introduced Mega Lucario ex (Fighting) and Mega Sceptile ex (Grass). Their tier placement is being evaluated after first tournament results.
 
 **Dominant Archetypes:**
 
-| Archetype | Share | Key Cards |
-|-----------|-------|-----------|
-| Water/Greninja | 25% | Greninja, Greninja ex, Suicune ex |
-| Dragon/Flying | 20% | Mega Altaria ex, various partners |
-| Dark/Dragon | 15% | Mega Absol ex, Hydreigon, Darkrai ex |
-| Lightning | 12% | Bellibolt ex, CB Magnezone |
-| Fire | 10% | Mega Charizard Y ex, Entei ex, Mega Blaziken ex |
-| Grass | 8% | Teal Mask Ogerpon ex, Meowscarada ex |
-| Other | 10% | Various niche decks |
+| Archetype     | Share | Key Cards                                      |
+| ------------- | ----- | ---------------------------------------------- |
+| Dark/Dragon   | 25%   | Mega Absol ex, Hydreigon, Darkrai ex, Nihilego |
+| Dragon/Flying | 20%   | Mega Altaria ex, Greninja/Darkrai/Gourgeist    |
+| Water         | 18%   | Chien-Pao ex, Baxcalibur, Suicune ex, Greninja |
+| Lightning     | 15%   | Mega Manectric ex, Bellibolt ex, Magnezone     |
+| Fire          | 10%   | Mega Charizard X/Y ex, Entei ex                |
+| Fighting      | 5%    | Mega Lucario ex (new, rising)                  |
+| Metal         | 4%    | Mega Scizor ex, Revavroom                      |
+| Grass         | 3%    | Mega Sceptile ex (new, being evaluated)        |
 
 **Rising Strategies:**
 
-- **Mega Evolution + Stage 2 combos** (Mega Altaria + Greninja)
-- **Bench sniping** (Greninja's Water Shuriken, Chien-Pao ex's Diving Icicles)
-- **Disruption + Damage** (Mega Absol ex's Darkness Claw discards Supporters)
-- **Energy acceleration** (Misty, Baxcalibur's Ice Maker, Volt Charge)
-- **Immunity tactics** (Pom-Pom Oricorio's ex immunity)
-- **OHKO setups** (Training Area + Gourgeist, Bellibolt ex consistency)
+- **Fighting type revival** (Mega Lucario ex + Hitmonchan ex + Korrina)
+- **Poison-based damage** (Nihilego + Poison Barb + Mega Sceptile ex)
+- **Point-scarifice midrange** (1-1-3 maps with cheap frontliners)
+- **Free damage stacking** (Greninja + Darkrai + Jolteon abilities)
 
 **Declining Strategies:**
 
-- Pure basic Pokemon rush (outpaced by Mega + Stage 2 combos)
-- Mono-type without synergy (dual-type decks dominate)
-- High-energy attackers (3+ cost) without acceleration
-- Decks without bench manipulation options
+- Pure basic Pokemon rush (outpaced by Mega + partner combos)
+- Mono-type without partner synergy
+- High-energy attackers without acceleration (4+ cost)
+- Decks without bench manipulation or free damage
 
-**New B2a (Paldean Wonders) Impact:**
+### 8. Key Individual Cards in Meta
 
-| Card | Impact |
-|------|--------|
-| Bellibolt ex | A-tier Lightning attacker, counters Suicune ex |
-| Meowscarada ex | Grass aggro option, targets benched Megas |
-| Chien-Pao ex | Water sniper with Energy acceleration needs |
-| Gholdengo ex | Metal acceleration with Dialga ex |
-| Armarouge ex | Fire attacker with Armor Cannon |
-| Baxcalibur | Chien-Pao ex partner for Energy acceleration |
+**Top 10 Cards by Meta Presence:**
+
+1. Greninja - Water Shuriken (in ~50% of top decks as partner)
+2. Cyrus - Gust effect to bring up damaged benched Pokemon
+3. Rare Candy - Skip Stage 1 evolution
+4. Mega Altaria ex - 130 dmg for 2 energy (versatile)
+5. Mega Absol ex - Hand disruption + 80 dmg
+6. Darkrai ex - Free 20 dmg/turn with Sleep
+7. Poke Ball - Search Basic Pokemon
+8. Professor's Research - Draw 2 cards
+9. Magnezone/Magneton - Self-sufficient Lightning attacker
+10. Copycat - Hand manipulation
 
 ## Data Sources
 
 **Analysis Based On:**
 
-- 2908 total cards analyzed (17 sets)
-- ~1400 unique cards (art variants deduplicated)
-- Latest: Paldean Wonders (B2a) + Fantastical Parade (B2)
-- Competitive tournament data from Game8, ptcgpocket.gg
-- Win/loss statistics from ranked meta
+- 2908 total cards (17+ sets through B3)
+- Pokemon Zone tier list (top player polling + tournament results)
+- PokemonMeta power rankings (400+ topping tournament decklists)
+- Limitless tournament platform (147+ tournaments, 16K+ players)
+- Latest sets: Pulsing Aura (B3), Mega Shine (B2b), Paldean Wonders (B2a)
 
-**MCP Server Metrics:**
+**MCP Server Tools:**
 
 - `get_type_stats` - Type distribution and averages
 - `query_cards` - SQL analysis for meta insights
 - `analyze_deck` - Deck composition analysis
 - `find_counters` - Counter-strategy identification
-
-## Tier Lists (Current Meta)
-
-### S-Tier Pokemon
-
-```
-1. Pikachu ex (Circle Circuit)
-   - 110 HP
-   - 70 damage for 3 energy
-   - Paralyze potential
-   - Lightning synergy
-
-2. Mewtwo ex (Genetic Apex)
-   - 120 HP
-   - 60 damage + 20 damage
-   - Versatile attacks
-   - Psychic synergy
-```
-
-### A-Tier Pokemon
-
-```
-1. Charizard ex (Chaos Hurricane)
-2. Zapdos (Lightning Bird)
-3. Articuno (Freezing Ice)
-4. Blastoise (Blastoise ex)
-5. Starmius (Dangerous Evolution)
-```
-
-### B-Tier Pokemon
-
-```
-1. Gyarados (Lance)
-2. Alakazam (Genetic Apex)
-3. Typhlosion (Searing Wind)
-4. Venusaur (Genetic Apex)
-5. Machamp (Genetic Apex)
-```
-
-## Usage Examples
-
-**Meta Questions:**
-
-```
-"What's the current S-tier Pokemon?"
-"Which deck counters Lightning aggro?"
-"Is Psychic still meta after the latest update?"
-"What type has the best win rate?"
-```
-
-**Strategy Advice:**
-
-```
-"How do I beat Pikachu ex decks?"
-"Build a counter to Mewtwo ex"
-"Which deck is best for beginners?"
-"What should I craft first as a new player?"
-```
-
-**Deck Building:**
-
-```
-"Meta deck list for competitive play"
-"Anti-meta deck recommendations"
-"Fun but viable deck ideas"
-"Deck for tournament tomorrow"
-```
-
-**Analysis:**
-
-```
-"Calculate win rate of Lightning vs Psychic"
-"Energy curve comparison across decks"
-"Most played cards in top tournaments"
-"New set impact on existing meta"
-```
-
-## Documentation Resources
-
-**Core References (in `docs/pokemon-tcg-pocket-research/`):**
-
-- **meta/01-meta-analysis.md** - S-tier deck rankings, win rates, tournament results
-- **meta/02-top-tier-decks.md** - 5 complete S-tier deck breakdowns with 20-card lists
-- **meta/03-budget-vs-premium-analysis.md** - Economic analysis, ROI data, budget competitive options
-- **strategies/02-tournament-strategies.md** - Tournament prep, sideboard theory, metagame calls
-- **strategies/05-competitive-play.md** - Professional insights and competitive decision making
-
-**Advanced Resources:**
-
-- **strategies/06-ultra-competitive-mastery.md** - Situational decision trees for meta matchups
-- **strategies/09-tech-cards-situational-plays.md** - Tech cards by matchup and meta adaptation
-- **complete-guides/03-competitive-roadmap.md** - 6-phase roadmap to professional play
-- **deckbuilding/02-deck-archetypes.md** - Deep dive into all 5 major archetypes
-
-**Use these resources:** When analyzing the meta, reference these comprehensive guides for current tier lists, tournament data, and strategic meta insights. These are located at `../../docs/pokemon-tcg-pocket-research/` relative to this skill.
-
-## Predictive Analysis
-
-**Upcoming Trends:**
-
-- New sets will shift type balance
-- Energy zone encourages speed
-- Ex Pokemon remain dominant
-- Trainer cards seeing more play
-
-**Budget Recommendations:**
-
-- Best decks for new players
-- Most cost-effective builds
-- Long-term investment advice
-- Free-to-play friendly strategies
-
-**Format Evolution:**
-
-- 20-card format rewards consistency
-- Energy zone unique to Pocket
-- Shorter games (10-15 minutes)
-- More accessible than standard TCG

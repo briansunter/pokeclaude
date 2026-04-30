@@ -44,22 +44,39 @@ Pokemon TCG Pocket uses a unique format:
 `;
 
 export const IMPORTANT_CARDS = {
-	// Universal Staples
+	// Universal Staples (current meta, April 2026)
 	STAPLES: [
-		"Professor's Research", // Draw 2
-		'Poké Ball', // Search Basic
-		'Sabrina', // Switch opponent
-		'Giovanni', // +10 damage
+		"Professor's Research", // Draw 2 (2x in every deck)
+		'Poké Ball', // Search random Basic (2x in every deck)
+		'Cyrus', // Gust damaged benched Pokemon to Active
+		'Rare Candy', // Skip Stage 1 evolution
+		'Copycat', // Hand manipulation, strong vs disruption
 	],
 
-	// Key Items
+	// Gusting Effects
+	GUST_PRIMARY: 'Cyrus', // Bring damaged benched Pokemon to Active
+	GUST_SECONDARY: 'Sabrina', // Switch opponent's Active Pokemon
+
+	// Energy Acceleration
 	STAGE_2_ACCELERATION: 'Rare Candy', // Skip Stage 1
 	EVOLUTION_SEARCH: 'Pokémon Communication',
+	LIGHTNING_ACCELERATION: 'Electric Generator', // Attach Lightning energy
+	FIRE_ACCELERATION: 'Flame Patch', // Move Fire energy from discard
+	WATER_ACCELERATION: 'Misty', // Coin-flip Water energy
 
-	// Tools
+	// Search Support
+	FIGHTING_SEARCH: 'Korrina', // Fighting search + support (B3)
+	LIGHTNING_SEARCH: 'Clemont', // Search Magneton + related
+	GRASS_SEARCH: 'Fragrant Forest', // Search Grass basics (B3)
+	LOW_HP_SEARCH: 'Lisia', // Search 50HP-or-less Pokemon + fill bench
+
+	// Tools/Items
 	HP_BOOST: 'Giant Cape', // +20 HP
 	GRASS_HP_BOOST: 'Leaf Cape', // +30 HP (Grass only)
-	CHIP_DAMAGE: 'Rocky Helmet', // 20 damage to attacker
+	DAMAGE_BOOST: 'Training Area', // +10 damage for Stage 1/2
+	POISON_AMPLIFY: 'Poison Barb', // Increase poison damage
+	HEALING: 'Lucky Ice Pop', // Heal damage
+	FREE_RETREAT_WATER: 'Inflatable Boat', // Free retreat for Water Pokemon
 } as const;
 
 export const ENERGY_CONSISTENCY = {
@@ -71,9 +88,12 @@ export const ENERGY_CONSISTENCY = {
 export const COMMON_MISTAKES = [
 	'Running 3 Energy types (too inconsistent)',
 	'Not including enough Basics (5-6 minimum)',
-	'Over-benching (leaves vulnerable to Sabrina/Cyrus)',
-	'Forgetting +10 damage from Giovanni for KO math',
+	'Over-benching (leaves vulnerable to Cyrus)',
+	'Not including Cyrus (most important gust effect in format)',
 	'Not including Rare Candy in Stage 2 decks',
+	'Ignoring point mapping (send cheap Pokemon first, Mega last)',
+	'Building without free-damage abilities (Greninja, Darkrai, Jolteon)',
+	'Running 4+ energy attackers without acceleration',
 ] as const;
 
 /**
