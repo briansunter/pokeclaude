@@ -304,6 +304,21 @@ Three presets to control response size:
 - **Workflow**: Checkout → Setup Bun → Install → Typecheck → Build → Release
 - **Token**: Requires `NPM_TOKEN` secret for npm publishing
 
+**IMPORTANT — Do NOT manually bump versions:*
+
+- ❌ Do NOT run `npm version`, `bun version`, or manually edit `version` in `package.json`
+- ❌ Do NOT manually create git tags (e.g., `git tag v1.2.3`)
+- ❌ Do NOT use `gh release create`
+- ✅ DO use conventional commit messages: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`
+- ✅ DO just `git push origin master` — semantic-release handles the rest
+
+**How it works:**
+1. You push commits with conventional messages (`feat:` = minor bump, `fix:` = patch bump)
+2. `release.yml` triggers on push to master
+3. `semantic-release` analyzes commits since last release, determines bump type
+4. It updates `package.json`, creates git tag, publishes to npm, creates GitHub release
+5. No manual steps needed after `git push`
+
 ## Troubleshooting
 
 ### Server not in Claude Desktop
