@@ -45,7 +45,7 @@ pokeclaude mcp
 
 ## Features
 
-- **2,077 Cards** - Complete Pokemon Pocket TCG database
+- **3,405 Cards** - Complete Pokemon Pocket TCG database
 - **8 MCP Tools** - Search, analyze, find synergies, counters
 - **DuckDB-Powered** - Lightning-fast SQL queries
 - **CLI + MCP** - Unified interface for all uses
@@ -85,16 +85,16 @@ pokeclaude mcp
 
 ## MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `search_cards` | Search cards with filters (name, type, HP, set, etc.) |
-| `get_card` | Get specific card details by exact name |
-| `find_synergies` | Find cards that synergize with a given Pokemon |
-| `find_counters` | Find counters for a specific type |
-| `get_type_stats` | Get type distribution statistics |
-| `query_cards` | Run custom SQL queries (SELECT only) |
-| `list_trainers` | List all trainer and item cards |
-| `analyze_deck` | Analyze deck composition and rules compliance |
+| Tool             | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| `search_cards`   | Search cards with filters (name, type, HP, set, etc.) |
+| `get_card`       | Get specific card details by exact name               |
+| `find_synergies` | Find cards that synergize with a given Pokemon        |
+| `find_counters`  | Find counters for a specific type                     |
+| `get_type_stats` | Get type distribution statistics                      |
+| `query_cards`    | Run custom SQL queries (SELECT only)                  |
+| `list_trainers`  | List all trainer and item cards                       |
+| `analyze_deck`   | Analyze deck composition and rules compliance         |
 
 ## Commands
 
@@ -171,8 +171,8 @@ bun run scrape
 ## Database
 
 - **Source:** limitlesstcg.com
-- **Total Cards:** 2,077 across 12 sets
-- **Unique Cards:** 1,068 (art variants auto-deduplicated)
+- **Total Cards:** 3,405 across 20 sets
+- **Unique Cards:** auto-deduplicated (art variants excluded via uniqueOnly)
 - **Update:** Automatic via scraper
 
 ## License

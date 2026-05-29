@@ -10,7 +10,7 @@ This is **PokeClaude**, a Pokemon Pocket TCG MCP Server with an auto-updating da
 
 1. **MCP Server** (`mcp-server/`) - Claude Desktop integration using Model Context Protocol
 2. **Data Scraper** (`scraper/`) - Auto-updates card database from limitlesstcg.com
-3. **Card Database** (`data/pokemon_pocket_cards.csv`) - 2077 cards across 12 sets
+3. **Card Database** (`data/pokemon_pocket_cards.csv`) - 3405 cards across 20 sets
 
 ## Project Structure
 
@@ -27,7 +27,7 @@ pokeclaude/
 ├── scraper/
 │   └── src/scraper.ts            # Web scraper with auto-discovery
 ├── data/
-│   └── pokemon_pocket_cards.csv  # Card database (2,077 cards)
+│   └── pokemon_pocket_cards.csv  # Card database (3,405 cards)
 └── .github/workflows/            # CI/CD (semantic-release, publish)
 ```
 
@@ -154,7 +154,7 @@ cd mcp-server && npm run test:manual
 ### Core Tools (7 total)
 
 1. **search_cards** - Search with filters (name, type, HP, set, retreat cost)
-   - `uniqueOnly` parameter filters art variants (1,068 unique vs 2,077 total)
+   - `uniqueOnly` parameter filters art variants
 
 2. **get_card** - Get specific card details
 
@@ -175,8 +175,8 @@ cd mcp-server && npm run test:manual
 
 ### Resources (3 total)
 
-- **pokemon://cards/all** - Full database (2,077 cards)
-- **pokemon://cards/unique** - Unique cards only (1,068 cards)
+- **pokemon://cards/all** - Full database (3,405 cards)
+- **pokemon://cards/unique** - Unique cards only
 - **pokemon://stats/types** - Type breakdowns
 
 ### Prompts (3 total)
@@ -189,9 +189,8 @@ cd mcp-server && npm run test:manual
 
 ### Current Data
 
-- ✅ **2,077 total cards** across 12 sets (A1-A4b, P-A)
-- ✅ **1,068 unique cards** (auto-deduplicates 43.5% art variants)
-- ✅ **1068 unique cards** with attacks (filters trainers, non-combat)
+- ✅ **3,405 total cards** across 20 sets (A1-A4b, B1-B3a, P-A, P-B)
+- ✅ Auto-deduplicates art variants via `uniqueOnly`
 - ✅ **100% verified** via spot checks
 - ✅ **Zero parsing errors** on production data
 
@@ -333,7 +332,7 @@ Three presets to control response size:
 - **mcp-server/src/index.ts** - Main server implementation
 - **mcp-server/src/gameRules.ts** - Pokemon TCG Pocket rules
 - **scraper/src/scraper.ts** - Web scraper with auto-discovery
-- **data/pokemon_pocket_cards.csv** - Card database (2,077 cards)
+- **data/pokemon_pocket_cards.csv** - Card database (3,405 cards)
 - **.github/workflows/release.yml** - CI/CD pipeline
 - **package.json** - Root workspace configuration
 - **mcp-server/package.json** - Published package config
