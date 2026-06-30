@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+# [4.2.0](https://github.com/briansunter/pokeclaude/compare/v4.1.0...v4.2.0) (2026-06-30)
+
+
+### Bug Fixes
+
+* **scraper:** preserve weakness and attack effects in incremental scrape ([4232994](https://github.com/briansunter/pokeclaude/commit/4232994257d86d7056780088b3df8cca7d37b437))
+
+
+### Features
+
+* add B-series sets (B1-B3a), 3405 cards, update meta for Paradox Drive B3a ([aa1b6e7](https://github.com/briansunter/pokeclaude/commit/aa1b6e79e86781f678e28a8df7bced17a26c932e))
+* **data:** add Everyday Wonders (B3b) + 8 new Promo-B cards ([50b1fc3](https://github.com/briansunter/pokeclaude/commit/50b1fc3eb2e12a1ae7c354c4360c2f9cbad08ffc))
+
 # [4.1.0](https://github.com/briansunter/pokeclaude/compare/v4.0.0...v4.1.0) (2026-04-30)
 
 
