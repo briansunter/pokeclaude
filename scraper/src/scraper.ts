@@ -749,15 +749,24 @@ function parseExistingCsv(filename: string): PokemonCard[] {
 					const attacks: Attack[] = attacksStr
 						.split(';')
 						.map((a) => {
-							const [name, rest] = a.trim().split(':');
-							if (!rest) return { name: name?.trim() || '' };
-
-							// Split on ' - ' to separate damage from effect
-							const [damage, effect] = rest.split(' - ').map((s) => s.trim());
+							const trimmed = a.trim();
+							// Split name from the rest on the FIRST ':' only — attack
+							// effects can contain colons (e.g. "at random: [G], [R]"),
+							// which a plain split(':') would silently discard.
+							const colonIdx = trimmed.indexOf(':');
+							if (colonIdx === -1) return { name: trimmed };
+							const name = trimmed.slice(0, colonIdx).trim();
+							const rest = trimmed.slice(colonIdx + 1);
+							// Split damage from effect on the FIRST ' - ' only — effects
+							// can contain ' - ' too.
+							const dashIdx = rest.indexOf(' - ');
+							if (dashIdx === -1) {
+								return { name, damage: rest.trim() || undefined };
+							}
 							return {
-								name: name?.trim() || '',
-								damage: damage || undefined,
-								effect: effect || undefined,
+								name,
+								damage: rest.slice(0, dashIdx).trim() || undefined,
+								effect: rest.slice(dashIdx + 3).trim() || undefined,
 							};
 						})
 						.filter((a) => a.name);
@@ -775,6 +784,7 @@ function parseExistingCsv(filename: string): PokemonCard[] {
 							? parts[8].split(';').filter((a) => a)
 							: undefined,
 						attacks: attacks,
+						weakness: parts[10] || undefined,
 						retreat_cost: parts[11] || undefined,
 						image_url: parts[12] || '',
 						card_url: parts[13] || '',
