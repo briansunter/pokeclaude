@@ -4,85 +4,99 @@ Supplementary data for the Pokemon Card Analyst skill. This file contains time-s
 
 ## Top Cards by Tier
 
-> Last updated: May 2026 (Paradox Drive B3a)
+> Last updated: July 2026 (Everyday Wonders B3b)
+>
+> Tier placements reflect the **settled Paradox Drive (B3a)** competitive meta (Pokémon Zone tournament data). B3b (Everyday Wonders) cards are listed in the "New / Being Evaluated" section — no tournament results yet.
 
 ### S-Tier (Meta-Defining)
 
-| Card             | HP  | Type      | Key Attack/Ability                           | Why S-Tier                             |
-| ---------------- | --- | --------- | -------------------------------------------- | -------------------------------------- |
-| Mega Altaria ex  | 190 | Psychic   | Mega Harmony: 40+30/bench (max 130) for 2E   | 3 S-tier variants, most versatile Mega |
-| Mega Lucario ex  | —   | Fighting  | Fighting Pulse: 90/140                       | New S tier, Fighting dominance         |
-| Greninja         | 120 | Water     | Water Shuriken: 20 dmg to any Pokemon (free) | In ~50% of top decks as partner        |
-| Magnezone        | 150 | Lightning | Mirror Shot + Volt Charge self-powering      | Core of S-tier Magnezone Oricorio      |
-| Oricorio         | —   | Lightning | Type-disrupting stall ability                | Enables Magnezone combo                |
-| Mega Sceptile ex | 210 | Grass     | Terminating Tail: 130 + Poison (140 eff)     | Pushed Grass into top tier             |
-| Cyrus            | —   | Trainer   | Bring damaged benched Pokemon to Active      | Most important gust effect             |
+| Card              | HP  | Type      | Key Attack/Ability                              | Why S-Tier                                         |
+| ----------------- | --- | --------- | ----------------------------------------------- | -------------------------------------------------- |
+| Mega Altaria ex   | 190 | Psychic   | Mega Harmony: 40+30/bench (max 130) for 2E      | Still the format's best Mega; now via Iron Valiant/Gourgeist/Espeon partners |
+| Iron Valiant      | 100 | Psychic   | Slicing Blade: 50 for 2E                        | New B3a Paradox — partner in the #1 deck; cheap, efficient Psychic |
+| Miraidon ex       | 140 | Lightning | Hadron Ray: 20+ per [L] Energy on this Pokémon  | New B3a — spawned an entire tier-1 Lightning family |
+| Mega Sceptile ex  | 210 | Grass     | Terminating Tail: 130 + Poison (140 eff)        | Keeps Grass in the top tier                        |
+| Greninja          | 120 | Water     | Water Shuriken: 20 dmg to any Pokémon (free)    | Still a premier snipe/finisher partner             |
+| Magnezone         | 150 | Lightning | Mirror Shot + Volt Charge self-powering         | Core of tier-1 Magnezone + Miraidon ex decks       |
+| Cyrus             | —   | Trainer   | Bring damaged benched Pokémon to Active         | Most important gust effect                         |
 
 ### A-Tier (Highly Competitive)
 
-| Card              | HP  | Type      | Key Attack/Ability                          | Why A-Tier                              |
-| ----------------- | --- | --------- | ------------------------------------------- | --------------------------------------- |
-| Mega Absol ex     | 170 | Darkness  | Darkness Claw: 80 dmg + discard 1 Supporter | Hand disruption, multiple viable builds |
-| Hydreigon         | 140 | Darkness  | Hyper Ray: 130 for 2E (self-charging)       | 1-point powerhouse, self-sufficient     |
-| Darkrai ex        | 140 | Darkness  | Dark Dreams: 20 dmg to sleeping Pokemon     | Free damage enabler (non-ex version)    |
-| Hitmontop         | —   | Fighting  | Early chip damage + Fighting synergy        | Key enabler for Mega Lucario decks      |
-| Suicune ex        | 140 | Water     | Draw ability + attack flexibility           | Consistency engine for Water decks      |
-| Baxcalibur        | 140 | Water     | Ice Maker: attach W from EZ to Pokemon      | Best energy acceleration in format      |
-| Chien-Pao ex      | 130 | Water     | Diving Icicles: 130 to ANY, discard all E   | Tournament-proven snipe finisher        |
-| Meowscarada ex    | 160 | Grass     | 70 dmg on opponent's turn (1E)              | Fastest reactive damage in format       |
-| Mega Manectric ex | 180 | Lightning | Lightning Accelerator: 80+30/pt (max 140)   | Scales with game progress               |
-| Zoroark ex        | —   | Darkness  | 90 dmg for 1E                               | Efficient Darkness attacker             |
-| Darkrai (non-ex)  | —   | Darkness  | 20 dmg/turn to sleeping Active              | Sleep synergy enabler                   |
-| Nihilego          | 90  | Psychic   | Passive poison damage amplification         | Enables poison-based strategies         |
-| Teal Mask Ogerpon | —   | Grass     | Status protection + 140 potential           | Anti-status + Grass utility             |
+| Card                 | HP  | Type      | Key Attack/Ability                          | Why A-Tier                                       |
+| -------------------- | --- | --------- | ------------------------------------------- | ------------------------------------------------ |
+| Iron Boulder         | 120 | Psychic   | Modular Axe: 80+ (+40 if a Tool attached)   | New B3a Paradox; pairs with Iron Valiant         |
+| Iron Crown           | 100 | Psychic   | Enumerating Blade: 10+ (scaling)            | New B3a Paradox; Iron Valiant partner            |
+| Gourgeist            | —   | Grass     | 1-Energy attacker, OHKOs Pom-Pom Oricorio   | Mega Altaria ex partner (A-tier deck)            |
+| Mega Absol ex        | 170 | Darkness  | Darkness Claw: 80 + discard 1 Supporter     | Hand disruption; multiple viable builds          |
+| Hydreigon            | 140 | Darkness  | Hyper Ray: 130 for 2E (self-charging)       | 1-point powerhouse, self-sufficient              |
+| Zoroark ex           | —   | Darkness  | 90 dmg for 1E                               | Efficient Darkness attacker                      |
+| Darkrai ex           | 140 | Darkness  | Dark Dreams: 20 dmg to sleeping Pokémon     | Free-damage enabler                              |
+| Suicune ex           | 140 | Water     | Draw ability + attack flexibility           | Consistency engine for Water decks               |
+| Baxcalibur           | 140 | Water     | Ice Maker: attach W from EZ to Pokémon      | Best energy acceleration in the format           |
+| Chien-Pao ex         | 130 | Water     | Diving Icicles: 130 to ANY, discard all E   | Tournament-proven snipe finisher                 |
+| Meowscarada ex       | 160 | Grass     | 70 dmg on opponent's turn (1E)              | Fastest reactive damage in the format            |
+| Teal Mask Ogerpon ex | —   | Grass     | Status protection + 140 potential           | Anti-status + Grass utility                      |
+| Mega Blaziken ex     | —   | Fire      | Scaling Fire damage + partner combos        | B-tier with Greninja / Iron Moth                 |
+| Pheromosa            | —   | Grass     | Bench chip damage                           | Mega Sceptile ex partner                         |
 
 ### B-Tier (Viable)
 
-| Card                | HP  | Type      | Key Attack/Ability                         | Notes                            |
-| ------------------- | --- | --------- | ------------------------------------------ | -------------------------------- |
-| Mega Charizard X ex | 220 | Fire      | Raging Blaze: 100→180 when <half HP        | Needs damage to scale, risky     |
-| Mega Blaziken ex    | —   | Fire      | Scaling Fire damage + Castform Burn combo  | Rising in A tier                 |
-| Castform Sunny      | —   | Fire      | Burn + early damage                        | Key partner for Mega Blaziken    |
-| Mega Charizard Y ex | 220 | Fire      | Crimson Dive: 250 (strongest in game)      | 4-cost + 50 recoil, very slow    |
-| Bombirdier          | —   | Colorless | Free retreat for any Pokemon               | Key mobility in Darkness decks   |
-| Flygon ex           | —   | Dragon    | Bench-wide damage ability                  | Middle-tier Dragon option        |
-| Entei               | 150 | Fire      | Tank + draw acceleration                   | Fire support                     |
-| Flutter Mane ex     | 130 | Psychic   | Spellbinding Start: 70 (first attack only) | New B3a, being evaluated         |
-| Koraidon ex         | 150 | Fighting  | World Wrecker: 110 (discard top deck)      | New B3a, Fighting partner option |
-| Miraidon ex         | 140 | Lightning | Hadron Ray: scaling w/ Lightning energy    | New B3a, Lightning ramp option   |
-| Terapagos ex        | 150 | Colorless | Prism Impact: 80+/energy type count        | New B3a, multi-energy synergy    |
+| Card                | HP  | Type      | Key Attack/Ability                         | Notes                                        |
+| ------------------- | --- | --------- | ------------------------------------------ | -------------------------------------------- |
+| Mega Lucario ex     | —   | Fighting  | Fighting Pulse: 90/140                     | **Fallen from S-tier** (Fighting no longer dominant) |
+| Hitmontop           | —   | Fighting  | Early chip + Fighting synergy              | Enabler for the (now mid-tier) Lucario decks |
+| Koraidon ex         | 150 | Fighting  | World Wrecker: 110 (discard top deck)      | Underperforming in practice (~43% WR)        |
+| Terapagos ex        | 150 | Colorless | Prism Impact: 80+/energy type count        | Multi-energy experiment, mid/low results     |
+| Flutter Mane ex     | 130 | Psychic   | Spellbinding Start: 70 (first attack only) | **Overhyped — F-tier (~36% WR)**             |
+| Great Tusk          | 120 | Fighting  | Shaking Stomp: 80 + 20 to bench            | Paradox Fighting, mid                         |
+| Glimmora            | 90  | Darkness  | Venomous Hit: 30 + Poison                  | Poison enabler; Glimmora+Kingambit struggling |
+| Kingambit           | 140 | Darkness  | Overlord's Blade: 60+ (scaling)            | Darkness stack, mid                           |
+| Miraidon ex (alt)   | 140 | Lightning | (see S-tier)                               | Also enables Magnezone ex variants           |
+| Iron Moth           | 90  | Fire      | Thermal Gust: 10+ (coin scaling)           | Fire Paradox; Mega Blaziken partner          |
+| Iron Jugulis        | 100 | Darkness  | Blasting Wind: 70                          | Darkness Paradox, fringe                      |
+
+### New / Being Evaluated — Everyday Wonders (B3b)
+
+| Card                | HP  | Type      | Key Attack/Ability                                              | Early Read                                  |
+| ------------------- | --- | --------- | --------------------------------------------------------------- | ------------------------------------------- |
+| Mega Diancie ex     | 170 | Psychic   | Brilliant Storm: 40+ (20 more per Psychic Energy on all Pokémon) | Top B3b candidate; scales with board Psychic energy |
+| Mega Sableye ex     | 170 | Darkness  | Cursed Jewel: 80 + revenge 40 to next-turn attacker             | Darkness disruption Mega                    |
+| Milotic ex          | 140 | Water     | Water Pulse: 80 + Sleep                                          | Water control                               |
+| Dedenne ex          | 120 | Lightning | Circuit: 40× per Pokémon Tool on all your Pokémon               | Tool-density payoff                         |
+| Hisuian Zoroark ex  | 150 | Colorless | Spiteful Illusion: 80+ (20 more per Pokémon in discard)         | Colorless self-mill                         |
+| Toxapex (B3b)       | 110 | Darkness  | Severe Poison (auto-Poison, no flip)                            | Status enabler (pairs Venoshock users)      |
 
 ## Key Trainer Cards
 
 ### Draw
 
-- **Professor's Research** — Draw 2 (staple, 2x in every deck)
+- **Professor's Research** — Draw 2 (staple, 2× in every deck)
 - **Copycat** — Manipulate hand (strong vs disruption, pairs with Magnezone)
 
 ### Search
 
-- **Poke Ball** — Random Basic from deck (staple, 2x)
-- **Rare Candy** — Skip Stage 1 evolution (essential for Stage 2 decks)
-- **Lisia** — Search 50HP-or-less Pokemon + fill bench
+- **Poke Ball** — Random Basic from deck (staple, 2×)
+- **Rare Candy** — Skip Stage 1 evolution (essential for Stage 2 / Mega decks)
+- **Lisia** — Search ≤50HP Pokémon + fill bench
+- **Clemont** — Search Magneton + related (Magnezone decks)
 
 ### Gusting
 
-- **Cyrus** — Bring damaged benched Pokemon to Active (most important)
-- **Sabrina** — Switch opponent's Active Pokemon
+- **Cyrus** — Bring damaged benched Pokémon to Active (most important)
+- **Sabrina** — Switch opponent's Active Pokémon
 
 ### Energy Acceleration
 
-- **Electric Generator** — Attach Lightning energy
+- **Electric Generator** — Attach Lightning energy (Magnezone / Miraidon ex decks)
 - **Flame Patch** — Move Fire energy from discard
 
 ### Utility
 
-- **Clemont** — Search Magneton + related cards
 - **Korrina** — Fighting search + support
 - **Misty** — Coin-flip Water energy acceleration
 - **Irida** — Water-type support
 
-### Stadium/Item
+### Stadium / Item / Tool
 
 - **Training Area** — +10 damage to Stage 1/2 attacks
 - **Fragrant Forest** — Search Grass basics
@@ -90,22 +104,25 @@ Supplementary data for the Pokemon Card Analyst skill. This file contains time-s
 - **Poison Barb** — Increase poison damage
 - **Lucky Ice Pop** — Healing
 - **Starting Plains** — Free retreat for Colorless
+- **Rocky Helmet** — Chip on being attacked (common in B3a lists)
+- **Giant Cape** — +HP (keeps key basics alive)
+- **Pokémon Tool** density — enables Dedenne ex (B3b) and Iron Boulder scaling
 
 ## Sample Analysis Output
 
 ```
-=== MEGA LUCARIO EX ===
-Type: Fighting | Mega Pokemon (3 points when KO'd)
+=== IRON VALIANT ===
+Type: Psychic | Basic Paradox Pokémon (1 point when KO'd)
 
-Attack: Fighting Pulse (Fighting Energy)
-- 90 damage base, up to 140 with Fighting support
+Attack: Slicing Blade (Psychic Energy ×2)
+- 50 damage, efficient 2-Energy cost
 
 Strategic Analysis:
-- S tier with Hitmontop partner for early chip
-- Igglybuff variant adds sleep stall for control
-- Weak to Psychic (Mega Altaria ex is dominant)
-- Point map: 1-1-3 (Hitmontop/Igglybuff as cheap front)
-- Korrina provides Fighting search consistency
+- New S-tier partner in the #1 deck (Mega Altaria ex + Iron Valiant, ~56% WR)
+- Cheap Psychic front while building a Mega; also cores Iron Valiant + Iron Boulder
+- Weak to Metal
+- Point map flexibility: 1-pt Basic that pressures early
+- Pairs with Rare Candy + Mega lines; Cyrus for finishers
 
-Competitive Tier: S (meta-defining Fighting powerhouse)
+Competitive Tier: S (meta-defining Paradox attacker, B3a)
 ```
