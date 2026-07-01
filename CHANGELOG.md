@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [4.3.0](https://github.com/briansunter/pokeclaude/compare/v4.2.0...v4.3.0) (2026-07-01)
+
+
+### Features
+
+* **skills:** refresh tier lists, card tiers, and deck lists to settled B3a + Everyday Wonders B3b ([150ebdf](https://github.com/briansunter/pokeclaude/commit/150ebdf2f81c5ab33e0603524c15bfa2fe18dc6f)), closes [#1](https://github.com/briansunter/pokeclaude/issues/1)
+
 # [4.2.0](https://github.com/briansunter/pokeclaude/compare/v4.1.0...v4.2.0) (2026-06-30)
 
 
