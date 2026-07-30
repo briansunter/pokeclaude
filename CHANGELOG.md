@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [4.4.0](https://github.com/briansunter/pokeclaude/compare/v4.3.0...v4.4.0) (2026-07-30)
+
+
+### Features
+
+* **data:** add Ruler of the Skies cards ([0fec7d4](https://github.com/briansunter/pokeclaude/commit/0fec7d4dd4efd7262ac76f1d4aadc24beeaf30cd))
+
 # [4.3.0](https://github.com/briansunter/pokeclaude/compare/v4.2.0...v4.3.0) (2026-07-01)
 
 
