@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.4.1](https://github.com/briansunter/pokeclaude/compare/v4.4.0...v4.4.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* **docs:** correct card database count ([078da7c](https://github.com/briansunter/pokeclaude/commit/078da7cf669e0ad1a1f6f3353d67e277848b61c7))
+
 # [4.4.0](https://github.com/briansunter/pokeclaude/compare/v4.3.0...v4.4.0) (2026-07-30)
 
 
