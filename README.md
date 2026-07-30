@@ -45,7 +45,7 @@ pokeclaude mcp
 
 ## Features
 
-- **3,405 Cards** - Complete Pokemon Pocket TCG database
+- **3,760 Cards** - Complete Pokemon Pocket TCG database
 - **8 MCP Tools** - Search, analyze, find synergies, counters
 - **DuckDB-Powered** - Lightning-fast SQL queries
 - **CLI + MCP** - Unified interface for all uses
@@ -171,7 +171,7 @@ bun run scrape
 ## Database
 
 - **Source:** limitlesstcg.com
-- **Total Cards:** 3,405 across 20 sets
+- **Total Cards:** 3,760 across 22 sets
 - **Unique Cards:** auto-deduplicated (art variants excluded via uniqueOnly)
 - **Update:** Automatic via scraper
 

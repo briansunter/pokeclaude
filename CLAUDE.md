@@ -10,7 +10,7 @@ This is **PokeClaude**, a Pokemon Pocket TCG MCP Server with an auto-updating da
 
 1. **MCP Server** (`mcp-server/`) - Claude Desktop integration using Model Context Protocol
 2. **Data Scraper** (`scraper/`) - Auto-updates card database from limitlesstcg.com
-3. **Card Database** (`data/pokemon_pocket_cards.csv`) - 3405 cards across 20 sets
+3. **Card Database** (`data/pokemon_pocket_cards.csv`) - 3760 cards across 22 sets
 
 ## Project Structure
 
@@ -27,7 +27,7 @@ pokeclaude/
 ├── scraper/
 │   └── src/scraper.ts            # Web scraper with auto-discovery
 ├── data/
-│   └── pokemon_pocket_cards.csv  # Card database (3,405 cards)
+│   └── pokemon_pocket_cards.csv  # Card database (3,760 cards)
 └── .github/workflows/            # CI/CD (semantic-release, publish)
 ```
 
@@ -175,7 +175,7 @@ cd mcp-server && npm run test:manual
 
 ### Resources (3 total)
 
-- **pokemon://cards/all** - Full database (3,405 cards)
+- **pokemon://cards/all** - Full database (3,760 cards)
 - **pokemon://cards/unique** - Unique cards only
 - **pokemon://stats/types** - Type breakdowns
 
@@ -189,7 +189,7 @@ cd mcp-server && npm run test:manual
 
 ### Current Data
 
-- ✅ **3,405 total cards** across 20 sets (A1-A4b, B1-B3a, P-A, P-B)
+- ✅ **3,760 total cards** across 22 sets (A1-A4b, B1-B4, P-A, P-B)
 - ✅ Auto-deduplicates art variants via `uniqueOnly`
 - ✅ **100% verified** via spot checks
 - ✅ **Zero parsing errors** on production data
@@ -347,7 +347,7 @@ Three presets to control response size:
 - **mcp-server/src/index.ts** - Main server implementation
 - **mcp-server/src/gameRules.ts** - Pokemon TCG Pocket rules
 - **scraper/src/scraper.ts** - Web scraper with auto-discovery
-- **data/pokemon_pocket_cards.csv** - Card database (3,405 cards)
+- **data/pokemon_pocket_cards.csv** - Card database (3,760 cards)
 - **.github/workflows/release.yml** - CI/CD pipeline
 - **package.json** - Root workspace configuration
 - **mcp-server/package.json** - Published package config
