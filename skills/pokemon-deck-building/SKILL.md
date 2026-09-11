@@ -31,14 +31,18 @@ Build competitive Pokemon TCG Pocket decks with validation and strategy.
 
 ## Deck Archetypes
 
-| Archetype           | Strategy                        | Example                    |
-| ------------------- | ------------------------------- | -------------------------- |
-| Mega + Partner      | Mega ex power + utility         | Mega Altaria ex + Greninja |
-| Disruption          | Hand/board control + damage     | Mega Absol ex + Hydreigon  |
-| Snipe/Spread        | Bench damage → Cyrus finish     | Chien-Pao ex + Baxcalibur  |
-| Energy Acceleration | Ramp faster than 1/turn         | Baxcalibur → Chien-Pao ex  |
-| Self-Sufficient     | Powers itself, attacks on curve | Magnezone                  |
-| Switch Combo        | Must switch for full damage     | Mega Scizor ex + Revavroom |
+| Archetype           | Strategy                               | Example                                           |
+| ------------------- | -------------------------------------- | ------------------------------------------------- |
+| Mega + Partner      | Mega ex power + utility                | Mega Sceptile ex + Butterfree                     |
+| Turbo Evolution     | Self-evolving opener + acceleration    | Caterpie (Quick Growth) + Mega Sceptile ex        |
+| Self-Discard Fuel   | Discard basics for damage / anti-Cyrus | Vespiquen ex + Shuckle ex                         |
+| Punish Ramp         | Damage scales with opponent's energy   | Indeedee ex + Giratina ex                         |
+| Disruption          | Hand/board control + damage            | Mega Absol ex + Hydreigon                         |
+| Snipe/Spread        | Bench damage → Cyrus finish            | Chien-Pao ex + Baxcalibur, Hoopa ex               |
+| Energy Acceleration | Ramp faster than 1/turn                | Baxcalibur → Chien-Pao ex, Magneton → Miraidon ex |
+| Self-Sufficient     | Powers itself, attacks on curve        | Magnezone, Milotic ex                             |
+| Status Lock         | Poison/Burn/Sleep tempo                | Team Rocket's Weezing ex + Hoopa ex               |
+| Switch Combo        | Must switch for full damage            | Mega Scizor ex + Revavroom                        |
 
 ## Universal Staples
 
@@ -49,6 +53,8 @@ Build competitive Pokemon TCG Pocket decks with validation and strategy.
 | Cyrus                | 1-2   | Gust damaged mon  |
 | Rare Candy           | 2     | Skip Stage 1      |
 | Copycat              | 1-2   | Hand manipulation |
+
+Conditional staples by archetype: Wallace (Water search), Small Balloon / Elegant Cape (tools), Electric Generator (Lightning ramp), Fragrant Forest (Grass search), Korrina + Arena of Antiquity (Fighting).
 
 ## Validation Checklist
 

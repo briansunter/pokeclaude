@@ -4,240 +4,204 @@ Supplementary deck lists for the Pokemon Deck Builder skill. Time-sensitive — 
 
 ## Top-Tier Deck Lists
 
-> Last updated: July 2026 (Everyday Wonders B3b)
+> Last updated: September 2026 (Team Rocket's Ambition B4a)
 >
-> Tier placements reflect the **settled Paradox Drive (B3a)** competitive meta (Pokémon Zone tournament data). Lists are representative competitive cores (each sums to 20 cards). Everyday Wonders (B3b) decks appear in "New / Being Evaluated" — the set released June 30, 2026 and has no tournament results yet, so those lists are speculative.
+> Tier placements reflect the **settled Team Rocket's Ambition (B4a)** competitive meta (Pokémon Zone Limitless tournament tracker). Lists are representative competitive cores (each sums to 20 cards). B3b and B4 results are fully tabulated — Everyday Wonders is no longer speculative, and its verdicts are baked into the tiers.
 
-### Top Tier (Settled B3a)
+### Top Tier (Settled B4a)
 
-**Mega Altaria ex + Iron Valiant** (#1 deck, ~56% WR)
-
-```
-2 Swablu, 2 Mega Altaria ex, 2 Iron Valiant (B3a),
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Lisia, Training Area, Giant Cape, Leaf
-Strategy: Iron Valiant (B3a) is a cheap 2-Energy Psychic front (Slicing Blade 50)
-while you build Mega Altaria ex. Mega Harmony hits 130 for 2E as finisher.
-Point map: 1-1-3 (Iron Valiant as cheap 1-pt front). Energy: Psychic.
-```
-
-**Iron Valiant + Iron Boulder** (~53% WR)
+**Butterfree + Mega Sceptile ex** (#1 deck, ~53.7% WR)
 
 ```
-2 Iron Valiant (B3a), 2 Iron Boulder (B3a), Pichu,
-2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 2 Pokémon Tool,
-Lisia, Training Area, Giant Cape, Leaf, Red Card
-Strategy: Dual Paradox Psychic attackers. Iron Boulder Modular Axe 80+ (+40 with a Tool).
-Tool density doubles as Iron Boulder fuel. Energy: Psychic.
+2 Caterpie, 2 Metapod, 1 Butterfree, 2 Treecko, 1 Grovyle, 1 Sceptile, 1 Mega Sceptile ex,
+2 Quick-Grow Extract, 2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 1 Cyrus, 1 Fragrant Forest
+Strategy: Caterpie's Quick Growth evolves itself into Metapod from the deck when it survives a
+turn Active — Butterfree is a 130HP 1-point attacker on curve. Build Treecko→Grovyle→Sceptile→
+Mega Sceptile ex behind it; Quick-Grow Extract accelerates the back row. Terminating Tail 130 +
+Poison = 140 effective. Point map: 1-1-3. Energy: Grass.
 ```
 
-**Mega Altaria ex + Gourgeist** (~53% WR)
+**Mega Sceptile ex + Greninja** (~52.7% WR)
 
 ```
-2 Swablu, 2 Mega Altaria ex, 2 Pumpkaboo, 2 Gourgeist, Chingling,
-2 Cyrus, 2 Rare Candy, 2 Poké Ball, 2 Professor's Research, Copycat,
-Lisia, Training Area
-Strategy: Mega Altaria 130 finisher. Gourgeist as 1-Energy backup attacker (OHKOs Pom-Pom Oricorio).
-Point map: 1-1-3. Energy: Psychic.
+2 Treecko, 1 Grovyle, 1 Sceptile, 1 Mega Sceptile ex, 2 Froakie, 2 Greninja, 1 Pheromosa, 1 Furfrou,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 1 Cyrus, 1 Copycat, 1 Giant Cape
+Strategy: Pheromosa/Furfrou chip early. Mega Sceptile ex Terminating Tail (130 + Poison) is the
+finisher; Greninja Water Shuriken adds free 20/turn snipe for KO math and Cyrus pick-offs.
+Point map: 1-1-3. Energy: Grass.
 ```
 
-**Mega Sceptile ex + Sceptile** (~51% WR)
+**Mega Lucario ex + Lucario** (most-played deck in the format, ~52.2% WR over 1,200+ matches)
 
 ```
-2 Treecko, 2 Grovyle, Sceptile, Mega Sceptile ex, Goomy,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research,
-2 Cyrus, Fragrant Forest, 2 Copycat, Training Area, Giant Cape
-Strategy: Goomy stalls early. Evolve Grovyle→Sceptile→Mega Sceptile.
-Terminating Tail 130 + Poison = 140 effective. Point map: 1-1-3. Energy: Grass.
+2 Riolu, 2 Lucario, 2 Mega Lucario ex, 1 Bonsly, 1 Hitmonlee,
+2 Rare Candy, 2 Korrina, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 1 Arena of Antiquity, 1 Giant Cape
+Strategy: Bonsly/Hitmonlee chip while Riolu evolves into Lucario (Fighting Coach +damage) or
+Mega Lucario ex (Fighting Pulse 90 for 2E, 140 for 3E — the Mega KO threshold). Korrina + Arena
+of Antiquity are the Fighting support core. Weak to Psychic (Mega Altaria ex). Energy: Fighting.
 ```
 
-**Magnezone + Miraidon ex** (tier-1 Lightning)
+**Vespiquen ex + Shuckle ex** (~52.7% WR)
 
 ```
-2 Magnemite, 2 Magneton, 2 Magnezone, 2 Miraidon ex (B3a), Oricorio,
-2 Electric Generator, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Clemont
-Strategy: Magneton self-powers via ability → fuel Miraidon ex Hadron Ray
-(20+ per [L] Energy on it) or Magnezone Mirror Shot finisher.
-Oricorio stalls ex attackers. Energy: Lightning.
+2 Combee, 2 Vespiquen ex, 2 Shuckle ex, 1 Teal Mask Ogerpon ex, 1 Minior,
+2 Fragrant Forest, 2 Small Balloon, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 1 Copycat, 1 Elegant Cape
+Strategy: Shuckle ex (Solid Shell) tanks turn 1 while Combee evolves. Chase Order hits 70 — or 140
+when you discard a benched Basic (no points conceded, no Cyrus target left behind; discard the
+damaged Shuckle ex itself). Fragrant Forest refuels fodder. Teal Mask Ogerpon ex blocks status;
+Minior answers Oricorio walls. Point map: 2-2. Energy: Grass.
+```
+
+**Magnezone + Miraidon ex** (fastest riser, ~57.7% WR)
+
+```
+2 Magnemite, 2 Magneton, 2 Magnezone, 2 Miraidon ex, 1 Oricorio, 1 Pichu,
+2 Electric Generator, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 1 Copycat, 1 Professor Turo
+Strategy: Magneton's Volt Charge attaches Lightning from the Energy Zone every turn without using
+your attachment — overload Magnezone (Mirror Shot 90 + miss chance) or cash in with Miraidon ex
+Hadron Ray (scales per Lightning Energy). Oricorio walls ex attackers; Professor Turo resets a
+stuck Miraidon opener. Point map: 2-2. Energy: Lightning.
+```
+
+**Mega Blaziken ex + Greninja** (~52.1% WR, ↑3)
+
+```
+2 Torchic, 2 Mega Blaziken ex, 2 Froakie, 2 Greninja, 1 Heatmor, 1 Castform Sunny Form,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 1 Copycat, 1 Training Area
+Strategy: Heatmor or Castform Sunny Form deals early damage (Burn synergy with a Stadium).
+Mega Blaziken ex is the scaling Fire finisher; Greninja adds free 20/turn snipe.
+Point map: 1-1-3. Energy: Fire.
 ```
 
 ### High Tier
 
-**Suicune ex + Baxcalibur + Chien-Pao ex**
+**Indeedee ex + Giratina ex** (highest raw WR — watch the small sample)
 
 ```
-2 Frigibax, 2 Baxcalibur, 2 Suicune ex, Chien-Pao ex,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Irida, Lucky Ice Pop, Starting Plains
-Strategy: Suicune draw → fast Baxcalibur. Ice Maker loads Chien-Pao for 130 snipe ANY.
-Suicune as primary attacker. Point map: 1-1-3. Energy: Water.
+2 Indeedee ex, 2 Giratina ex, 1 Chingling, 1 Igglybuff, 1 Mimikyu ex, 1 Darkrai,
+2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 1 Mars, 1 Giant Cape, 1 Red Card, 1 Leaf
+Strategy: Indeedee ex Psychic (30 + 30 per Energy on the opponent's Active) punishes the ramp meta;
+Giratina ex self-charges and staggers attacks. Point map: 2-2. Energy: Psychic.
 ```
 
-**Miraidon ex + Magnezone** (Miraidon-led ramp)
+**Mega Altaria ex + Espeon** (~51.3% WR)
 
 ```
-2 Magnemite, 2 Magneton, 2 Magnezone, 2 Miraidon ex (B3a), Pichu,
-2 Electric Generator, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, Copycat,
-Clemont, Training Area
-Strategy: Pichu opener + Electric Generator ramp into Miraidon ex as the lead attacker,
-Magnezone as self-powering backup. Energy: Lightning.
+2 Swablu, 2 Mega Altaria ex, 2 Eevee, 2 Espeon, 1 Igglybuff, 1 Darkrai,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 1 Copycat, 1 Lisia
+Strategy: Igglybuff/Espeon put the opponent's Active to sleep; Darkrai Bad Dreams adds 20/turn for
+free while every Energy Zone attach builds Mega Altaria ex (Mega Harmony 130 for 2E).
+Energy: Psychic.
+```
+
+**Team Rocket's Weezing ex + Hoopa ex** (~49.8% WR, high volume)
+
+```
+2 Team Rocket's Koffing, 2 Team Rocket's Weezing ex, 2 Hoopa ex, 1 Mega Sableye ex, 1 Bombirdier,
+2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 2 Mars, 1 Poison Barb, 1 Giant Cape
+Strategy: Hoopa ex opens with Shadow Bullet (30 + 20 to bench for 1E) setting up Cyrus kills.
+Team Rocket's Koffing → Weezing ex locks Poison + Burn (ability) and Confused (Confusion Gas 60);
+Mega Sableye ex (Cursed Jewel revenge 40) deters attackers. Bombirdier = free retreat.
+Energy: Darkness.
+```
+
+**Milotic ex + Eevee ex** (↑9 riser)
+
+```
+2 Feebas, 2 Milotic ex, 2 Eevee, 1 Eevee ex, 1 Vaporeon, 1 Chien-Pao ex, 1 Mantyke,
+2 Wallace, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 1 Irida, 1 Elemental Switch
+Strategy: Milotic ex Aqua Charge self-attaches Water every turn; Vaporeon (Wash Out) moves that
+energy to Chien-Pao ex (Diving Icicles 130 snipe) or an attacker. Water Pulse 80 + Sleep is an
+effective 160 over two turns. Wallace finds the Feebas line. Energy: Water.
+```
+
+**Dragonair + Mega Rayquaza ex**
+
+```
+2 Dratini, 2 Dragonair, 2 Mega Rayquaza ex, 1 Drampa, 1 Gouging Fire,
+2 Rainbow Cave, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 1 Mars, 1 Leaf
+Strategy: Rainbow Cave stockpiles energy in the discard; Dragonair recycles it onto Drampa /
+Gouging Fire / Mega Rayquaza ex. Mega Burst discards all R+L Energy for 50× each — Dragonair
+reloads it. Point map: 2-2. Energy: Lightning + Fire (dual).
+```
+
+**Hoopa ex + Mega Sableye ex**
+
+```
+2 Hoopa ex, 2 Sableye, 1 Mega Sableye ex, 1 Darkrai ex, 1 Bombirdier,
+2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 2 Mars, 1 Giant Cape, 1 Poison Barb, 1 Leaf
+Strategy: Hoopa ex Shadow Bullet chips (30 + 20 bench); Mega Sableye ex Cursed Jewel (80 + revenge
+40) punishes retaliation. Darkrai ex adds Nightmare Aura chip. Energy: Darkness.
+```
+
+**Zoroark ex + Mega Absol ex + Darkrai ex**
+
+```
+2 Zorua, 1 Zoroark ex, 1 Darkrai ex, 1 Absol, 1 Mega Absol ex, 1 Bombirdier,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 1 Mars, 1 Training Area, 1 Giant Cape
+Strategy: Zoroark 90 dmg for 1E. Darkrai ex 20 chip/turn. Mega Absol ex disruption backup
+(Darkness Claw discards a Supporter). Bombirdier free retreat. Energy: Darkness.
 ```
 
 **Hydreigon + Mega Absol ex**
 
 ```
-2 Deino, 2 Hydreigon, Absol, Mega Absol ex, Bombirdier,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Poison Barb, Lucky Ice Pop, Giant Cape
-Strategy: Hydreigon self-charges, attacks every turn (130 dmg).
-Mega Absol backup + hand disruption. Bombirdier free retreat. Energy: Darkness.
+2 Deino, 2 Hydreigon, 1 Absol, 1 Mega Absol ex, 1 Bombirdier,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 1 Poison Barb, 1 Lucky Ice Pop, 1 Giant Cape
+Strategy: Hydreigon self-charges and attacks every turn (130 dmg). Mega Absol backup + hand
+disruption. Bombirdier free retreat. Energy: Darkness.
 ```
 
-**Zoroark ex + Darkrai ex + Mega Absol ex**
+**Mega Charizard Y ex + Entei ex**
 
 ```
-2 Zorua, Zoroark ex, Darkrai ex, Absol, Mega Absol ex, Bombirdier,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Training Area, Giant Cape, Red Card
-Strategy: Zoroark 90 dmg for 1E. Darkrai 20 chip/turn. Mega Absol disruption backup.
-Bombirdier free retreat. Energy: Darkness.
+2 Charmander, 1 Charmeleon, 1 Mega Charizard Y ex, 2 Entei ex,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 1 Flame Patch, 1 Training Area, 1 Giant Cape, 1 Leaf
+Strategy: Entei ex tanks and draws early; Charmeleon funnels energy; Mega Charizard Y ex is the
+big Fire finisher. Point map: 1-1-3. Energy: Fire.
 ```
 
-**Giratina ex + Darkrai ex**
+### Middle Tier (Declining — Still Playable)
+
+**Suicune ex + Baxcalibur + Chien-Pao ex** _(declining ↓6, ~47.0% WR)_
 
 ```
-Giratina ex, Darkrai ex, Chingling,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 2 Mars,
-Training Area, Starting Plains, Giant Cape, Leaf, Red Card
-Strategy: Darkrai ability chips + charges. Giratina self-charges Psychic.
-Stagger attacks once both are charged. Energy: Darkness (Darkrai) + Giratina self-loads Psychic.
+2 Frigibax, 2 Baxcalibur, 2 Suicune ex, 1 Chien-Pao ex,
+2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 1 Irida, 1 Lucky Ice Pop, 1 Starting Plains
+Strategy: Suicune draw → fast Baxcalibur. Ice Maker loads Chien-Pao for 130 snipe ANY.
+Suicune as primary attacker. Outpaced by Milotic ex and Lightning ramp. Energy: Water.
 ```
 
-**Meowscarada ex + Meowscarada + Teal Mask Ogerpon ex**
+**Mega Lucario ex + Team Rocket's Raticate ex** _(thin sample, ~54.8% over 84 matches)_
 
 ```
-2 Sprigatito, Meowscarada ex, Meowscarada, Teal Mask Ogerpon ex,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Training Area, Fragrant Forest, Giant Cape, Leaf, Red Card
-Strategy: Sprigatito searches Grass. Meowscarada ex deals 70 on opponent's turn (1E).
-Teal Mask Ogerpon for status protection. Energy: Grass.
-```
-
-**Mega Blaziken ex + Greninja**
-
-```
-2 Torchic, Mega Blaziken ex, 2 Froakie, 2 Greninja, Castform Sunny Form,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, Copycat,
-Training Area, Lucky Ice Pop, Giant Cape
-Strategy: Greninja free 20/turn snipe. Castform Burn. Mega Blaziken scaling Fire finisher.
-Energy: Fire (+ Water Shuriken needs no Water energy).
-```
-
-### Middle Tier (Several Formerly Top-Tier — Now Declined)
-
-**Mega Lucario ex + Hitmontop** *(declined — was S-tier early B3a, now ~45% WR)*
-
-```
-2 Riolu, Mega Lucario ex, Hitmontop, Tyrogue,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Korrina, Training Area, Giant Cape, Red Card, Leaf
-Strategy: Hitmontop chips early. Mega Lucario 90/140 dmg Fighting Pulse.
-Now weaker — Psychic (Mega Altaria ex / Iron Valiant) dominates. Energy: Fighting.
-```
-
-**Mega Altaria ex + Igglybuff** *(declined — was S-tier, now ~48% WR)*
-
-```
-2 Swablu, 2 Mega Altaria ex, Darkrai, Igglybuff, Chingling,
-2 Cyrus, 2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Copycat,
-Poison Barb, Lisia, Starting Plains
-Strategy: Igglybuff/Chingling sleep stall + Darkrai Dark Dreams 20 free dmg.
-Mega Altaria ex 130 finisher. Outpaced by Iron Valiant / Gourgeist variants. Energy: Psychic.
-```
-
-**Mega Charizard X and Y ex + Entei ex**
-
-```
-2 Charmander, Charmeleon, Mega Charizard X ex, Mega Charizard Y ex, Entei ex,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, Copycat,
-Flame Patch, Training Area, Giant Cape, Leaf, Red Card
-Strategy: Choose X (130) or Y (250) based on game state. Entei ex tank + draw.
-Point map: 1-1-3. Energy: Fire.
-```
-
-### New / Being Evaluated — Everyday Wonders (B3b)
-
-No tournament data yet (released June 30, 2026). Lists below are **speculative** 20-card cores based on card text — treat as starting points, not proven lists.
-
-**Mega Diancie ex (Psychic)** — early favorite for top B3b card
-
-```
-2 Diancie, 2 Mega Diancie ex, 2 Carbink,
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Lisia, Training Area, Giant Cape, Leaf
-Strategy: Brilliant Storm 40+ (20 more per Psychic Energy on ALL your Pokémon) —
-rewards boarding multiple Psychic-energy bearers (Carbink/Diancie feed the count).
-High ceiling; needs Psychic energy spread setup. Energy: Psychic.
-```
-
-**Mega Sableye ex (Darkness)**
-
-```
-2 Sableye, 2 Mega Sableye ex, Toxapex (B3b),
-2 Rare Candy, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-Poison Barb, Lucky Ice Pop, Giant Cape, Leaf, Red Card
-Strategy: Cursed Jewel 80 + revenge 40 deters attacks. Toxapex auto-Poison (Severe Poison) for chip.
-Energy: Darkness.
-```
-
-**Dedenne ex (Lightning, Tool storm)**
-
-```
-2 Dedenne ex, 2 Pikachu ex,
-2 Electric Generator, 2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat,
-2 Pokémon Tool, Giant Cape, Training Area, Rocky Helmet, Leaf
-Strategy: Circuit 40× per Pokémon Tool across all your Pokémon — load Tools across your board,
-then one-shot. Needs Tool-heavy build. Energy: Lightning.
-```
-
-**Hisuian Zoroark ex (Colorless self-mill)**
-
-```
-2 Hisuian Zorua, 2 Hisuian Zoroark ex, 2 Ditto,
-2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 2 Mars,
-Training Area, Giant Cape, Leaf, Red Card
-Strategy: Spiteful Illusion 80+ (20 more per Pokémon in your discard) — grows as the game goes long.
-Energy: Colorless.
-```
-
-**Milotic ex (Water control)**
-
-```
-2 Feebas, 2 Milotic ex, Misty,
-2 Poké Ball, 2 Professor's Research, 2 Cyrus, 2 Copycat, 2 Irida,
-Lucky Ice Pop, Starting Plains, Giant Cape, Leaf, Red Card
-Strategy: Water Pulse 80 + Sleep. Pairs with sleep-synergy damage (Darkrai). Energy: Water.
+2 Riolu, 1 Lucario, 2 Mega Lucario ex, 2 Team Rocket's Rattata, 2 Team Rocket's Raticate ex,
+2 Rare Candy, 2 Korrina, 2 Poké Ball, 2 Professor's Research, 1 Cyrus, 1 Arena of Antiquity, 1 Giant Cape
+Strategy: Team Rocket's Rattata → Raticate ex (Boost Dash 70, 0 retreat) provides tempo while
+Mega Lucario ex lines up Fighting Pulse. Energy: Fighting.
 ```
 
 ## Best Practices by Archetype
 
-| Archetype           | Pokémon | Trainers | Key Cards                                        |
-| ------------------- | ------- | -------- | ------------------------------------------------ |
-| Mega + Partner      | 8-10    | 10-12    | Rare Candy, Poké Ball, Cyrus, Professor's Research |
-| Paradox Duo         | 8-10    | 10-12    | Pokémon Tool (Iron Boulder), Poké Ball, Cyrus    |
-| Disruption          | 7-8     | 12-13    | Copycat, Poison Barb, Lucky Ice Pop              |
-| Snipe/Spread        | 8-10    | 10-12    | Free-damage abilities (Greninja), Cyrus          |
-| Energy Acceleration | 8-10    | 10-12    | Electric Generator (Miraidon/Magnezone), Rare Candy |
-| Self-Sufficient     | 8-10    | 10-12    | Evolution search, draw power                     |
+| Archetype           | Pokémon | Trainers | Key Cards                                            |
+| ------------------- | ------- | -------- | ---------------------------------------------------- |
+| Mega + Partner      | 8-10    | 10-12    | Rare Candy, Poké Ball, Cyrus, Professor's Research   |
+| Turbo Evolution     | 10-12   | 8-10     | Caterpie (Quick Growth), Quick-Grow Extract          |
+| Self-Discard Fuel   | 8-10    | 10-12    | Fragrant Forest, Vespiquen ex fodder basics          |
+| Energy Acceleration | 8-10    | 10-12    | Electric Generator, Wallace, Elemental Switch        |
+| Disruption          | 7-8     | 12-13    | Copycat, Mars, Poison Barb                           |
+| Snipe/Spread        | 8-10    | 10-12    | Free-damage abilities (Greninja, Hoopa ex), Cyrus    |
+| Self-Sufficient     | 8-10    | 10-12    | Evolution search, draw power                         |
+| Status Lock         | 8-10    | 10-12    | Team Rocket's Weezing ex, Poison Barb, Lucky Ice Pop |
 
 ## Common Mistakes
 
-- Running 3+ energy types (too inconsistent)
+- Running 3+ energy types (too inconsistent) — Dragonair + Mega Rayquaza ex is the rare sanctioned 2-type build
 - Missing Rare Candy in Stage 2 / Mega decks
-- Not including Cyrus (most important gust effect)
-- Overloading high-energy attackers without acceleration (Miraidon/Magnezone/Baxcalibur)
-- Ignoring bench size planning (Mega Harmony / Brilliant Storm scale off bench/energy spread)
-- Not planning point maps (1-1-3 for Mega decks)
-- Forgetting Mega Pokémon are worth 3 points (need a cheap 1-pt KO plan — e.g., Iron Valiant, Pichu)
-- Treating early-set hype as settled tier (Flutter Mane ex was "promising" but landed F-tier; Mega Lucario ex fell from S to C)
+- Not including Cyrus (most important gust effect) — Hoopa ex / Greninja chip exists to enable it
+- Overloading high-energy attackers without acceleration (Milotic / Magnezone / Baxcalibur engines)
+- Treating discard as pure loss — Vespiquen ex converts benched basics into damage and dodges Cyrus
+- Not planning point maps (1-1-3 for Mega decks; 2-2 for double-ex cores)
+- Forgetting Mega Pokémon are worth 3 points (need a cheap 1-pt KO plan — e.g. Caterpie→Butterfree, Hoopa ex opener)
+- Treating early-set hype as settled tier: Mega Diancie ex was the July "favorite" and landed F-tier; Mega Lucario ex fell S→C in B3a, then climbed back to top-tier in B4a — trust the tournament data, not launch-week takes
+- Building sleep/burn stall without a real attacker (Igglybuff stall builds are F-tier; status must ride a win condition)
