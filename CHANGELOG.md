@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [4.5.0](https://github.com/briansunter/pokeclaude/compare/v4.4.1...v4.5.0) (2026-09-12)
+
+
+### Features
+
+* **data:** add Team Rocket's Ambition (B4a) cards ([e42916f](https://github.com/briansunter/pokeclaude/commit/e42916ff172602143ee84bda3a0e6bf0190556dd))
+* **skills:** refresh tier lists, card tiers, and deck lists to settled B4a meta ([4fcada4](https://github.com/briansunter/pokeclaude/commit/4fcada4746e02bb18983d60c33a4404a7227eaa8))
+
 ## [4.4.1](https://github.com/briansunter/pokeclaude/compare/v4.4.0...v4.4.1) (2026-07-30)
 
 
