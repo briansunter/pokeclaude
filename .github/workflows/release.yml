@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   id-token: write
+  issues: write
 
 jobs:
   quality:
@@ -87,25 +88,21 @@ jobs:
           registry-url: "https://registry.npmjs.org"
         timeout-minutes: 2
 
-      - name: Setup BWS
-        run: |
-          curl -fsSL https://github.com/bitwarden/sdk-sm/releases/download/bws-v1.0.0/bws-x86_64-unknown-linux-gnu-1.0.0.zip -o bws.zip
-          unzip bws.zip
-          chmod +x bws
-          sudo mv bws /usr/local/bin/
-
-      - name: Get NPM token from BWS
-        id: bws
-        run: |
-          NPM_TOKEN=$(bws secret get "${{ secrets.BWS_NPM_TOKEN_SECRET_ID }}" --access-token "${{ secrets.BWS_ACCESS_TOKEN }}" | jq -r '.value')
-          echo "::add-mask::$NPM_TOKEN"
-          echo "npm_token=$NPM_TOKEN" >> $GITHUB_OUTPUT
+      # Shared CI npm key: fetched live from Bitwarden Secrets Manager
+      # (Actions project, NPM_CI_TOKEN). Same pattern for all repos.
+      - name: Fetch NPM token from BWS
+        uses: bitwarden/sm-action@v2
+        with:
+          access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
+          base_url: https://vault.bitwarden.com
+          secrets: |
+            ${{ secrets.BWS_NPM_TOKEN_SECRET_ID }} > NPM_TOKEN
 
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ steps.bws.outputs.npm_token }}
-          NODE_AUTH_TOKEN: ${{ steps.bws.outputs.npm_token }}
+          NPM_TOKEN: ${{ env.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
         run: bunx semantic-release
         timeout-minutes: 10
